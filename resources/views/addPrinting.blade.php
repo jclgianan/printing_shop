@@ -11,7 +11,7 @@
             <div class="content-placeholder header-row">
                 <div class="header-top">
                     <div class="header-text">
-                        <h2>Add Printing Ticket</h2>
+                        <h2>Add Printiang Ticket</h2>
                     </div>
                 </div>
             </div>
@@ -46,7 +46,26 @@
                         <label for="receiving_date">Receiving Date</label>
                         <input type="date" name="receiving_date" id="receiving_date" class="form-control" required>
                     </div>
-                
+                    <div class="form-group">
+                        <label for="receiving_date">Name</label>
+                        <input type="text" name="name" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="receiving_date">Office/Department</label>
+                        <input type="text" name="office_department" id="office_department" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="receiving_date">Name of Item</label>
+                        <input type="text" name="itemname" id="itemname" class="form-control" required>
+                    </div>                                                        
+                    <div class="form-group">
+                        <label for="receiving_date">Size</label>
+                        <input type="text" name="size" id="size" class="form-control" required>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="receiving_date">Quantity</label>
+                        <input type="text" name="quantity" id="quantity" class="form-control" required>
+                    </div>                                                           
                     <div class="form-group">
                         <label for="category">Category</label>
                         <select name="category" id="category" class="form-control" required>
@@ -55,8 +74,8 @@
                             <option value="category3">Category 3</option>
                         </select>
                     </div>
-                
-                    <button type="submit" class="btn btn-primary">Save Process</button>
+                 <br>
+                    <button type="submit" class="btn btn-primary">Submit Ticket</button>
                 </form>
             </div>
         </main>

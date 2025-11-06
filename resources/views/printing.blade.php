@@ -1,4 +1,4 @@
-<!-- resources/views/receiving.blade.php -->
+<!-- resources/views/prinitng.blade.php -->
 @extends('layouts.default') {{-- Assuming this is your main layout --}}
 
 @section('title', 'Receiving')
@@ -53,8 +53,8 @@
                             <th>Name of Item</th>
                             <th>Size</th>
                             <th>Quantity</th>
-                            <th>Type</th>
-                            <th>Category</th>
+                            {{-- <th>Type</th> --}}
+                            {{-- <th>Category</th> --}}
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>

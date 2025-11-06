@@ -39,7 +39,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Forms and processes
     Route::get('/addPrinting', [AuthController::class, 'createForm'])->name('disbursement.form');
-    Route::get('/liquidation', [AuthController::class, 'createForm'])->name('liquidation.form');
+    Route::get('/addRepair', [AuthController::class, 'createForm'])->name('liquidation.form');
     Route::post('/process', [AuthController::class, 'store'])->name('process.store');
     
     // Search and filtering

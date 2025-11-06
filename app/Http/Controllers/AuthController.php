@@ -99,6 +99,8 @@ class AuthController extends Controller
     {
         $type = $request->query('type');
         return view('addPrinting', compact('type')); 
+        return view('addRepair', compact('type')); 
+
     }
 
     // Receiving search page fucntion
