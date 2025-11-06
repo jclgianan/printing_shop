@@ -46,10 +46,12 @@
                 <table class="process-table">
                     <thead>
                         <tr>
-                            <th>Process ID</th>
+                            <th>Ticket ID</th>
                             <th>Receiving Date</th>
-                            <th>Type</th>
-                            <th>Category</th>
+                            <th>Name</th>
+                            <th>Office/Department</th>
+                            <th>Name of Item</th>
+                            <th>Problem</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>

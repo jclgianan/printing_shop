@@ -46,7 +46,7 @@
                 <table class="process-table">
                     <thead>
                         <tr>
-                            <th>Process ID</th>
+                            <th>Ticket ID</th>
                             <th>Receiving Date</th>
                             <th>Name</th>
                             <th>Office/Department</th>
