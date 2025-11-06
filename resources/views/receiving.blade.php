@@ -34,7 +34,7 @@
                     <!-- Search Bar on the right -->
                     <form action="{{ route('receiving-search') }}" method="GET" class="search-form">
                         <div class="search-group">
-                            <input type="text" name="query" class="search-input" placeholder="Search Process ID" aria-label="Search">
+                            <input type="text" name="query" class="search-input" placeholder="Search Ticket ID" aria-label="Search">
                             <button class="btn btn-primary" type="submit">Search</button>
                         </div>
                     </form>

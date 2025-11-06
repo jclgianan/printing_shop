@@ -34,7 +34,7 @@
                     <input type="hidden" name="type" value="{{ $type }}">
                 
                     <div class="form-group">
-                        <label for="process_id">Process ID</label>
+                        <label for="process_id">Ticket ID</label>
                         <div style="display: flex; gap: 10px;">
                             <input type="text" id="process_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
                             <input type="hidden" name="process_id" id="process_id">
