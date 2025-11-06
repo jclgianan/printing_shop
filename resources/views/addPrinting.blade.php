@@ -11,7 +11,7 @@
             <div class="content-placeholder header-row">
                 <div class="header-top">
                     <div class="header-text">
-                        <h2>Add Printiang Ticket</h2>
+                        <h2>Add Printing Ticket</h2>
                     </div>
                 </div>
             </div>

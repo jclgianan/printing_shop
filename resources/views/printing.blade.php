@@ -16,7 +16,7 @@
                         <p class="section-description">Select an option from the menu to get started.</p>
                     </div>
                     <!-- New Entry Button on the right -->
-                    <a href="{{ route('disbursement.form', ['type' => 'addPrinting']) }}" class="receiving_newEntry">New Entry +</a>
+                    <a href="{{ route('printing.form', ['type' => 'addPrinting']) }}" class="receiving_newEntry">New Entry +</a>
                 </div>
             </div>
         

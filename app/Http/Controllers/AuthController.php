@@ -86,21 +86,27 @@ class AuthController extends Controller
     }
 
     // Show receiving page
-    public function receiving()
+    public function repair()
     {
         // Fetch data from the database
         $processes = Process::orderBy('created_at', 'desc')->get();
 
-        return view('receiving', compact('processes'));
+        return view('repair', compact('processes'));
     }
 
     // Show addPrinting Page
-    public function createForm(Request $request)
+    public function printingForm(Request $request)
     {
         $type = $request->query('type');
-        return view('addPrinting', compact('type')); 
-        return view('addRepair', compact('type')); 
 
+        return view('addPrinting', compact('type'));
+    }
+    // Show addRepair Page
+    public function repairForm(Request $request)
+    {
+        $type = $request->query('type');
+
+        return view('addRepair', compact('type'));
     }
 
     // Receiving search page fucntion

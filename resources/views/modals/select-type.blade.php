@@ -1,4 +1,4 @@
-<div id="selectTypeModal" class="select-type-modal">
+{{-- <div id="selectTypeModal" class="select-type-modal">
     <div class="selectType-modal-content">
         <h2>Select Type:</h2>
         <span class="close" id="closeModal">&times;</span>
@@ -16,4 +16,4 @@
         </div>
     </div>
 </div>
-
+ --}}

@@ -13,7 +13,7 @@
       @if(isset($type) && in_array($type, ['addPrinting', 'printing']))
         @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
       @else
-        @include('layouts.sidebarReceiving') <!-- Shared sidebar -->
+        @include('layouts.sidebarRepair') <!-- Shared sidebar -->
       @endif
       <main class="main-panel">
           @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->

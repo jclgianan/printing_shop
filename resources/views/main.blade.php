@@ -18,7 +18,7 @@
 
             <!-- Repair -->
             <div class="col-md-3 mb-4">
-                <a href="{{ route('receiving') }}" class="text-decoration-none">
+                <a href="{{ route('repair') }}" class="text-decoration-none">
                     <div class="card p-4 shadow-sm section-card">
                         <h3 class="text-primary">Repair</h3>
                         <p class="text-muted">Start recording repair items here.</p>

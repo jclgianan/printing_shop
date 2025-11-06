@@ -12,11 +12,11 @@
             <div class="content-placeholder header-row">
                 <div class="header-top">
                     <div class="header-text">
-                        <h2 class="section-heading">Receiving Dashboard</h2>
+                        <h2 class="section-heading">Repairing Dashboard</h2>
                         <p class="section-description">Select an option from the menu to get started.</p>
                     </div>
                     <!-- New Entry Button on the right -->
-                    <a href="{{ route('liquidation.form', ['type' => 'addRepair']) }}" class="receiving_newEntry">New Entry +</a>
+                    <a href="{{ route('repair.form', ['type' => 'addRepair']) }}" class="receiving_newEntry">New Entry +</a>
                     
                 </div>
             </div>
