@@ -94,11 +94,11 @@ class AuthController extends Controller
         return view('receiving', compact('processes'));
     }
 
-    // Show Disbursement and liquidation page
+    // Show addPrinting Page
     public function createForm(Request $request)
     {
         $type = $request->query('type');
-        return view('disbursement', compact('type'));  // Will only show the disbursement page
+        return view('addPrinting', compact('type')); 
     }
 
     // Receiving search page fucntion

@@ -38,7 +38,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get("/select-type", [AuthController::class, "selectType"])->name("select-type");
     
     // Forms and processes
-    Route::get('/disbursement', [AuthController::class, 'createForm'])->name('disbursement.form');
+    Route::get('/addPrinting', [AuthController::class, 'createForm'])->name('disbursement.form');
     Route::get('/liquidation', [AuthController::class, 'createForm'])->name('liquidation.form');
     Route::post('/process', [AuthController::class, 'store'])->name('process.store');
     

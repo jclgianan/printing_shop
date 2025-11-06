@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield("title", "PRINTING_SHOP")</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-  {{-- Use Vite to load app.css and app.js (matches guest layout) --}}
+  {{-- Load app assets via Vite (dev server or build) --}}
   @vite(['resources/css/app.css', 'resources/js/app.js'])
   </head>
   <body>
     <div class="layout-wrapper">
-      @include('layouts.sidebarReceiving') <!-- Shared sidebar -->
+      @if(isset($type) && in_array($type, ['addPrinting', 'printing']))
+        @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
+      @else
+        @include('layouts.sidebarReceiving') <!-- Shared sidebar -->
+      @endif
       <main class="main-panel">
           @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->
       </main>

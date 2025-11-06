@@ -1,21 +1,17 @@
 @extends('layouts.default')
 
-@section('title', 'Disbursement')
+@section('title', 'Add Entry')
 
 @section('content')
 <div class="disbursement-container">
     <div class="layout-wrapper">
         <!-- Main Content Area -->
-        <!-- disbursement.blade.php -->
+        <!-- add printing ticket -->
         <main class="main-panel">
             <div class="content-placeholder header-row">
                 <div class="header-top">
                     <div class="header-text">
-                        @if ($type === 'disbursement')
-                            <h2>Disbursement Form</h2>
-                        @elseif ($type === 'liquidation')
-                            <h2>Liquidation Form</h2>
-                        @endif
+                        <h2>Add Printing Ticket</h2>
                     </div>
                 </div>
             </div>
