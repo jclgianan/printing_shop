@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Process;
+use App\Models\PrintTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
@@ -79,17 +80,17 @@ class AuthController extends Controller
     // Show printing page
     public function printing()
     {
-        // Fetch data from the database
-        $processes = Process::orderBy('created_at', 'desc')->get();
+        // Fetch print tickets for the printing dashboard
+        $printTickets = PrintTicket::orderBy('created_at', 'desc')->get();
 
-        return view('printing', compact('processes'));
+        return view('printing', compact('printTickets'));
     }
 
     // Show receiving page
     public function repair()
     {
         // Fetch data from the database
-        $processes = Process::orderBy('created_at', 'desc')->get();
+        $processes = PrintTicket::orderBy('created_at', 'desc')->get();
 
         return view('repair', compact('processes'));
     }
@@ -109,96 +110,148 @@ class AuthController extends Controller
         return view('addRepair', compact('type'));
     }
 
-    // Receiving search page fucntion
+    // Printing search page fucntion
 
     public function receivingSearch(Request $request)
     {
         $query  = $request->input('query');
 
-        $processes = Process::where('process_id', 'like', '%' . $query . '%')->get();
+        $printTickets = PrintTicket::where('printTicket_id', 'like', '%' . $query . '%')->get();
 
-        return view('receiving', compact('processes'));
+        return view('printing', compact('printTickets'));
     }
 
-    // Process Logs data view
+    // Printing Logs data view
     public function dashboard()
     {
-        $processes = Process::latest()->get(); // Add filters as needed
-        return view('receiving.index', compact('processes'));
+        $printTickets = PrintTicket::latest()->get(); // Add filters as needed
+        return view('printing.index', compact('printTickets'));
     }
 
-    // Storing the input of the disbursement form
-    public function store(Request $request)
+    // Storing the input of the print form
+    public function printTicketStore(Request $request)
     {
         // Validate inputs
         $request->validate([
             'receiving_date' => 'required|date',
-            'category' => 'required|string|in:category1,category2,category3',
-            'type' => 'required|in:disbursement,liquidation',
+            'name' => 'required|string|max:255',
+            'office_department' => 'required|string|max:255',
+            'itemname' => 'required|string|max:255',
+            'size' => 'required|string|max:100',
+            'quantity' => 'required|integer|min:1',
         ]);
 
         try {
-            // Generate a unique process ID
-            do {
-                $randomId = 'PRC-' . date('Ymd') . '-' . strtoupper(Str::random(4));
-            } while (Process::where('process_id', $randomId)->exists());
+            // If the client generated an ID (via the Generate button), use it if it's unique.
+            $providedId = $request->input('printTicket_id');
 
-            // Create the new process
-            Process::create([
-                'process_id' => $randomId, 
+            if ($providedId && !PrintTicket::where('printTicket_id', $providedId)->exists()) {
+                $randomId = $providedId;
+            } else {
+                // Generate a unique server-side ID
+                do {
+                    $randomId = 'PRT-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+                } while (PrintTicket::where('printTicket_id', $randomId)->exists());
+            }
+
+            // Create the print ticket record (process_id is optional)
+            // Do NOT set release_date here; it will be set when status becomes 'released'.
+            PrintTicket::create([
+                'printTicket_id' => $randomId,
                 'receiving_date' => $request->receiving_date,
-                'category' => $request->category,
-                'type' => $request->type,
+                'name' => $request->name,
+                'office_department' => $request->office_department,
+                'itemname' => $request->itemname,
+                'size' => $request->size,
+                'quantity' => $request->quantity,
+                'status' => 'pending',
             ]);
 
             // Redirect with success message
-            return redirect()->route('disbursement.form')->with('success', 'Process saved successfully!');
+            return redirect()->route('printing.form')->with('success', 'Print Ticket saved successfully!');
         } catch (\Exception $e) {
+            // Log exception details to help debug why saving failed
+            Log::error('Failed to save Print Ticket: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
             // Redirect with error message
-            return redirect()->route('disbursement.form')->with('error', 'Failed to save process. Please try again.');
+            return redirect()->route('printing.form')->with('error', 'Failed to save Print Ticket. Please try again.');
         }
     }
 
     // Genrating the unique process ID
-    public function generateProcessId()
+    public function generatePrintTicketId()
     {   
         try {
             // Log the start of the process
             Log::info('Generating Process ID...');
 
             do {
-                // Create process ID with today's date and random characters
-                $randomId = 'PRC-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+                // Create ticket ID with today's date and random characters (PRT prefix)
+                $randomId = 'PRT-' . date('Ymd') . '-' . strtoupper(Str::random(4));
 
                 // Log the generated ID
                 Log::info("Generated ID: $randomId");
 
                 // Check if this ID already exists in the database
-            } while (Process::where('process_id', $randomId)->exists());
+            } while (PrintTicket::where('printTicket_id', $randomId)->exists());
 
             // Return the generated ID as a response
-            return response()->json(['process_id' => $randomId]);
+            return response()->json(['printTicket_id' => $randomId]);
         } catch (\Exception $e) {
             // Log the exception if something goes wrong
-            Log::error("Error generating process ID: " . $e->getMessage());
+            Log::error("Error generating Print Ticket ID: " . $e->getMessage());
             
             // Return an error response
             return response()->json(['error' => 'Error generating process ID.'], 500);
         }
     }
 
-    // Filtering Categories in receving page
-    public function categoryFilter(Request $request)
+    // Filtering Categories in printing page
+    // public function categoryFilter(Request $request)
+    // {
+    //     $query = PrintTicket::query();
+
+    //     if ($request->filled('filter')) {
+    //         $query->where('category', 'like', '%' . $request->filter . '%');
+    //     }
+
+    //     $printTickets = $query->get();
+
+    //     return view('printing', compact('printTickets'));
+    // }
+
+    /**
+     * Update the status of a print ticket
+     */
+    public function updateStatus(Request $request, $id)
     {
-        $query = Process::query();
+        $request->validate([
+            'status' => 'required|in:pending,in_progress,completed,released,cancelled'
+        ]);
 
-        if ($request->filled('filter')) {
-            $query->where('category', 'like', '%' .$request->filter . '%');
+        try {
+            $ticket = PrintTicket::findOrFail($id);
+            $oldStatus = $ticket->status;
+            
+            // Update the status
+            $ticket->status = $request->status;
+            if ($request->status === 'released' && !$ticket->release_date) {
+                $ticket->release_date = now();
+            }
+            $ticket->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
+                'new_status' => $ticket->formatted_status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update status'
+            ], 500);
         }
-
-        $processes = $query->get();
-
-        return view('receiving', compact('processes'));
     }
 
 }

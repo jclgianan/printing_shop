@@ -28,51 +28,67 @@
             <div class="content-placeholder">
                 <!-- Form to add a new process -->
                 
-                <form action="{{ route('process.store') }}" method="POST" class="process-form">
+                <form action="{{ route('printTicket.store') }}" method="POST" class="process-form">
                     @csrf
                     
                     <input type="hidden" name="type" value="{{ $type }}">
                 
                     <div class="form-group">
-                        <label for="process_id">Ticket ID</label>
+                        <label for="printTicket_id">Ticket ID</label>
                         <div style="display: flex; gap: 10px;">
-                            <input type="text" id="process_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
-                            <input type="hidden" name="process_id" id="process_id">
-                            <button type="button" onclick="generateProcessId()" class="btn btn-secondary btn-generate-id">Generate</button>
+                            <input type="text" id="printTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
+                            <input type="hidden" name="printTicket_id" id="printTicket_id">
+                            <button type="button" onclick="generateprintTicketId()" class="btn btn-secondary btn-generate-id">Generate</button>
                         </div>
                     </div>
                 
                     <div class="form-group">
                         <label for="receiving_date">Receiving Date</label>
-                        <input type="date" name="receiving_date" id="receiving_date" class="form-control" required>
+                        <input type="date" name="receiving_date" id="receiving_date" class="form-control @error('receiving_date') is-invalid @enderror" 
+                            value="{{ old('receiving_date') }}" required>
+                        @error('receiving_date')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="receiving_date">Name</label>
-                        <input type="text" name="name" id="name" class="form-control" required>
+                        <label for="name">Name</label>
+                        <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" 
+                            value="{{ old('name') }}" required>
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="receiving_date">Office/Department</label>
-                        <input type="text" name="office_department" id="office_department" class="form-control" required>
+                        <label for="office_department">Office/Department</label>
+                        <input type="text" name="office_department" id="office_department" class="form-control @error('office_department') is-invalid @enderror" 
+                            value="{{ old('office_department') }}" required>
+                        @error('office_department')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="receiving_date">Name of Item</label>
-                        <input type="text" name="itemname" id="itemname" class="form-control" required>
+                        <label for="itemname">Name of Item</label>
+                        <input type="text" name="itemname" id="itemname" class="form-control @error('itemname') is-invalid @enderror" 
+                            value="{{ old('itemname') }}" required>
+                        @error('itemname')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>                                                        
                     <div class="form-group">
-                        <label for="receiving_date">Size</label>
-                        <input type="text" name="size" id="size" class="form-control" required>
+                        <label for="size">Size</label>
+                        <input type="text" name="size" id="size" class="form-control @error('size') is-invalid @enderror" 
+                            value="{{ old('size') }}" required>
+                        @error('size')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>                    
                     <div class="form-group">
-                        <label for="receiving_date">Quantity</label>
-                        <input type="text" name="quantity" id="quantity" class="form-control" required>
-                    </div>                                                           
-                    <div class="form-group">
-                        <label for="category">Category</label>
-                        <select name="category" id="category" class="form-control" required>
-                            <option value="category1">Category 1</option>
-                            <option value="category2">Category 2</option>
-                            <option value="category3">Category 3</option>
-                        </select>
+                        <label for="quantity">Quantity</label>
+                        <input type="number" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" 
+                            value="{{ old('quantity') }}" min="1" required>
+                        @error('quantity')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                  <br>
                     <button type="submit" class="btn btn-primary">Submit Ticket</button>
@@ -82,16 +98,24 @@
     </div>
 </div>
 <script>
-function generateProcessId() {
+function generateprintTicketId() {
     const button = document.querySelector('.btn-generate-id');
     button.disabled = true;
     button.textContent = 'Generating...';
 
-    fetch("{{ route('generate.process.id') }}")
-        .then(response => response.json())
+    fetch("{{ route('generate.printTicket.id') }}")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(data => {
-            document.getElementById('process_id_display').value = data.process_id;
-            document.getElementById('process_id').value = data.process_id;
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            document.getElementById('printTicket_id_display').value = data.printTicket_id;
+            document.getElementById('printTicket_id').value = data.printTicket_id;
             button.textContent = 'Generated';
         })
         .catch(error => {

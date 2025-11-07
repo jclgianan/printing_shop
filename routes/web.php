@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
     // Forms and processes
     Route::get('/addPrinting', [AuthController::class, 'printingForm'])->name('printing.form');
     Route::get('/addRepair', [AuthController::class, 'repairForm'])->name('repair.form');
-    Route::post('/process', [AuthController::class, 'store'])->name('process.store');
+    Route::post('/printTicket', [AuthController::class, 'printTicketStore'])->name('printTicket.store');
     
     // Search and filtering
     Route::get("/receiving-search", [AuthController::class, "receivingSearch"])->name("receiving-search");
@@ -50,5 +50,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/process/edit', [AuthController::class, 'edit'])->name('process.edit');
     Route::post('/process/store', [AuthController::class, 'store'])->name('process.store');
-    Route::get('/generate-process-id', [AuthController::class, 'generateProcessId'])->name('generate.process.id');
+    Route::get('/generate-printTicket-id', [AuthController::class, 'generatePrintTicketId'])->name('generate.printTicket.id');
+    
+    // Print ticket status management
+    Route::post('/print-tickets/{id}/status', [AuthController::class, 'updateStatus'])->name('print-tickets.update-status');
 });

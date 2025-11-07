@@ -1,0 +1,83 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        // This migration updates the existing table to include the 'released' status
+        // and makes release_date nullable. It uses raw SQL for enum modification which
+        // works on MySQL/MariaDB. If you're using another platform, adapt accordingly.
+        if (!Schema::hasTable('print_tickets')) {
+            return;
+        }
+
+        $connection = config('database.default');
+        $driver = config("database.connections.$connection.driver");
+
+        if ($driver === 'mysql' || $driver === 'pgsql') {
+            // For MySQL/MariaDB (and similar), alter the enum and release_date
+            try {
+                // Add 'released' to enum values — MySQL requires full enum definition
+                DB::statement("ALTER TABLE `print_tickets` MODIFY `status` ENUM('pending','in_progress','completed','cancelled','released') NOT NULL DEFAULT 'pending'");
+
+                // Make release_date nullable and DATE type. If the column doesn't exist, add it.
+                    if (Schema::hasColumn('print_tickets', 'release_date')) {
+                        DB::statement("ALTER TABLE `print_tickets` MODIFY `release_date` DATE NULL");
+                    } else {
+                        DB::statement("ALTER TABLE `print_tickets` ADD `release_date` DATE NULL");
+                    }
+            } catch (\Throwable $e) {
+                // Log and rethrow so the migration fails visibly
+                throw $e;
+            }
+        } else {
+            // Fallback: try to use schema builder to add/change columns
+            Schema::table('print_tickets', function (Blueprint $table) {
+                if (!Schema::hasColumn('print_tickets', 'release_date')) {
+                    $table->date('release_date')->nullable();
+                } else {
+                    try {
+                        $table->date('release_date')->nullable()->change();
+                    } catch (\Throwable $e) {
+                        // ignore if change is not supported
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        if (!Schema::hasTable('print_tickets')) {
+            return;
+        }
+
+        $connection = config('database.default');
+        $driver = config("database.connections.$connection.driver");
+
+        if ($driver === 'mysql' || $driver === 'pgsql') {
+            try {
+                // Revert enum to previous set (loses 'released')
+                DB::statement("ALTER TABLE `print_tickets` MODIFY `status` ENUM('pending','in_progress','completed','cancelled') NOT NULL DEFAULT 'pending'");
+
+                // Make release_date NOT NULL — this is destructive if NULLs exist, so be cautious
+                DB::statement("ALTER TABLE `print_tickets` MODIFY `release_date` DATE NOT NULL");
+            } catch (\Throwable $e) {
+                throw $e;
+            }
+        } else {
+            // best-effort revert: cannot reliably change enum types for other drivers
+        }
+    }
+};

@@ -42,7 +42,7 @@
             </div>
             <!-- Table to display process logs -->
             <div class="process-log">
-                @if(count($processes) > 0)
+                @if(isset($printTickets) && count($printTickets) > 0)
                 <table class="process-table">
                     <thead>
                         <tr>
@@ -53,23 +53,54 @@
                             <th>Name of Item</th>
                             <th>Size</th>
                             <th>Quantity</th>
-                            {{-- <th>Type</th> --}}
-                            {{-- <th>Category</th> --}}
+                            <th>Release Date</th>
                             <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     
                     <tbody>
-                        @foreach($processes as $process)
+                        @foreach($printTickets as $ticket)
                             <tr>
-                                <td>{{ $process->process_id }}</td>
-                                <td>{{ \Carbon\Carbon::parse($process->receiving_date)->format('M j, Y') }}</td>
-                                <td>{{ ucfirst($process->type) }}</td>
-                                <td>{{ $process->category }}</td>
-                                <td>{{ ucfirst($process->status) }}</td>
+                                <td>{{ $ticket->printTicket_id }}</td>
+                                <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('M j, Y') }}</td>
+                                <td>{{ $ticket->name }}</td>
+                                <td>{{ $ticket->office_department }}</td>
+                                <td>{{ $ticket->itemname }}</td>
+                                <td>{{ $ticket->size }}</td>
+                                <td>{{ $ticket->quantity }}</td>
+                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y') : '-' }}</td>
                                 <td>
-                                    <a href="{{ route('process.edit', $process->id) }}" class="btn-edit">Edit</a>
+                                    <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{ route('process.edit', $ticket->id) }}" class="btn-edit">Edit</a>
+                                        
+                                        @if($ticket->status === 'pending')
+                                            <button onclick="updateStatus({{ $ticket->id }}, 'in_progress')" class="btn-status btn-progress">
+                                                Start Progress
+                                            </button>
+                                        @endif
+                                        
+                                        @if($ticket->status === 'in_progress')
+                                            <button onclick="updateStatus({{ $ticket->id }}, 'completed')" class="btn-status btn-complete">
+                                                Mark Complete
+                                            </button>
+                                        @endif
+
+                                        @if($ticket->status === 'completed')
+                                            <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-release">
+                                                Release
+                                            </button>
+                                        @endif
+                                        
+                                        @if($ticket->status !== 'cancelled' && $ticket->status !== 'completed' && $ticket->status !== 'released')
+                                            <button onclick="updateStatus({{ $ticket->id }}, 'cancelled')" class="btn-status btn-cancel">
+                                                Cancel
+                                            </button>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -87,6 +118,34 @@
 
 @push('scripts')
 <script>
+    function updateStatus(ticketId, newStatus) {
+        if (!confirm('Are you sure you want to change the status?')) {
+            return;
+        }
+
+        fetch(`/print-tickets/${ticketId}/status`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ status: newStatus })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reload the page to show updated status
+                window.location.reload();
+            } else {
+                alert('Failed to update status. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while updating the status.');
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         const openBtn = document.getElementById('openModal');
         const closeBtn = document.getElementById('closeModal');
