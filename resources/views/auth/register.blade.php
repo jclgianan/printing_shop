@@ -3,7 +3,7 @@
         <span class="close">&times;</span>
                 
         <div class="login-logo">
-            <img src="{{ asset('images/login_logo.png') }}" alt="Logo" class="logo-image">
+            <img src="{{ asset('images/Capitol_Logo.png') }}" alt="Logo" class="logo-image">
         </div>
 
         <h1 class="form-title">Register Page</h1>

@@ -16,20 +16,22 @@
                         <p class="section-description">Select an option from the menu to get started.</p>
                     </div>
                     <!-- New Entry Button on the right -->
-                    <a href="{{ route('printing.form', ['type' => 'addPrinting']) }}" class="receiving_newEntry">New Entry +</a>
+                    <a href="{{ route('printing.form', ['type' => 'addPrinting']) }}" class="receiving_newEntry">Create Ticket +</a>
                 </div>
             </div>
         
             <div class="logs-bottomBar">
                 @php
-                    $categoryFilter = request('filter');
+                    $statusFilter = request('filter');
                 @endphp
                 <div class="category-filter">
-                    <form action="{{ route('category-filter') }}" method="GET" class="filter-form">
-                        <button class="filter-group {{ $categoryFilter === null ? 'active' : '' }}" type="submit" name="filter" value="">All</button>
-                        <button class="filter-group {{ $categoryFilter === 'category1' ? 'active' : '' }}" type="submit" name="filter" value="category1">Category 1</button>
-                        <button class="filter-group {{ $categoryFilter === 'category2' ? 'active' : '' }}" type="submit" name="filter" value="category2">Category 2</button>
-                        <button class="filter-group {{ $categoryFilter === 'category3' ? 'active' : '' }}" type="submit" name="filter" value="category3">Category 3</button>
+                    <form action="{{ route('status-filter') }}" method="GET" class="filter-form">
+                        <button class="filter-group {{ $statusFilter === null ? 'active' : '' }}" type="submit" name="filter" value="">All</button>
+                        <button class="filter-group {{ $statusFilter === 'pending' ? 'active' : '' }}" type="submit" name="filter" value="pending">Pending</button>
+                        <button class="filter-group {{ $statusFilter === 'in_progress' ? 'active' : '' }}" type="submit" name="filter" value="in_progress">In Progress</button>
+                        <button class="filter-group {{ $statusFilter === 'printed' ? 'active' : '' }}" type="submit" name="filter" value="printed">Printed</button>
+                        <button class="filter-group {{ $statusFilter === 'released' ? 'active' : '' }}" type="submit" name="filter" value="released">Released</button>
+                        <button class="filter-group {{ $statusFilter === 'cancelled' ? 'active' : '' }}" type="submit" name="filter" value="cancelled">Cancelled</button>
                     </form>
                     <!-- Search Bar on the right -->
                     <form action="{{ route('receiving-search') }}" method="GET" class="search-form">
@@ -45,7 +47,7 @@
                 @if(isset($printTickets) && count($printTickets) > 0)
                 <table class="process-table">
                     <thead>
-                        <tr>
+                        <tr class="table-header">
                             <th>Ticket ID</th>
                             <th>Receiving Date</th>
                             <th>Name</th>
@@ -74,9 +76,7 @@
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>
                                 <td>
-                                    <div class="action-buttons">
-                                        <a href="{{ route('process.edit', $ticket->id) }}" class="btn-edit">Edit</a>
-                                        
+                                    <div class="action-buttons">                    
                                         @if($ticket->status === 'pending')
                                             <button onclick="updateStatus({{ $ticket->id }}, 'in_progress')" class="btn-status btn-progress">
                                                 Start Progress
@@ -84,22 +84,23 @@
                                         @endif
                                         
                                         @if($ticket->status === 'in_progress')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'completed')" class="btn-status btn-complete">
+                                            <button onclick="updateStatus({{ $ticket->id }}, 'printed')" class="btn-status btn-complete">
                                                 Mark Complete
                                             </button>
                                         @endif
 
-                                        @if($ticket->status === 'completed')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-release">
+                                        @if($ticket->status === 'printed')
+                                            <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-released">
                                                 Release
                                             </button>
                                         @endif
                                         
-                                        @if($ticket->status !== 'cancelled' && $ticket->status !== 'completed' && $ticket->status !== 'released')
+                                        @if($ticket->status !== 'cancelled' && $ticket->status !== 'printed' && $ticket->status !== 'released')
                                             <button onclick="updateStatus({{ $ticket->id }}, 'cancelled')" class="btn-status btn-cancel">
                                                 Cancel
                                             </button>
                                         @endif
+                                        <a href="{{ route('process.edit', $ticket->id) }}" class="btn-edit">Edit</a>
                                     </div>
                                 </td>
                             </tr>

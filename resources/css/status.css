@@ -15,9 +15,14 @@
     color: #1E40AF;
 }
 
-.status-completed {
+.status-printed {
     background-color: #D1FAE5;
     color: #065F46;
+}
+
+.status-released {
+    background-color: #EDE9FE;
+    color: #5B21B6;
 }
 
 .status-cancelled {
@@ -49,8 +54,8 @@
     color: white;
 }
 
-.btn-complete {
-    background-color: #10B981;
+.btn-released {
+    background-color: #5B21B6;
     color: white;
 }
 

@@ -44,9 +44,9 @@ Route::middleware(['auth'])->group(function () {
     
     // Search and filtering
     Route::get("/receiving-search", [AuthController::class, "receivingSearch"])->name("receiving-search");
-    Route::get('/category-filter', [AuthController::class, 'categoryFilter'])->name('category-filter');
+    Route::get('/status-filter', [AuthController::class, 'statusFilter'])->name('status-filter');
     
-    // Process management
+    // Printing ticket management
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/process/edit', [AuthController::class, 'edit'])->name('process.edit');
     Route::post('/process/store', [AuthController::class, 'store'])->name('process.store');

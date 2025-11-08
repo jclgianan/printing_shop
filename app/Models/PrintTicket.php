@@ -41,7 +41,8 @@ class PrintTicket extends Model
         return match($this->status) {
             'in_progress' => 'In Progress',
             'pending' => 'Pending',
-            'completed' => 'Completed',
+            'Printed' => 'Printed',
+            'released' => 'Released',
             'cancelled' => 'Cancelled',
             default => ucfirst($this->status),
         };

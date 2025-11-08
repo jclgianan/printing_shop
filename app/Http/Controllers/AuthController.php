@@ -12,6 +12,8 @@ use App\Models\PrintTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
+use function PHPSTORM_META\type;
+
 class AuthController extends Controller
 {
     // Show main page after login
@@ -80,19 +82,21 @@ class AuthController extends Controller
     // Show printing page
     public function printing()
     {
+        $type = 'printing';
         // Fetch print tickets for the printing dashboard
         $printTickets = PrintTicket::orderBy('created_at', 'desc')->get();
 
-        return view('printing', compact('printTickets'));
+        return view('printing', compact('printTickets', 'type'));
     }
 
-    // Show receiving page
+    // Show repairing page
     public function repair()
     {
+        $type = 'repair';
         // Fetch data from the database
         $processes = PrintTicket::orderBy('created_at', 'desc')->get();
 
-        return view('repair', compact('processes'));
+        return view('repair', compact('processes', 'type'));
     }
 
     // Show addPrinting Page
@@ -168,7 +172,7 @@ class AuthController extends Controller
             ]);
 
             // Redirect with success message
-            return redirect()->route('printing.form')->with('success', 'Print Ticket saved successfully!');
+            return redirect(route("printing.form"))->with('success', 'Print Ticket saved successfully!');
         } catch (\Exception $e) {
             // Log exception details to help debug why saving failed
             Log::error('Failed to save Print Ticket: ' . $e->getMessage());
@@ -207,19 +211,19 @@ class AuthController extends Controller
         }
     }
 
-    // Filtering Categories in printing page
-    // public function categoryFilter(Request $request)
-    // {
-    //     $query = PrintTicket::query();
+    // Filtering status in printing page
+    public function statusFilter(Request $request)
+    {
+        $query = PrintTicket::query();
 
-    //     if ($request->filled('filter')) {
-    //         $query->where('category', 'like', '%' . $request->filter . '%');
-    //     }
+        if ($request->filled('filter')) {
+            $query->where('status', 'like', '%' . $request->filter . '%');
+        }
 
-    //     $printTickets = $query->get();
+        $printTickets = $query->get();
 
-    //     return view('printing', compact('printTickets'));
-    // }
+        return view('printing', compact('printTickets'));
+    }
 
     /**
      * Update the status of a print ticket
@@ -227,7 +231,7 @@ class AuthController extends Controller
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
-            'status' => 'required|in:pending,in_progress,completed,released,cancelled'
+            'status' => 'required|in:pending,in_progress,printed,released,cancelled'
         ]);
 
         try {
@@ -252,6 +256,11 @@ class AuthController extends Controller
                 'message' => 'Failed to update status'
             ], 500);
         }
+    }
+    public function statusEdit($id)
+    {
+        $ticket = PrintTicket::findOrFail($id);
+        return view('status_edit', compact('ticket'));
     }
 
 }

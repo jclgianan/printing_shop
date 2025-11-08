@@ -28,7 +28,7 @@
             <div class="content-placeholder">
                 <!-- Form to add a new process -->
                 
-                <form action="{{ route('printTicket.store') }}" method="POST" class="process-form">
+                <form action="{{ route('printTicket.store', ['type' => 'addPrinting']) }}" method="POST" class="process-form">
                     @csrf
                     
                     <input type="hidden" name="type" value="{{ $type }}">
