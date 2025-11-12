@@ -11,6 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name'); // stores fullname from registerPost
             $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default('user'); // optional
             $table->boolean('is_active')->default(true); // optional
