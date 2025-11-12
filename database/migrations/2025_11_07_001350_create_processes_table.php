@@ -18,6 +18,7 @@ return new class extends Migration
         Schema::create('processes', function (Blueprint $table) {
             $table->id();
             $table->string('printTicket_id')->nullable();
+            $table->string('repairTicket_id')->nullable();
             $table->date('receiving_date')->nullable();
             $table->enum('type', ['repair', 'printing'])->default('repair');
             $table->timestamps();

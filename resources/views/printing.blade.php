@@ -1,7 +1,7 @@
 <!-- resources/views/prinitng.blade.php -->
 @extends('layouts.default') {{-- Assuming this is your main layout --}}
 
-@section('title', 'Receiving')
+@section('title', 'Printing')
 
 @section('content')
 <div class="receiving-container">
@@ -16,7 +16,7 @@
                         <p class="section-description">Select an option from the menu to get started.</p>
                     </div>
                     <!-- New Entry Button on the right -->
-                    <a href="{{ route('printing.form', ['type' => 'addPrinting']) }}" class="receiving_newEntry">Create Ticket +</a>
+                    <a id="openModal" class="receiving_newEntry">Create Ticket +</a>
                 </div>
             </div>
         
@@ -114,7 +114,7 @@
         </main>        
     </div>
 </div>
-@include('modals.select-type')
+@include('modals.addPrinting')
 @endsection
 
 @push('scripts')
@@ -150,26 +150,16 @@
     document.addEventListener('DOMContentLoaded', function () {
         const openBtn = document.getElementById('openModal');
         const closeBtn = document.getElementById('closeModal');
-        const modal = document.getElementById('selectTypeModal');
+        const modal = document.getElementById('addPrintingModal');
 
         if (openBtn && closeBtn && modal) {
-            // Open modal
-            openBtn.addEventListener('click', () => {
-                modal.classList.add('active');
-            });
-
-            // Close modal (clicking the close button)
-            closeBtn.addEventListener('click', () => {
-                modal.classList.remove('active');
-            });
-
-            // Close modal (clicking outside the modal)
+            openBtn.addEventListener('click', () => modal.classList.add('active'));
+            closeBtn.addEventListener('click', () => modal.classList.remove('active'));
             window.addEventListener('click', (e) => {
-                if (e.target === modal) {
-                    modal.classList.remove('active');
-                }
+                if (e.target === modal) modal.classList.remove('active');
             });
         }
     });
+    
 </script>
 @endpush

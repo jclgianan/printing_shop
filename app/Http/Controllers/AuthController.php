@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Process;
 use App\Models\PrintTicket;
+use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
@@ -104,14 +105,14 @@ class AuthController extends Controller
     {
         $type = $request->query('type');
 
-        return view('addPrinting', compact('type'));
+        return view('modals.addPrinting', compact('type'));
     }
     // Show addRepair Page
     public function repairForm(Request $request)
     {
         $type = $request->query('type');
 
-        return view('addRepair', compact('type'));
+        return view('modals.addRepair', compact('type'));
     }
 
     // Printing search page fucntion
@@ -125,11 +126,29 @@ class AuthController extends Controller
         return view('printing', compact('printTickets'));
     }
 
+    // Repair search page fucntion
+
+    public function repairSearch(Request $request)
+    {
+        $query  = $request->input('query');
+
+        $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')->get();
+
+        return view('repair', compact('repairTickets'));
+    }
+
     // Printing Logs data view
     public function dashboard()
     {
         $printTickets = PrintTicket::latest()->get(); // Add filters as needed
         return view('printing.index', compact('printTickets'));
+    }
+
+    // Repair Logs data view
+    public function repairDashboard()
+    {
+        $repairTickets = RepairTicket::latest()->get(); // Add filters as needed
+        return view('repair.index', compact('repairTickets'));
     }
 
     // Storing the input of the print form
@@ -160,7 +179,7 @@ class AuthController extends Controller
 
             // Create the print ticket record (process_id is optional)
             // Do NOT set release_date here; it will be set when status becomes 'released'.
-            PrintTicket::create([
+            $ticket = PrintTicket::create([
                 'printTicket_id' => $randomId,
                 'receiving_date' => $request->receiving_date,
                 'name' => $request->name,
@@ -171,6 +190,14 @@ class AuthController extends Controller
                 'status' => 'pending',
             ]);
 
+             // If AJAX, return JSON
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => 'Repair Ticket saved successfully!',
+                    'ticket' => $ticket,
+                ]);
+            }
+            
             // Redirect with success message
             return redirect(route("printing.form"))->with('success', 'Print Ticket saved successfully!');
         } catch (\Exception $e) {
@@ -178,17 +205,91 @@ class AuthController extends Controller
             Log::error('Failed to save Print Ticket: ' . $e->getMessage());
             Log::error($e->getTraceAsString());
 
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => 'Failed to save Repair Ticket.',
+                    'details' => config('app.debug') ? $e->getMessage() : null,
+                ], 500);
+            } 
             // Redirect with error message
             return redirect()->route('printing.form')->with('error', 'Failed to save Print Ticket. Please try again.');
         }
     }
 
-    // Genrating the unique process ID
+    // Storing the input of the repair form
+    public function repairTicketStore(Request $request)
+    {
+        // Validate inputs
+        $request->validate([
+            'receiving_date' => 'required|date',
+            'name' => 'required|string|max:255',
+            'office_department' => 'required|string|max:255',
+            'itemname' => 'required|string|max:255',
+            'issue' => 'required|string|max:100',
+            'note' => 'nullable|string|max:100',
+        ]);
+
+        try {
+            // If the client generated an ID (via the Generate button), use it if it's unique.
+            $providedId = $request->input('repairTicket_id');
+
+            if ($providedId && !RepairTicket::where('repairTicket_id', $providedId)->exists()) {
+                $randomId = $providedId;
+            } else {
+                // Generate a unique server-side ID
+                do {
+                    $randomId = 'RPR-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+                } while (RepairTicket::where('repairTicket_id', $randomId)->exists());
+            }
+
+            // Create the print ticket record (process_id is optional)
+            // Do NOT set release_date here; it will be set when status becomes 'released'.
+            $ticket = RepairTicket::create([
+                'repairTicket_id' => $randomId,
+                'receiving_date' => $request->receiving_date,
+                'name' => $request->name,
+                'office_department' => $request->office_department,
+                'itemname' => $request->itemname,
+                'issue' => $request->issue,
+                'note' => $request->note ?? null,
+                'status' => 'pending',
+            ]);
+
+             // If AJAX, return JSON
+            if ($request->ajax()) {
+                $ticket = RepairTicket::latest()->first();
+                return response()->json([
+                    'success' => 'Repair Ticket saved successfully!',
+                    'ticket' => $ticket
+                ]);
+            }
+
+
+            // Redirect with success message
+            return redirect(route("repair.form"))->with('success', 'Repair Ticket saved successfully!');
+        } catch (\Exception $e) {
+            // Log exception details to help debug why saving failed
+            Log::error('Failed to save Repair Ticket: ' . $e->getMessage());
+            Log::error($e->getTraceAsString());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'error' => 'Failed to save Repair Ticket.',
+                    'details' => config('app.debug') ? $e->getMessage() : null,
+                    'debug' => $e->getMessage(), // 👈 Add this line for now
+                ], 500);
+            }                    
+            // Redirect with error message
+            return redirect()->route('repair.form')->with('error', 'Failed to save Repair Ticket. Please try again.');
+        }
+    }
+
+    // Genrating the unique print ticket ID
     public function generatePrintTicketId()
     {   
         try {
             // Log the start of the process
-            Log::info('Generating Process ID...');
+            Log::info('Generating Ticket ID...');
 
             do {
                 // Create ticket ID with today's date and random characters (PRT prefix)
@@ -207,13 +308,42 @@ class AuthController extends Controller
             Log::error("Error generating Print Ticket ID: " . $e->getMessage());
             
             // Return an error response
-            return response()->json(['error' => 'Error generating process ID.'], 500);
+            return response()->json(['error' => 'Error generating Ticket ID.'], 500);
+        }
+    }
+
+    // Genrating the unique repair ticket ID
+    public function generateRepairTicketId()
+    {   
+        try {
+            // Log the start of the process
+            Log::info('Generating Ticket ID...');
+
+            do {
+                // Create ticket ID with today's date and random characters (PRT prefix)
+                $randomId = 'RPR-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+
+                // Log the generated ID
+                Log::info("Generated ID: $randomId");
+
+                // Check if this ID already exists in the database
+            } while (RepairTicket::where('repairTicket_id', $randomId)->exists());
+
+            // Return the generated ID as a response
+            return response()->json(['repairTicket_id' => $randomId]);
+        } catch (\Exception $e) {
+            // Log the exception if something goes wrong
+            Log::error("Error generating Repair Ticket ID: " . $e->getMessage());
+            
+            // Return an error response
+            return response()->json(['error' => 'Error generating Ticket ID.'], 500);
         }
     }
 
     // Filtering status in printing page
     public function statusFilter(Request $request)
     {
+        $type = 'printing';
         $query = PrintTicket::query();
 
         if ($request->filled('filter')) {
@@ -222,12 +352,25 @@ class AuthController extends Controller
 
         $printTickets = $query->get();
 
-        return view('printing', compact('printTickets'));
+        return view('printing', compact('printTickets', 'type'));
     }
 
-    /**
-     * Update the status of a print ticket
-     */
+    // Filtering status in repair page
+    public function statusRepairFilter(Request $request)
+    {
+        $type = 'repair';
+        $query = RepairTicket::query();
+
+        if ($request->filled('filter')) {
+            $query->where('status', 'like', '%' . $request->filter . '%');
+        }
+
+        $repairTickets = $query->get();
+
+        return view('repair', compact('repairTickets', 'type'));
+    }
+
+    // Update the status of a print ticket
     public function updateStatus(Request $request, $id)
     {
         $request->validate([
@@ -257,10 +400,48 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    // Update the status of a print ticket
+    public function updateRepairStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:pending,in_progress,repaired,released,unrepairable'
+        ]);
+
+        try {
+            $ticket = RepairTicket::findOrFail($id);
+            $oldStatus = $ticket->status;
+            
+            // Update the status
+            $ticket->status = $request->status;
+            if ($request->status === 'released' && !$ticket->release_date) {
+                $ticket->release_date = now();
+            }
+            $ticket->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
+                'new_status' => $ticket->formatted_status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update status'
+            ], 500);
+        }
+    }
+
     public function statusEdit($id)
     {
         $ticket = PrintTicket::findOrFail($id);
         return view('status_edit', compact('ticket'));
+    }
+
+    public function statusRepairEdit($id)
+    {
+        $ticket = RepairTicket::findOrFail($id);
+        return view('status_repair_edit', compact('ticket'));
     }
 
 }

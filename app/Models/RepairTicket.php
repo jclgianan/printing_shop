@@ -5,43 +5,37 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PrintTicket extends Model
+class RepairTicket extends Model
 {
     use HasFactory;
 
-    protected $table = 'print_tickets';
+    protected $table = 'repair_tickets';
 
     protected $fillable = [
         'process_id',
-        'printTicket_id',
+        'repairTicket_id',
         'receiving_date',
         'name',
         'office_department',
         'itemname',
-        'size',
-        'quantity',
-        'release_date',
+        'issue',
+        'note',
         'status',
+        'release_date',
     ];
 
     protected $casts = [
         'receiving_date' => 'date',
         'release_date' => 'date',
-        'quantity' => 'integer',
     ];
 
-    /**
-     * Get the formatted status for display.
-     * 
-     * @return string
-     */
     public function getFormattedStatusAttribute()
     {
         return match($this->status) {
-            'in_progress' => 'In Progress',
             'pending' => 'Pending',
-            'printed' => 'Printed',
-            'cancelled' => 'Cancelled',
+            'in_progress' => 'In Progress',
+            'repaired' => 'Repaired',
+            'unrepairable' => 'Unrepairable',
             default => ucfirst($this->status),
         };
     }

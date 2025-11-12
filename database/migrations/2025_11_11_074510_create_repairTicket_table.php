@@ -12,21 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         // Only create the table if it doesn't already exist (safe for environments with partial state)
-        if (!Schema::hasTable('print_tickets')) {
-            Schema::create('print_tickets', function (Blueprint $table) {
+        if (!Schema::hasTable('repair_tickets')) {
+            Schema::create('repair_tickets', function (Blueprint $table) {
                 $table->id();
                 // Optional relation to a Process record
                 // Use unsignedBigInteger if the referenced table might be created later; add FK if possible
                 $table->foreignId('process_id')->nullable()->constrained('processes')->nullOnDelete();
-                $table->string('printTicket_id')->unique();
+                $table->string('repairTicket_id')->unique();
                 $table->date('receiving_date');
                 $table->string('name');
                 $table->string('office_department');
                 $table->string('itemname');
-                $table->string('size');
-                $table->integer('quantity');
+                $table->string('issue');
+                $table->string('note')->nullable();
                 $table->date('release_date')->nullable();
-                $table->enum('status', ['pending', 'in_progress', 'printed', 'cancelled', 'released'])->default('pending');
+                $table->enum('status', ['pending', 'in_progress', 'repaired', 'unrepairable', 'released'])->default('pending');
                 $table->timestamps();
             });
         }
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-    Schema::dropIfExists('print_tickets');
+    Schema::dropIfExists('repair_tickets');
     }
 };
