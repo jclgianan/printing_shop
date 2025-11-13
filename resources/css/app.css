@@ -547,6 +547,8 @@
 .modal-box {
     position: absolute;
     height: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .alert-box {

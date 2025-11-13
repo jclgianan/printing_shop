@@ -23,7 +23,7 @@
         <div id="formMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
         <div class="content-placeholder">
-            <form id="repairForm" class="process-form">
+            <form id="printForm" class="process-form">
                 @csrf
                 <input type="hidden" name="type" value="{{ $type }}">
 
@@ -119,7 +119,7 @@
     }
 
     $(document).ready(function() {
-        $(document).on('submit', '#repairForm', function(e) {
+        $(document).on('submit', '#printForm', function(e) {
             e.preventDefault();
 
             const form = $(this);
@@ -129,7 +129,7 @@
             submitBtn.prop('disabled', true).text('Submitting...');
 
             $.ajax({
-                url: "{{ route('repairTicket.store') }}",
+                url: "{{ route('printTicket.store') }}",
                 method: "POST",
                 data: formData,
                 success: function(response) {
@@ -145,7 +145,8 @@
 
                         setTimeout(() => {
                             messageBox.fadeOut();
-                            document.getElementById('addRepairModal').style.display = 'none';
+                            window.location.reload();
+                            document.getElementById('addPrintingModal').style.display = 'none';
                         }, 1500);
                     }
                 },

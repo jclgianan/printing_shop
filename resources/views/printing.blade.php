@@ -100,7 +100,18 @@
                                                 Cancel
                                             </button>
                                         @endif
-                                        <a href="{{ route('process.edit', $ticket->id) }}" class="btn-edit">Edit</a>
+                                        <button class="btn-edit" 
+                                                data-id="{{ $ticket->id }}"
+                                                data-receiving_date="{{ $ticket->receiving_date }}"
+                                                data-name="{{ $ticket->name }}"
+                                                data-office_department="{{ $ticket->office_department }}"
+                                                data-itemname="{{ $ticket->itemname }}"
+                                                data-size="{{ $ticket->size }}"
+                                                data-quantity="{{ $ticket->quantity }}"
+                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
+                                            Edit
+                                        </button>
+
                                     </div>
                                 </td>
                             </tr>
@@ -115,6 +126,9 @@
     </div>
 </div>
 @include('modals.addPrinting')
+
+@include('modals.editPrinting')
+
 @endsection
 
 @push('scripts')
@@ -161,5 +175,93 @@
         }
     });
     
+    //For edit modal
+    $(document).on('click', '.btn-edit', function() {
+        const ticket = $(this).data();
+
+        $('#edit_ticket_id').val(ticket.id);
+        $('#edit_receiving_date').val(ticket.receiving_date);
+        $('#edit_name').val(ticket.name);
+        $('#edit_office_department').val(ticket.office_department);
+        $('#edit_itemname').val(ticket.itemname);
+        $('#edit_size').val(ticket.size);
+        $('#edit_quantity').val(ticket.quantity);
+        $('#edit_release_date').val(ticket.release_date);
+
+        $('#editPrintingModal').show();
+        $('#closeEditModal').on('click', function() {
+            $('#editPrintingModal').hide();
+        });
+
+    });
+    // Close edit modal when clicking outside the modal box
+    $(document).on('click', '#editPrintingModal', function(e) {
+        if ($(e.target).is('#editPrintingModal')) {
+            $(this).hide();
+        }
+    });
+
+    //Edit Modal submission
+    $(document).on('submit', '#editPrintingForm', function(e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const formData = form.serialize();
+        const messageBox = $('#editFormMessage');
+        const submitBtn = form.find('button[type="submit"]');
+        const ticketId = $('#edit_ticket_id').val();
+
+        submitBtn.prop('disabled', true).text('Updating...');
+
+        // Dynamically build the update URL
+        let updateUrl = "{{ route('print.update', ':id') }}";
+        updateUrl = updateUrl.replace(':id', ticketId);
+
+        $.ajax({
+            url: updateUrl,
+            method: "POST",
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    messageBox
+                        .removeClass('alert-error')
+                        .addClass('alert-box alert-success')
+                        .text(response.success)
+                        .fadeIn();
+
+                    // Update the table row live without reloading
+                    const row = $(`button[data-id='${ticketId}']`).closest('tr');
+                    row.find('td:nth-child(3)').text(response.ticket.name);
+                    row.find('td:nth-child(4)').text(response.ticket.office_department);
+                    row.find('td:nth-child(5)').text(response.ticket.itemname);
+                    row.find('td:nth-child(6)').text(response.ticket.size);
+                    row.find('td:nth-child(7)').text(response.ticket.quantity);
+                    row.find('td:nth-child(8)').text(response.ticket.release_date);
+
+                    submitBtn.prop('disabled', false).text('Update Ticket');
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 800);
+                }
+            },
+            error: function(xhr) {
+                let errorMessage = 'Failed to update. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+
+                messageBox
+                    .removeClass('alert-success')
+                    .addClass('alert-box alert-error')
+                    .text(errorMessage)
+                    .fadeIn();
+
+                submitBtn.prop('disabled', false).text('Update Ticket');
+            }
+        });
+    });
+
+
 </script>
 @endpush

@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PrintingController;
+use App\Http\Controllers\RepairController;
 use App\Http\Controllers\ProcessController;
 
 /*
@@ -33,32 +35,35 @@ Route::post("/register", [AuthController::class, "registerPost"])
 Route::middleware(['auth'])->group(function () {
     // Main pages
     Route::get("/main", [AuthController::class, "index"])->name("main");
-    Route::get("/printing", [AuthController::class, "printing"])->name("printing");
-    Route::get("/repair", [AuthController::class, "repair"])->name("repair");
+    Route::get("/printing", [PrintingController::class, "printing"])->name("printing");
+    Route::get("/repair", [RepairController::class, "repair"])->name("repair");
     Route::get("/select-type", [AuthController::class, "selectType"])->name("select-type");
     
     // Forms and processes
-    Route::get('/addPrinting', [AuthController::class, 'printingForm'])->name('printing.form');
-    Route::get('/addRepair', [AuthController::class, 'repairForm'])->name('repair.form');
-    Route::post('/printTicket', [AuthController::class, 'printTicketStore'])->name('printTicket.store');
-    Route::post('/repairTicket', [AuthController::class, 'repairTicketStore'])->name('repairTicket.store');
+    Route::get('/addPrinting', [PrintingController::class, 'printingForm'])->name('printing.form');
+    Route::get('/addRepair', [RepairController::class, 'repairForm'])->name('repair.form');
+    Route::post('/printTicket', [PrintingController::class, 'printTicketStore'])->name('printTicket.store');
+    Route::post('/repairTicket', [RepairController::class, 'repairTicketStore'])->name('repairTicket.store');
     
     // Search and filtering
-    Route::get("/receiving-search", [AuthController::class, "receivingSearch"])->name("receiving-search");
-    Route::get("/repair-search", [AuthController::class, "repairSearch"])->name("repair-search");
-    Route::get('/status-filter', [AuthController::class, 'statusFilter'])->name('status-filter');
-    Route::get('/status-repair-filter', [AuthController::class, 'statusRepairFilter'])->name('status-repair-filter');
+    Route::get("/receiving-search", [PrintingController::class, "receivingSearch"])->name("receiving-search");
+    Route::get("/repair-search", [RepairController::class, "repairSearch"])->name("repair-search");
+    Route::get('/status-filter', [PrintingController::class, 'statusFilter'])->name('status-filter');
+    Route::get('/status-repair-filter', [RepairController::class, 'statusRepairFilter'])->name('status-repair-filter');
     
     // Printing ticket management
-    Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
-    Route::get('/repairDashboard', [AuthController::class, 'repairDashboard'])->name('repairDashboard');
-    Route::get('/process/edit', [AuthController::class, 'edit'])->name('process.edit');
-    Route::post('/process/store', [AuthController::class, 'store'])->name('process.store');
-    Route::get('/generate-printTicket-id', [AuthController::class, 'generatePrintTicketId'])->name('generate.printTicket.id');
-    Route::get('/generate-repairTicket-id', [AuthController::class, 'generateRepairTicketId'])->name('generate.repairTicket.id');
+    Route::get('/dashboard', [PrintingController::class, 'dashboard'])->name('dashboard');
+    Route::get('/repairDashboard', [RepairController::class, 'repairDashboard'])->name('repairDashboard');
+    Route::get('/printing/{id}/edit', [PrintingController::class, 'printEdit'])->name('print.edit');
+    Route::post('/printing/{id}/update', [PrintingController::class, 'printUpdate'])->name('print.update');
+    Route::get('/repair/{id}/edit', [RepairController::class, 'repairEdit'])->name('repair.edit');
+    Route::post('/repair/{id}/update', [RepairController::class, 'repairUpdate'])->name('repair.update');
+    Route::post('/process/store', [PrintingController::class, 'store'])->name('process.store');
+    Route::get('/generate-printTicket-id', [PrintingController::class, 'generatePrintTicketId'])->name('generate.printTicket.id');
+    Route::get('/generate-repairTicket-id', [RepairController::class, 'generateRepairTicketId'])->name('generate.repairTicket.id');
     
     // Print ticket status management
-    Route::post('/print-tickets/{id}/status', [AuthController::class, 'updateStatus'])->name('print-tickets.update-status');
-    Route::post('/repair-tickets/{id}/status', [AuthController::class, 'updateRepairStatus'])->name('repair-tickets.update-status');
+    Route::post('/print-tickets/{id}/status', [PrintingController::class, 'updateStatus'])->name('print-tickets.update-status');
+    Route::post('/repair-tickets/{id}/status', [RepairController::class, 'updateRepairStatus'])->name('repair-tickets.update-status');
 
 });

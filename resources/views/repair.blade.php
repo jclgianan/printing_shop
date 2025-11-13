@@ -51,9 +51,10 @@
                             <th>Ticket ID</th>
                             <th>Receiving Date</th>
                             <th>Name</th>
-                            <th>Office/Department</th>
+                            <th>Office</th>
                             <th>Name of Item</th>
                             <th>Issue</th>
+                            <th>Solution</th>
                             <th>Note</th>
                             <th>Release Date</th>
                             <th>Status</th>
@@ -70,6 +71,7 @@
                                 <td>{{ $ticket->office_department }}</td>
                                 <td>{{ $ticket->itemname }}</td>
                                 <td>{{ $ticket->issue }}</td>
+                                <td>{{ $ticket->solution }}</td>
                                 <td>{{ $ticket->note }}</td>
                                 <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y') : '-' }}</td>
                                 <td>
@@ -100,7 +102,18 @@
                                                 Unrepairable
                                             </button>
                                         @endif
-                                        <a href="{{ route('process.edit', $ticket->id) }}" class="btn-edit">Edit</a>
+                                        <button class="btn-edit" 
+                                                data-id="{{ $ticket->id }}"
+                                                data-receiving_date="{{ $ticket->receiving_date }}"
+                                                data-name="{{ $ticket->name }}"
+                                                data-office_department="{{ $ticket->office_department }}"
+                                                data-itemname="{{ $ticket->itemname }}"
+                                                data-issue="{{ $ticket->issue }}"
+                                                data-solution="{{ $ticket->solution }}"
+                                                data-note="{{ $ticket->note }}"
+                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
+                                            Edit
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -115,6 +128,9 @@
     </div>
 </div>
 @include('modals.addRepair')
+
+@include('modals.editRepair')
+
 @endsection
 
 @push('scripts')
@@ -159,6 +175,96 @@
                 if (e.target === modal) modal.classList.remove('active');
             });
         }
+    });
+
+    //Edit modal
+     $(document).on('click', '.btn-edit', function() {
+        const ticket = $(this).data();
+
+        $('#edit_ticket_id').val(ticket.id);
+        $('#edit_receiving_date').val(ticket.receiving_date);
+        $('#edit_name').val(ticket.name);
+        $('#edit_office_department').val(ticket.office_department);
+        $('#edit_itemname').val(ticket.itemname);
+        $('#edit_issue').val(ticket.issue);
+        $('#edit_solution').val(ticket.solution);
+        $('#edit_note').val(ticket.note);
+        $('#edit_release_date').val(ticket.release_date);
+
+        $('#editRepairModal').show();
+        $('#closeEditModal').on('click', function() {
+            $('#editRepairModal').hide();
+        });
+    });
+
+    // Close edit modal when clicking outside the modal box
+    $(document).on('click', '#editRepairModal', function(e) {
+        if ($(e.target).is('#editRepairModal')) {
+            $(this).hide();
+        }
+    });
+
+    //Edit Modal submission
+    $(document).on('submit', '#editRepairForm', function(e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const formData = form.serialize();
+        const messageBox = $('#editFormMessage');
+        const submitBtn = form.find('button[type="submit"]');
+        const ticketId = $('#edit_ticket_id').val();
+
+        submitBtn.prop('disabled', true).text('Updating...');
+
+        // Dynamically build the update URL
+        let updateUrl = "{{ route('repair.update', ':id') }}";
+        updateUrl = updateUrl.replace(':id', ticketId);
+
+        $.ajax({
+            url: updateUrl,
+            method: "POST",
+            data: formData,
+            success: function(response) {
+                if (response.success) {
+                    messageBox
+                        .removeClass('alert-error')
+                        .addClass('alert-box alert-success')
+                        .text(response.success)
+                        .fadeIn();
+
+                        
+                    // Update the table row live without reloading
+                    const row = $(`button[data-id='${ticketId}']`).closest('tr');
+                    row.find('td:nth-child(3)').text(response.ticket.name);
+                    row.find('td:nth-child(4)').text(response.ticket.office_department);
+                    row.find('td:nth-child(5)').text(response.ticket.itemname);
+                    row.find('td:nth-child(6)').text(response.ticket.issue);
+                    row.find('td:nth-child(7)').text(response.ticket.solution);
+                    row.find('td:nth-child(8)').text(response.ticket.note);
+                    row.find('td:nth-child(9)').text(response.ticket.release_date);
+
+                    submitBtn.prop('disabled', false).text('Update Ticket');
+
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 800);
+                }
+            },
+            error: function(xhr) {
+                let errorMessage = 'Failed to update. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMessage = xhr.responseJSON.message;
+                }
+
+                messageBox
+                    .removeClass('alert-success')
+                    .addClass('alert-box alert-error')
+                    .text(errorMessage)
+                    .fadeIn();
+
+                submitBtn.prop('disabled', false).text('Update Ticket');
+            }
+        });
     });
 
 </script>

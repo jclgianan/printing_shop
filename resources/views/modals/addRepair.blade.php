@@ -25,7 +25,7 @@
         <div class="content-placeholder">
             <form id="repairForm"  class="process-form">
                 @csrf
-                <input type="hidden" name="type" value="{{ $type }}">
+                <input type="hidden" name="type">
 
                 <div class="form-group">
                     <label for="repairTicket_id">Ticket ID</label>
@@ -145,6 +145,7 @@
 
                         setTimeout(() => {
                             messageBox.fadeOut();
+                            window.location.reload();
                             document.getElementById('addRepairModal').style.display = 'none';
                         }, 1500);
                     }

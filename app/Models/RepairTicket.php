@@ -19,6 +19,7 @@ class RepairTicket extends Model
         'office_department',
         'itemname',
         'issue',
+        'solution',
         'note',
         'status',
         'release_date',
