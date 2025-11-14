@@ -14,8 +14,6 @@
     <div class="layout-wrapper">
       @if(isset($type) && in_array($type, ['addPrinting', 'printing']))
         @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
-      @elseif(isset($type) && $type === 'addUser')
-        @include('layouts.sidebarNewUser') 
       @else
           @include('layouts.sidebarRepair')
       @endif

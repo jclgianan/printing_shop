@@ -1,6 +1,5 @@
 <!-- resources/views/prinitng.blade.php -->
 @extends('layouts.default') {{-- Assuming this is your main layout --}}
-@extends('auth.register')
 
 @section('title', 'Printing')
 

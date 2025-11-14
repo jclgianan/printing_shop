@@ -40,25 +40,3 @@
         </div>
     </div>
 </div>
-@include("auth.register")
-@if ($errors->any())
-    <script>
-        // If there are validation errors (e.g. mismatched passwords),
-        // reopen the register modal on page load and clear the password fields
-        // so the user doesn't have to retype all their information.
-        window.addEventListener('DOMContentLoaded', function () {
-            const modal = document.getElementById('registerModal');
-            if (modal) {
-                modal.style.display = 'block';
-
-                // Clear only password fields for security and clarity
-                const passwordField = document.getElementById('register-password');
-                const confirmPasswordField = document.getElementById('register-confirm-password');
-
-                if (passwordField) passwordField.value = '';
-                if (confirmPasswordField) confirmPasswordField.value = '';
-            }
-        });
-    </script>
-@endif
-
