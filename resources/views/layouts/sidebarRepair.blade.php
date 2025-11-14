@@ -8,7 +8,7 @@
             <li><a href="{{ route('repair') }}" class="receiving_nav-link active">Dashboard</a></li>
             <li><a href="#" class="receiving_nav-link">Pending Items</a></li>
             <li><a href="#" class="receiving_nav-link">History</a></li>
-            <li><a href="#" class="receiving_nav-link">Reports</a></li>
+            <li><a href="{{ route('add-new-user') }}" class="receiving_nav-link">Add Users</a></li>
             <li><a href="#" class="receiving_nav-link">Settings</a></li>
         </ul>
     </nav>

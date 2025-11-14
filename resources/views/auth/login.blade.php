@@ -36,11 +36,6 @@
                 <div class="login-group">
                     <button class="login-button" type="submit">Login</button>
                 </div>
-                <div class="login-group">
-                    <div class="login-signup">
-                        <p>Don't have an account? <a href="{{ route('register') }}" class="signup-btn">Sign up</a></p>
-                    </div>
-                </div>
             </form>
         </div>
     </div>

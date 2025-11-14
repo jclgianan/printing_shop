@@ -50,6 +50,12 @@ class AuthController extends Controller
         return back()->with('error', 'Invalid credentials.')->withInput($request->only('email'));
     }
 
+    public function addNewUser() 
+    {   
+        $type = 'addUser';
+        return view("addUser", compact('type'));
+    }
+
     // Show register form
     public function register()
     {
@@ -72,7 +78,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
 
         if ($user->save()) {
-            return redirect(route("login"))
+            return redirect(route("add-new-user"))
                 ->with("success", "Registration successful.");
         }
 

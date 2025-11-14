@@ -14,9 +14,12 @@
     <div class="layout-wrapper">
       @if(isset($type) && in_array($type, ['addPrinting', 'printing']))
         @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
+      @elseif(isset($type) && $type === 'addUser')
+        @include('layouts.sidebarNewUser') 
       @else
-        @include('layouts.sidebarRepair') <!-- Shared sidebar -->
+          @include('layouts.sidebarRepair')
       @endif
+
       <main class="main-panel">
           @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->
       </main>

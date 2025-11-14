@@ -30,7 +30,9 @@ Route::get("/register", [AuthController::class, "register"])
     ->name("register");
 Route::post("/register", [AuthController::class, "registerPost"])
     ->name("register.post");
-
+Route::get("/add-new-user", [AuthController::class, "addNewUser"])
+    ->name("add-new-user");
+    
 // Protected routes - all require authentication
 Route::middleware(['auth'])->group(function () {
     // Main pages
