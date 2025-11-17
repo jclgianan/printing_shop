@@ -1,5 +1,5 @@
 <aside class="receiving_sidebar">
-    <div class="login-logo">
+    <div class="sidebar-logo">
         <img src="{{ asset('images/Capitol_Logo.png') }}" alt="Logo" class="logo-image">
     </div>
     <nav class="receiving_nav-menu">

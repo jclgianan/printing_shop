@@ -12,11 +12,10 @@
             <div class="content-placeholder header-row">
                 <div class="header-top">
                     <div class="header-text">
-                        <h2 class="section-heading">Printing Dashboard</h2>
-                        <p class="section-description">Select an option from the menu to get started.</p>
+                        <h2 class="section-heading"><i class="fa-solid fa-print"></i> Printing Tickets</h2>
                     </div>
                     <!-- New Entry Button on the right -->
-                    <a id="openModal" class="receiving_newEntry">Create Ticket +</a>
+                    <a id="openModal" class="receiving_newEntry"><i class="fa-solid fa-file-circle-plus"></i> Create Ticket</a>
                 </div>
             </div>
         
@@ -36,8 +35,8 @@
                     <!-- Search Bar on the right -->
                     <form action="{{ route('receiving-search') }}" method="GET" class="search-form">
                         <div class="search-group">
-                            <input type="text" name="query" class="search-input" placeholder="Search Ticket ID" aria-label="Search">
-                            <button class="btn btn-primary" type="submit">Search</button>
+                            <input type="text" name="query" class="search-input" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
                         </div>
                     </form>
                 </div>
@@ -79,25 +78,25 @@
                                     <div class="action-buttons">                    
                                         @if($ticket->status === 'pending')
                                             <button onclick="updateStatus({{ $ticket->id }}, 'in_progress')" class="btn-status btn-progress">
-                                                Start Progress
+                                                Start Progress <i class="fa-solid fa-circle-play"></i>
                                             </button>
                                         @endif
                                         
                                         @if($ticket->status === 'in_progress')
                                             <button onclick="updateStatus({{ $ticket->id }}, 'printed')" class="btn-status btn-complete">
-                                                Mark Complete
+                                                Mark Complete <i class="fa-solid fa-circle-check"></i>
                                             </button>
                                         @endif
 
                                         @if($ticket->status === 'printed')
                                             <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-released">
-                                                Release
+                                                Release <i class="fa-solid fa-rocket"></i>
                                             </button>
                                         @endif
                                         
                                         @if($ticket->status !== 'cancelled' && $ticket->status !== 'printed' && $ticket->status !== 'released')
                                             <button onclick="updateStatus({{ $ticket->id }}, 'cancelled')" class="btn-status btn-cancel">
-                                                Cancel
+                                                Cancel <i class="fa-solid fa-ban"></i>
                                             </button>
                                         @endif
                                         <button class="btn-edit" 
@@ -109,7 +108,7 @@
                                                 data-size="{{ $ticket->size }}"
                                                 data-quantity="{{ $ticket->quantity }}"
                                                 data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
-                                            Edit
+                                            Edit <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
 
                                     </div>
@@ -188,16 +187,16 @@
         $('#edit_quantity').val(ticket.quantity);
         $('#edit_release_date').val(ticket.release_date);
 
-        $('#editPrintingModal').show();
+        $('#editPrintingModal').addClass('active');
         $('#closeEditModal').on('click', function() {
-            $('#editPrintingModal').hide();
+            $('#editPrintingModal').removeClass('active');
         });
 
     });
     // Close edit modal when clicking outside the modal box
     $(document).on('click', '#editPrintingModal', function(e) {
         if ($(e.target).is('#editPrintingModal')) {
-            $(this).hide();
+            $('#editPrintingModal').removeClass('active');
         }
     });
 

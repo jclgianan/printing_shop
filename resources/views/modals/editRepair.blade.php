@@ -12,7 +12,7 @@
 
         <div id="editFormMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
-        <div class="content-placeholder">
+        <div class="content-placeholder-edit-repair">
             <form id="editRepairForm" class="process-form">
                 @csrf
                 <input type="hidden" name="ticket_id" id="edit_ticket_id">

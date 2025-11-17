@@ -12,11 +12,10 @@
             <div class="content-placeholder header-row">
                 <div class="header-top">
                     <div class="header-text">
-                        <h2 class="section-heading">Repairing Dashboard</h2>
-                        <p class="section-description">Select an option from the menu to get started.</p>
+                        <h2 class="section-heading"><i class="fa-solid fa-screwdriver-wrench"></i> Repair Tickets</h2>
                     </div>
                     <!-- Create Entry Button on the right -->
-                    <a id="openModal" class="receiving_newEntry">Create Ticket +</a>
+                    <a id="openModal" class="receiving_newEntry"><i class="fa-solid fa-file-circle-plus"></i> Create Ticket</a>
                 </div>
             </div>
         
@@ -191,16 +190,16 @@
         $('#edit_note').val(ticket.note);
         $('#edit_release_date').val(ticket.release_date);
 
-        $('#editRepairModal').show();
+        $('#editRepairModal').addClass('active');
         $('#closeEditModal').on('click', function() {
-            $('#editRepairModal').hide();
+            $('#editRepairModal').removeClass('active');
         });
     });
 
     // Close edit modal when clicking outside the modal box
     $(document).on('click', '#editRepairModal', function(e) {
         if ($(e.target).is('#editRepairModal')) {
-            $(this).hide();
+            $('#editRepairModal').removeClass('active');
         }
     });
 

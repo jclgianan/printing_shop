@@ -22,7 +22,7 @@
         
         <div id="formMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
-        <div class="content-placeholder">
+        <div class="content-placeholder-add-printing">
             <form id="printForm" class="process-form">
                 @csrf
                 <input type="hidden" name="type" value="{{ $type }}">
@@ -32,7 +32,7 @@
                     <div style="display: flex; gap: 10px;">
                         <input type="text" id="printTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
                         <input type="hidden" name="printTicket_id" id="printTicket_id">
-                        <button type="button" onclick="generateprintTicketId()" class="btn btn-secondary btn-generate-id">Generate</button>
+                        <button type="button" onclick="generateprintTicketId()" class="btn btn-secondary btn-generate-id">Generate <i class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
 
@@ -85,7 +85,7 @@
                 </div>
 
                 <br>
-                <button type="submit" class="btn btn-primary">Submit Ticket</button>
+                <button type="submit" class="btn btn-primary">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>

@@ -22,7 +22,7 @@
 
         <div id="formMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
         
-        <div class="content-placeholder">
+        <div class="content-placeholder-add-repair">
             <form id="repairForm"  class="process-form">
                 @csrf
                 <input type="hidden" name="type">

@@ -11,7 +11,7 @@
         
         <div id="editFormMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
-        <div class="content-placeholder">
+        <div class="content-placeholder-edit-print">
             <form id="editPrintingForm" class="process-form">
                 @csrf
                 <div class="form-group">
