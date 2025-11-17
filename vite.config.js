@@ -8,7 +8,7 @@ export default defineConfig({
             input: [
                 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/css/status.css', // your missing file
+                'resources/css/status.css',
             ],
             refresh: true,
         }),

@@ -73,7 +73,7 @@
                                 <td>{{ $ticket->issue }}</td>
                                 <td>{{ $ticket->solution }}</td>
                                 <td>{{ $ticket->note }}</td>
-                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y') : '-' }}</td>
+                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y H:i') : '-' }}</td>
                                 <td>
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>
@@ -87,7 +87,7 @@
                                         
                                         @if($ticket->status === 'in_progress')
                                             <button onclick="updateStatus({{ $ticket->id }}, 'repaired')" class="btn-status btn-complete">
-                                                Mark Repaired
+                                                Repaired
                                             </button>
                                         @endif
 

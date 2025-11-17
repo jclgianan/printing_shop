@@ -27,7 +27,7 @@ class RepairTicket extends Model
 
     protected $casts = [
         'receiving_date' => 'date',
-        'release_date' => 'date',
+        'release_date' => 'datetime',
     ];
 
     public function getFormattedStatusAttribute()
@@ -36,6 +36,7 @@ class RepairTicket extends Model
             'pending' => 'Pending',
             'in_progress' => 'In Progress',
             'repaired' => 'Repaired',
+            'released'      => 'Released', 
             'unrepairable' => 'Unrepairable',
             default => ucfirst($this->status),
         };

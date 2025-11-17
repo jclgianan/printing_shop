@@ -26,7 +26,7 @@ class PrintTicket extends Model
 
     protected $casts = [
         'receiving_date' => 'date',
-        'release_date' => 'date',
+        'release_date' => 'datetime',
         'quantity' => 'integer',
     ];
 

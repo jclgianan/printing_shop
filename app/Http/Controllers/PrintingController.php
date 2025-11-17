@@ -36,11 +36,15 @@ class PrintingController extends Controller
 
     public function receivingSearch(Request $request)
     {
+        $type = 'printing';
         $query  = $request->input('query');
 
-        $printTickets = PrintTicket::where('printTicket_id', 'like', '%' . $query . '%')->get();
+        $printTickets = PrintTicket::where('printTicket_id', 'like', '%' . $query . '%')
+            ->orWhere('office_department', 'like', '%' . $query . '%')
+            ->orWhere('itemname', 'like', '%' . $query . '%')
+            ->get();
 
-        return view('printing', compact('printTickets'));
+        return view('printing', compact('printTickets', 'type'));
     }
 
     // Printing Logs data view
@@ -167,7 +171,7 @@ class PrintingController extends Controller
 
         try {
             $ticket = PrintTicket::findOrFail($id);
-            $oldStatus = $ticket->status;
+            $oldStatus = $ticket->formatted_status;
             
             // Update the status
             $ticket->status = $request->status;
@@ -179,7 +183,10 @@ class PrintingController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
-                'new_status' => $ticket->formatted_status
+                'new_status' => $ticket->formatted_status,
+                'release_date' => $ticket->release_date 
+                                ? $ticket->release_date->format('Y-m-d H:i')
+                                : null
             ]);
         } catch (\Exception $e) {
             return response()->json([

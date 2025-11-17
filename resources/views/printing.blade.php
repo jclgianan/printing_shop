@@ -71,7 +71,7 @@
                                 <td>{{ $ticket->itemname }}</td>
                                 <td>{{ $ticket->size }}</td>
                                 <td>{{ $ticket->quantity }}</td>
-                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y') : '-' }}</td>
+                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y H:i') : '-' }}</td>
                                 <td>
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>
