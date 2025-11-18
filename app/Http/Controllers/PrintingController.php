@@ -19,7 +19,7 @@ class PrintingController extends Controller
     {
         $type = 'printing';
         // Fetch print tickets for the printing dashboard
-        $printTickets = PrintTicket::orderBy('created_at', 'desc')->get();
+        $printTickets = $query->orderBy('receiving_date', 'desc')->get();
 
         return view('printing', compact('printTickets', 'type'));
     }
@@ -50,7 +50,7 @@ class PrintingController extends Controller
     // Printing Logs data view
     public function dashboard()
     {
-        $printTickets = PrintTicket::latest()->get(); // Add filters as needed
+       $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->get();  // Add filters as needed
         return view('printing', compact('printTickets'));
     }
 
@@ -161,7 +161,7 @@ class PrintingController extends Controller
             $query->where('status', 'like', '%' . $request->filter . '%');
         }
         
-        $printTickets = $query->latest()->get();
+        $printTickets = $query->orderBy('receiving_date', 'desc')->get();
 
         return view('printing', compact('printTickets', 'type'));
     }
@@ -189,7 +189,7 @@ class PrintingController extends Controller
                 'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
                 'new_status' => $ticket->formatted_status,
                 'release_date' => $ticket->release_date 
-                                ? $ticket->release_date->format('Y-m-d H:i')
+                                ? $ticket->release_date->format('m-d-Y H:i')
                                 : null
             ]);
         } catch (\Exception $e) {

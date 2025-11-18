@@ -19,7 +19,7 @@ class RepairController extends Controller
     {
         $type = 'repair';
         // Fetch data from the database
-        $repairTickets = RepairTicket::orderBy('created_at', 'desc')->get();
+        $repairTickets = RepairTicket::orderBy('receiving_date', 'desc')->get();
 
         return view('repair', compact('repairTickets', 'type'));
     }
@@ -50,7 +50,7 @@ class RepairController extends Controller
     // Repair Logs data view
     public function repairDashboard()
     {
-        $repairTickets = RepairTicket::latest()->get(); // Add filters as needed
+        $repairTickets = RepairTicket::orderBy('receiving_date')->get(); // Add filters as needed
         return view('repair', compact('repairTickets'));
     }
 
@@ -161,7 +161,7 @@ class RepairController extends Controller
             $query->where('status', 'like', '%' . $request->filter . '%');
         }
 
-        $repairTickets = $query->latest()->get();
+        $repairTickets = $query->orderBy('receiving_date', 'desc')->get();
 
         return view('repair', compact('repairTickets', 'type'));
     }
