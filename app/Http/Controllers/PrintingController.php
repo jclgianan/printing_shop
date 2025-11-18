@@ -19,7 +19,7 @@ class PrintingController extends Controller
     {
         $type = 'printing';
         // Fetch print tickets for the printing dashboard
-        $printTickets = $query->orderBy('receiving_date', 'desc')->get();
+        $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->get();
 
         return view('printing', compact('printTickets', 'type'));
     }
@@ -42,6 +42,7 @@ class PrintingController extends Controller
         $printTickets = PrintTicket::where('printTicket_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
+            ->orderBy('receiving_date', 'desc')
             ->get();
 
         return view('printing', compact('printTickets', 'type'));
