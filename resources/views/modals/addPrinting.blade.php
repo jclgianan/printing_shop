@@ -84,6 +84,22 @@
                     @enderror
                 </div>
 
+                <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input type="date" name="deadline" id="deadline" class="form-control @error('deadline') is-invalid @enderror" value="{{ old('deadline') }}">
+                    @error('deadline')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="file_link">File</label>
+                    <input type="text" name="file_link" id="file_link" class="form-control @error('file_link') is-invalid @enderror" value="{{ old('file_link') }}">
+                    @error('file_link')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
                 <br>
                 <button type="submit" class="btn btn-primary">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
             </form>

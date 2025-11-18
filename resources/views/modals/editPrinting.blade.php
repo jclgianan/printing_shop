@@ -44,6 +44,16 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="edit-deadline">Deadline</label>
+                    <input type="date" id="edit_deadline" name="deadline" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit_file_link">File</label>
+                    <input type="text" id="edit_file_link" name="file_link" class="form-control">
+                </div>
+
+                <div class="form-group">
                     <label for="edit-release_date">Release Date</label>
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>

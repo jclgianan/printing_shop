@@ -65,14 +65,14 @@
                         @foreach($repairTickets as $ticket)
                             <tr>
                                 <td>{{ $ticket->repairTicket_id }}</td>
-                                <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('M j, Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('m/d/y') }}</td>
                                 <td>{{ $ticket->name }}</td>
                                 <td>{{ $ticket->office_department }}</td>
                                 <td>{{ $ticket->itemname }}</td>
                                 <td>{{ $ticket->issue }}</td>
                                 <td>{{ $ticket->solution }}</td>
                                 <td>{{ $ticket->note }}</td>
-                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y H:i') : '-' }}</td>
+                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('m/d/y H:i') : '-' }}</td>
                                 <td>
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>

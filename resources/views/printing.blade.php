@@ -54,6 +54,8 @@
                             <th>Name of Item</th>
                             <th>Size</th>
                             <th>Quantity</th>
+                            <th>Deadline</th>
+                            <th class="file_link_td">File</th>
                             <th>Release Date</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -64,13 +66,25 @@
                         @foreach($printTickets as $ticket)
                             <tr>
                                 <td>{{ $ticket->printTicket_id }}</td>
-                                <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('M j, Y') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('m/d/y') }}</td>
                                 <td>{{ $ticket->name }}</td>
                                 <td>{{ $ticket->office_department }}</td>
                                 <td>{{ $ticket->itemname }}</td>
                                 <td>{{ $ticket->size }}</td>
                                 <td>{{ $ticket->quantity }}</td>
-                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('M j, Y H:i') : '-' }}</td>
+                                <td>{{ $ticket->deadline 
+                                        ? \Carbon\Carbon::parse($ticket->deadline)->format('m/d/y') 
+                                        : '-' 
+                                    }}
+                                </td>
+                                <td>
+                                    @if($ticket->file_link)
+                                        <a href="{{ $ticket->file_link }}" target="_blank">Link</a>
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('m/d/y H:i') : '-' }}</td>
                                 <td>
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>
@@ -107,6 +121,8 @@
                                                 data-itemname="{{ $ticket->itemname }}"
                                                 data-size="{{ $ticket->size }}"
                                                 data-quantity="{{ $ticket->quantity }}"
+                                                data-deadline="{{ $ticket->deadline }}"
+                                                data-file_link="{{ $ticket->file_link }}"
                                                 data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
                                             Edit <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
@@ -185,6 +201,8 @@
         $('#edit_itemname').val(ticket.itemname);
         $('#edit_size').val(ticket.size);
         $('#edit_quantity').val(ticket.quantity);
+        $('#edit_deadline').val(ticket.deadline);
+        $('#edit_file_link').val(ticket.file_link);
         $('#edit_release_date').val(ticket.release_date);
 
         $('#editPrintingModal').addClass('active');
@@ -235,7 +253,9 @@
                     row.find('td:nth-child(5)').text(response.ticket.itemname);
                     row.find('td:nth-child(6)').text(response.ticket.size);
                     row.find('td:nth-child(7)').text(response.ticket.quantity);
-                    row.find('td:nth-child(8)').text(response.ticket.release_date);
+                    row.find('td:nth-child(8)').text(response.ticket.deadline);
+                    row.find('td:nth-child(9)').text(response.ticket.file_link);
+                    row.find('td:nth-child(10)').text(response.ticket.release_date);
 
                     submitBtn.prop('disabled', false).text('Update Ticket');
 

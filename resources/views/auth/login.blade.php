@@ -9,7 +9,7 @@
 <div class="login-page">
     <div class="login-container">
         <div class="login-logo">
-            <img src="{{ asset('images/Capitol_Logo.png') }}" alt="Logo" class="logo-image">
+            <img src="{{ asset('images/SecretShop_Logo2.png') }}" alt="Logo" class="logo-image">
         </div>
         <h1 class="form-title">Login Page</h1>
         @if(session()->has("success"))

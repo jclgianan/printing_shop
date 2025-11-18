@@ -22,6 +22,8 @@ class PrintTicket extends Model
         'quantity',
         'release_date',
         'status',
+        'file_link',
+        'deadline',
     ];
 
     protected $casts = [
@@ -41,6 +43,7 @@ class PrintTicket extends Model
             'in_progress' => 'In Progress',
             'pending' => 'Pending',
             'printed' => 'Printed',
+            'released'      => 'Released', 
             'cancelled' => 'Cancelled',
             default => ucfirst($this->status),
         };

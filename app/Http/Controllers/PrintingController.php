@@ -65,6 +65,8 @@ class PrintingController extends Controller
             'itemname' => 'required|string|max:255',
             'size' => 'required|string|max:100',
             'quantity' => 'required|integer|min:1',
+            'deadline' => 'date',
+            'file_link' => 'string|max:255',
         ]);
 
         try {
@@ -90,6 +92,8 @@ class PrintingController extends Controller
                 'itemname' => $request->itemname,
                 'size' => $request->size,
                 'quantity' => $request->quantity,
+                'deadline' => $request->deadline,
+                'file_link' => $request->file_link,
                 'status' => 'pending',
             ]);
 
@@ -212,12 +216,14 @@ class PrintingController extends Controller
             'itemname' => 'required|string|max:255',
             'size' => 'nullable|string|max:50',
             'quantity' => 'nullable|integer',
+            'deadline' => 'nullable|date',
+            'file_link' => 'nullable|string|max:255',
             'release_date' => 'nullable|date',
             'status' => 'nullable|in:pending,in_progress,printed,released,cancelled',
         ]);
 
         $ticket->update($request->only([
-            'name', 'office_department', 'itemname', 'size', 'quantity', 'release_date', 'status'
+            'name', 'office_department', 'itemname', 'size', 'quantity', 'deadline', 'file_link', 'release_date', 'status'
         ]));
 
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
