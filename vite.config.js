@@ -13,9 +13,9 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    server: {
-        host: '0.0.0.0', // allows LAN access
-        port: 5173,
-        strictPort: false,
-    },
+    // server: {
+    //     host: '0.0.0.0', // allows LAN access
+    //     port: 5173,
+    //     strictPort: false,
+    // },
 });

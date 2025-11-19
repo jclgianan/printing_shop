@@ -2,6 +2,7 @@
     font-family: 'Arial', 'sans-serif';
 }
 
+
 .main-page-container {
     display: flex;
     justify-content: center;
@@ -79,8 +80,27 @@
     justify-content: center;
     height: 100vh;
     margin: 0;
-    background-color: #e5e5e5;
+    overflow: hidden;
+    position: relative;
+
 }
+
+
+.login-page::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(/public/images/secret-shop.jpg);
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px);
+    z-index: -1;
+    transform: scale(1.1);
+}
+
+
 
 .register-page-container {
     width: 100%;
@@ -96,13 +116,20 @@
     height: 35rem;
     margin: 3.125rem auto;
     padding: 1.25rem;
-    background: #ffffff;
-    border-radius: 0.5rem;
-    box-shadow: 0 0.25rem 0.375rem rgba(85, 85, 85, 0.1);
+    /* border: solid black transparent; */
+    border: solid transparent;
+
+    background-color: rgba(0, 0, 0, 0.733);
+    backdrop-filter: blur(10px);
+
+    border-radius: 1.5rem;
+    box-shadow: 0px 0px 10px 3px rgba(255, 201, 131, 0.13);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    z-index: 999;
+
 }
 .login-form,
 .register-form {
@@ -116,12 +143,14 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    filter: invert(100%);
 }
 .logo-image {
-    width: 5rem;
+    width: 8rem;
     height: auto;
     max-width: 100%;
     max-height: 100%;
+    margin-bottom: 1rem;
 }
 
 
@@ -130,40 +159,83 @@
     margin-bottom: 0.0025rem;
     font-weight: bold;
     color: #222222; /* darker blue text */
+
+    text-align: center;
+    font-family: 'Roboto';
+    font-size: 1.3rem;
+    font-weight: 400;
+
+
 }
 .login-input,
 .register-input {
     padding: 0.625rem;
-    border: 1px solid #cccccc;
-    border-radius: 0.25rem;
-    width: 100%;
+    padding-left: 44px;
+    border: 1px transparent;
+    border-radius: 1.2rem;
+    width: 70%;
     font-size: 1rem;
     background-color: #e5e5e5;
     color: #333;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.801) inset;
+
+    font-family: 'Roboto';
+
 }
+ .login-input::placeholder {
+    font-style: normal;
+    font-family: 'Roboto';
+    font-weight: 300;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.527);
+ }
+
 .login-group,
 .register-group {
     width: 30rem;
-    margin-bottom: 0.9375rem;
+    /* margin-bottom: rem; */
     padding: 0.625rem;
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
+    justify-content: center;
+    align-items: center;
     font-size: 0.875rem;
+}
+
+.login-group .asd {
+    position: absolute;
+    left: 110;
+    /* padding-left: 50px; */
+    z-index: 999;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.123);
 }
 .login-button,
 .signup-button {
-    padding: 0.625rem;
-    background-color: #007bff;
-    color: #fff;
+    /* padding: 1rem; */
+    background-color: #fdfdfd;
+    color: #000000;
     border: none;
-    border-radius: 0.25rem;
+    border-radius: 1.25rem;
     cursor: pointer;
+    width: 120px;
+    height: 50px;
+    display: flex;
+    gap: 2px;
+    align-items: center;
+    justify-content: center;
     font-size: 1rem;
     transition: background-color 0.2s;
+
+
+    font-family: 'Rubik';
+    font-weight: 700;
+    letter-spacing: 2;
 }
+
 .login-button:hover,
 .signup-button:hover {
-    background-color: #0056b3;
+    background-color: #000000;
+    color: fff;
 }
 .login-signup {
     display: flex;
@@ -173,11 +245,25 @@
 }
 
 /*Login Header Styles*/
-.form-title {
+.form-title1 {
+    text-align: center;
+    /* margin-bottom: 1.25rem; */
+    font-size: 2.4rem;
+    color: #ffffff;
+
+    letter-spacing: 1;
+    font-family: 'Rubik';
+    font-weight: 700;
+}
+
+.form-title2 {
     text-align: center;
     margin-bottom: 1.25rem;
-    font-size: 1.5rem;
-    color: #222222;
+    font-size: 1rem;
+    color: #ffffff80;
+    font-family: 'Rubik';
+    font-weight: 200;
+
 }
 
 /*Responsive Login Styles*/
