@@ -66,8 +66,8 @@ class PrintingController extends Controller
             'itemname' => 'required|string|max:255',
             'size' => 'required|string|max:100',
             'quantity' => 'required|integer|min:1',
-            'deadline' => 'date',
-            'file_link' => 'string|max:255',
+            'deadline' => 'nullable|date',
+            'file_link' => 'nullable|string|max:255',
         ]);
 
         try {
@@ -161,11 +161,19 @@ class PrintingController extends Controller
         if ($request->filled('filter')) {
             $query->where('status', 'like', '%' . $request->filter . '%');
         }
-        
-        $printTickets = $query->orderBy('receiving_date', 'desc')->get();
+
+        // Check if the filter is 'released' to sort by release_date
+        if ($request->filter === 'released') {
+            $query->orderBy('release_date', 'desc');
+        } else {
+            $query->orderBy('receiving_date', 'desc');
+        }
+
+        $printTickets = $query->get();
 
         return view('printing', compact('printTickets', 'type'));
     }
+
 
     // Update the status of a print ticket
     public function updateStatus(Request $request, $id)

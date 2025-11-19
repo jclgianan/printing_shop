@@ -84,7 +84,8 @@
                                         -
                                     @endif
                                 </td>
-                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('m/d/y H:i') : '-' }}</td>
+                                <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y H:i') : '-' }}</td>
+
                                 <td>
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>
