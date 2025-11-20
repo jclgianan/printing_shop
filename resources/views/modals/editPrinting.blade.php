@@ -50,15 +50,42 @@
 
                 <div class="form-group">
                     <label for="edit_file_link">File</label>
-                    <input type="text" id="edit_file_link" name="file_link" class="form-control">
+                    <input type="text" id="edit_file_link" name="file_link" class="form-control" placeholder="url">
                 </div>
 
-                <div class="form-group">
+                <div class="form-group pb-2">
                     <label for="edit-release_date">Release Date</label>
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>
-                <br>
-                <button type="submit" class="btn btn-primary">Update Ticket</button>
+                {{-- <br> --}}
+                <button type="submit" class="btn btn-primary ">Change info</button>
+                @foreach($printTickets as $ticket)
+                <div class="action-buttons">                    
+                    @if($ticket->status === 'pending')
+                        <button onclick="updateStatus({{ $ticket->id }}, 'in_progress')" class="btn-status btn-progress">
+                            Start Progress <i class="fa-solid fa-circle-play"></i>
+                        </button>
+                    @endif
+                    
+                    @if($ticket->status === 'in_progress')
+                        <button onclick="updateStatus({{ $ticket->id }}, 'printed')" class="btn-status btn-complete">
+                            Mark Complete <i class="fa-solid fa-circle-check"></i>
+                        </button>
+                    @endif
+
+                    @if($ticket->status === 'printed')
+                        <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-released">
+                            Release <i class="fa-solid fa-rocket"></i>
+                        </button>
+                    @endif
+                    
+                    @if($ticket->status !== 'cancelled' && $ticket->status !== 'printed' && $ticket->status !== 'released')
+                        <button onclick="updateStatus({{ $ticket->id }}, 'cancelled')" class="btn-status btn-cancel">
+                            Cancel <i class="fa-solid fa-ban"></i>
+                        </button>
+                    @endif
+                </div> 
+                @endforeach
             </form>
         </div>
     </div>

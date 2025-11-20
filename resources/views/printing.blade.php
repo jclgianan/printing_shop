@@ -65,14 +65,14 @@
                     <tbody>
                         @foreach($printTickets as $ticket)
                             <tr>
-                                <td>{{ $ticket->printTicket_id }}</td>
-                                <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('m/d/y') }}</td>
+                                <td class="mono" >{{ $ticket->printTicket_id}}</td>
+                                <td class="mono">{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('m/d/y') }}</td>
                                 <td>{{ $ticket->name }}</td>
                                 <td>{{ $ticket->office_department }}</td>
                                 <td>{{ $ticket->itemname }}</td>
-                                <td>{{ $ticket->size }}</td>
-                                <td>{{ $ticket->quantity }}</td>
-                                <td>{{ $ticket->deadline 
+                                <td class="mono">{{ $ticket->size }}</td>
+                                <td class="mono">{{ $ticket->quantity }}</td>
+                                <td class="mono">{{ $ticket->deadline 
                                         ? \Carbon\Carbon::parse($ticket->deadline)->format('m/d/y') 
                                         : '-' 
                                     }}
@@ -90,45 +90,19 @@
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>
                                 <td>
-                                    <div class="action-buttons">                    
-                                        @if($ticket->status === 'pending')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'in_progress')" class="btn-status btn-progress">
-                                                Start Progress <i class="fa-solid fa-circle-play"></i>
-                                            </button>
-                                        @endif
-                                        
-                                        @if($ticket->status === 'in_progress')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'printed')" class="btn-status btn-complete">
-                                                Mark Complete <i class="fa-solid fa-circle-check"></i>
-                                            </button>
-                                        @endif
-
-                                        @if($ticket->status === 'printed')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-released">
-                                                Release <i class="fa-solid fa-rocket"></i>
-                                            </button>
-                                        @endif
-                                        
-                                        @if($ticket->status !== 'cancelled' && $ticket->status !== 'printed' && $ticket->status !== 'released')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'cancelled')" class="btn-status btn-cancel">
-                                                Cancel <i class="fa-solid fa-ban"></i>
-                                            </button>
-                                        @endif
-                                        <button class="btn-edit" 
-                                                data-id="{{ $ticket->id }}"
-                                                data-receiving_date="{{ $ticket->receiving_date }}"
-                                                data-name="{{ $ticket->name }}"
-                                                data-office_department="{{ $ticket->office_department }}"
-                                                data-itemname="{{ $ticket->itemname }}"
-                                                data-size="{{ $ticket->size }}"
-                                                data-quantity="{{ $ticket->quantity }}"
-                                                data-deadline="{{ $ticket->deadline }}"
-                                                data-file_link="{{ $ticket->file_link }}"
-                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
-                                            Edit <i class="fa-solid fa-pen-to-square"></i>
-                                        </button>
-
-                                    </div>
+                                    <button class="btn-edit" 
+                                            data-id="{{ $ticket->id }}"
+                                            data-receiving_date="{{ $ticket->receiving_date }}"
+                                            data-name="{{ $ticket->name }}"
+                                            data-office_department="{{ $ticket->office_department }}"
+                                            data-itemname="{{ $ticket->itemname }}"
+                                            data-size="{{ $ticket->size }}"
+                                            data-quantity="{{ $ticket->quantity }}"
+                                            data-deadline="{{ $ticket->deadline }}"
+                                            data-file_link="{{ $ticket->file_link }}"
+                                            data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
+                                        Update <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
                                 </td>
                             </tr>
                         @endforeach
