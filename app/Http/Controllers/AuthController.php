@@ -62,8 +62,9 @@ class AuthController extends Controller
     // Show register form
     public function register()
     {
-        // Return a full page view that loads the layout (so CSS/JS are included)
-        return view("auth.register_page");
+        $type = $request->query('type');
+
+        return view("auth.register", compact('type'));
     }
 
     // Handle registration logic

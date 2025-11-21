@@ -21,7 +21,7 @@ class PrintingController extends Controller
         // Fetch print tickets for the printing dashboard
         $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->get();
 
-        return view('printing', compact('printTickets', 'type'));
+        return view('printing', compact('printTickets', 'type'));   
     }
 
     // Show addPrinting Page

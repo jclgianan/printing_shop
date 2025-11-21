@@ -43,35 +43,59 @@
                 @endforeach
             </tbody>
         </table>
+        <button id="btnAddUser" class="btn btn-primary">
+            Add User
+        </button>
+
     </main>
 </div>
 
 @include('modals.edit-user')
+@include('auth.register')
 
 @endsection
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
-    $(document).on('click', '.btn-edit-user', function () {
-        let id = $(this).data('id');
+    // Edit modal
+    $(document).ready(function() {
 
-        // Set form action
-        $('#editUserForm').attr('action', '/users/update/' + id);
+    // === Edit modal ===
+        $(document).on('click', '.btn-edit-user', function () {
+            let id = $(this).data('id');
+            $('#editUserForm').attr('action', '/users/update/' + id);
+            $('#edit_user_name').val($(this).data('name'));
+            $('#edit_user_email').val($(this).data('email'));
+            $('#edit_user_role').val($(this).data('role'));
+            $('#editUserModal').fadeIn(200);
+        });
 
-        // Fill fields
-        $('#edit_user_name').val($(this).data('name'));
-        $('#edit_user_email').val($(this).data('email'));
-        $('#edit_user_role').val($(this).data('role'));
+        $('#closeEditUserModal').click(function () {
+            $('#editUserModal').fadeOut(200);
+        });
 
-        // Show modal
-        $('#editUserModal').show();
+        // Optional: click outside to close edit modal
+        $('#editUserModal').click(function(e) {
+            if (e.target === this) $(this).fadeOut(200);
+        });
+
+        // === Register modal ===
+        $('#btnAddUser').click(function() {
+            $('#registerModal').fadeIn(200);
+        });
+
+        $('#closeRegisterModal').click(function() {
+            $('#registerModal').fadeOut(200);
+        });
+
+        // Optional: click outside to close register modal
+        $('#registerModal').click(function(e) {
+            if (e.target === this) $(this).fadeOut(200);
+        });
+
     });
 
-    // Close modal
-    $('#closeEditUserModal').click(function () {
-        $('#editUserModal').hide();
-    });
 
 
 </script>

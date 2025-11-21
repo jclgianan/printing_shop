@@ -1,7 +1,6 @@
-<main class="main-panel">
-
-    <div class="register-page-container">
-
+<div id="registerModal" class="modal-overlay">
+    <div class="modal-box">
+        <span id="closeRegisterModal" class="modal-close">&times;</span>
         <div class="login-logo">
             <img src="{{ asset('images/Capitol_Logo.png') }}" alt="Logo" class="logo-image">
         </div>
@@ -70,6 +69,6 @@
             </form>
 
         </div>
-    </div>
+    </div>   
+</div>
 
-</main>
