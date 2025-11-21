@@ -103,7 +103,7 @@ class AuthController extends Controller
             "name" => "required|string",
             "email" => "required|email|unique:users,email,$id",
             "role" => "required|string|in:admin,editor",
-            "password" => "nullable|min:8|confirmed"
+            "password" => "nullable|min:6|confirmed"
         ]);
 
         $user = User::findOrFail($id);
@@ -112,7 +112,7 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->role = $request->role;
 
-        if (!empty($request->password)) {
+        if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
         }
 

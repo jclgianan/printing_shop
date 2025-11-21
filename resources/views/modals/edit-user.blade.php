@@ -6,7 +6,7 @@
 
         <form id="editUserForm" method="POST">
             @csrf
-
+            
             <div class="form-group">
                 <label>Name</label>
                 <input type="text" id="edit_user_name" name="name" required>
