@@ -14,9 +14,7 @@
         <div class="content-placeholder-edit-print">
             <form id="editPrintingForm" class="process-form">
                 @csrf
-                <div class="form-group">
-                    <input type="hidden" id="edit_ticket_id" class="form-control" name="id">
-                </div>
+                <input type="hidden" id="edit_ticket_id" name="id">
 
                 <div class="form-group">
                     <label for="edit_name">Name</label>
@@ -44,7 +42,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="edit-deadline">Deadline</label>
+                    <label for="edit_deadline">Deadline</label>
                     <input type="date" id="edit_deadline" name="deadline" class="form-control">
                 </div>
 
@@ -54,38 +52,15 @@
                 </div>
 
                 <div class="form-group pb-2">
-                    <label for="edit-release_date">Release Date</label>
+                    <label for="edit_release_date">Release Date</label>
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>
-                {{-- <br> --}}
-                <button type="submit" class="btn btn-primary ">Change info</button>
-                @foreach($printTickets as $ticket)
-                <div class="action-buttons">                    
-                    @if($ticket->status === 'pending')
-                        <button onclick="updateStatus({{ $ticket->id }}, 'in_progress')" class="btn-status btn-progress">
-                            Start Progress <i class="fa-solid fa-circle-play"></i>
-                        </button>
-                    @endif
-                    
-                    @if($ticket->status === 'in_progress')
-                        <button onclick="updateStatus({{ $ticket->id }}, 'printed')" class="btn-status btn-complete">
-                            Mark Complete <i class="fa-solid fa-circle-check"></i>
-                        </button>
-                    @endif
 
-                    @if($ticket->status === 'printed')
-                        <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-released">
-                            Release <i class="fa-solid fa-rocket"></i>
-                        </button>
-                    @endif
-                    
-                    @if($ticket->status !== 'cancelled' && $ticket->status !== 'printed' && $ticket->status !== 'released')
-                        <button onclick="updateStatus({{ $ticket->id }}, 'cancelled')" class="btn-status btn-cancel">
-                            Cancel <i class="fa-solid fa-ban"></i>
-                        </button>
-                    @endif
-                </div> 
-                @endforeach
+                <button type="submit" class="btn btn-primary">Change info</button>
+                
+                <!-- Action buttons will be inserted here dynamically -->
+                <div class="action-buttons" id="editActionBtn"></div>
+                
             </form>
         </div>
     </div>

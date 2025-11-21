@@ -100,7 +100,8 @@
                                             data-quantity="{{ $ticket->quantity }}"
                                             data-deadline="{{ $ticket->deadline }}"
                                             data-file_link="{{ $ticket->file_link }}"
-                                            data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
+                                            data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}"
+                                            data-status="{{ $ticket->status }}">
                                         Update <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                 </td>
@@ -165,7 +166,7 @@
         }
     });
     
-    //For edit modal
+    // For edit modal
     $(document).on('click', '.btn-edit', function() {
         const ticket = $(this).data();
 
@@ -180,12 +181,45 @@
         $('#edit_file_link').val(ticket.file_link);
         $('#edit_release_date').val(ticket.release_date);
 
+        // Populate action buttons dynamically
+        const actionContainer = $('#editActionBtn');
+        actionContainer.empty(); // clear previous buttons
+
+        if (ticket.status === 'pending') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'in_progress')" class="btn-status btn-progress">
+                    Start Progress <i class="fa-solid fa-circle-play"></i>
+                </button>
+            `);
+        }
+        if (ticket.status === 'in_progress') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'printed')" class="btn-status btn-complete">
+                    Mark Complete <i class="fa-solid fa-circle-check"></i>
+                </button>
+            `);
+        }
+        if (ticket.status === 'printed') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'released')" class="btn-status btn-released">
+                    Release <i class="fa-solid fa-rocket"></i>
+                </button>
+            `);
+        }
+        if (ticket.status !== 'cancelled' && ticket.status !== 'printed' && ticket.status !== 'released') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'cancelled')" class="btn-status btn-cancel">
+                    Cancel <i class="fa-solid fa-ban"></i>
+                </button>
+            `);
+        }
+
         $('#editPrintingModal').addClass('active');
         $('#closeEditModal').on('click', function() {
             $('#editPrintingModal').removeClass('active');
         });
-
     });
+
     // Close edit modal when clicking outside the modal box
     $(document).on('click', '#editPrintingModal', function(e) {
         if ($(e.target).is('#editPrintingModal')) {

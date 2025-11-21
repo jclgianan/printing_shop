@@ -1,6 +1,6 @@
 <aside class="receiving_sidebar">
     <div class="sidebar-logo-container">
-        <img src="{{ asset('images/secretshop_Logo_2.png') }}" alt="Logo" class="sidebar-logo">
+        {{-- <img src="{{ asset('images/secretshop_Logo_2.png') }}" alt="Logo" class="sidebar-logo"> --}}
     </div>
     <nav class="receiving_nav-menu">
         <ul>
