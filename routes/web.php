@@ -32,6 +32,22 @@ Route::post("/register", [AuthController::class, "registerPost"])
     ->name("register.post");
 Route::get("/add-new-user", [AuthController::class, "addNewUser"])
     ->name("add-new-user");
+Route::middleware(['auth', 'role:admin'])
+    ->group(function () {
+    Route::get('/add-new-user', [AuthController::class, 'addNewUser'])
+        ->name('add-new-user');});
+    // Show all users
+    Route::get('/users', [AuthController::class, 'listUsers'])
+    ->name('users.list');
+    // Update user
+    Route::post('/users/update/{id}', [AuthController::class, 'updateUser'])
+    ->name('users.update');
+Route::middleware(['auth', 'role:admin,editor'])
+    ->group(function () {
+    Route::get('/main', [AuthController::class, 'index'])
+        ->name('main');});
+
+
     
 // Protected routes - all require authentication
 Route::middleware(['auth'])->group(function () {

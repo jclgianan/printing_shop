@@ -53,7 +53,10 @@ class AuthController extends Controller
     public function addNewUser() 
     {   
         $type = 'addUser';
-        return view("addUser", compact('type'));
+
+        $users = User::all();
+
+        return view("addUser", compact('type', 'users'));
     }
 
     // Show register form
@@ -70,12 +73,14 @@ class AuthController extends Controller
             "fullname" => "required",
             "email" => "required|email|unique:users,email",
             "password" => "required|confirmed|min:8|string",
+            "role" => "required|in:admin,editor",
         ]);
 
         $user = new User();
         $user->name = $request->input('fullname');
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
+        $user->role = 'editor';
 
         if ($user->save()) {
             return redirect(route("add-new-user"))
@@ -86,5 +91,34 @@ class AuthController extends Controller
             ->withInput($request->only('fullname', 'email'))
             ->with("error", "Registration failed. Please try again.");
     }
+    public function listUsers()
+    {
+        $users = User::all();
+        return view('users.index', compact('users'));
+    }
+    public function updateUser(Request $request, $id)
+    {
+        $request->validate([
+            "name" => "required|string",
+            "email" => "required|email|unique:users,email,$id",
+            "role" => "required|string|in:admin,editor",
+            "password" => "nullable|min:8|confirmed"
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->role = $request->role;
+
+        if (!empty($request->password)) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return back()->with("success", "User updated successfully.");
+    }
+
      
 }

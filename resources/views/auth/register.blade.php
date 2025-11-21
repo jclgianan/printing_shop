@@ -35,6 +35,13 @@
 
             <form action="{{ route('register.post') }}" method="POST">
                 @csrf
+                <div class="register-group">
+                    <label class="register-label">User Role</label>
+                    <select name="role" class="register-input">
+                        <option value="admin">Admin</option>
+                        <option value="editor" selected>Editor</option>
+                    </select>
+                </div>
 
                 <div class="register-group">
                     <label class="register-label" for="register-fullname">Full Name:</label>
