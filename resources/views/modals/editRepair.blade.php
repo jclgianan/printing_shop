@@ -60,6 +60,9 @@
 
                 <br>
                 <button type="submit" class="btn btn-primary">Update Ticket</button>
+
+                <!-- Action buttons will be inserted here dynamically -->
+                <div class="action-buttons" id="editActionBtn"></div>
             </form>
         </div>
     </div>

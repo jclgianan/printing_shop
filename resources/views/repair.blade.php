@@ -79,30 +79,7 @@
                                     <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                 </td>
                                 <td>
-                                    <div class="action-buttons">                    
-                                        @if($ticket->status === 'pending')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'in_progress')" class="btn-status btn-progress">
-                                                Start Progress
-                                            </button>
-                                        @endif
-                                        
-                                        @if($ticket->status === 'in_progress')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'repaired')" class="btn-status btn-complete">
-                                                Repaired
-                                            </button>
-                                        @endif
-
-                                        @if($ticket->status === 'repaired')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'released')" class="btn-status btn-released">
-                                                Release
-                                            </button>
-                                        @endif
-                                        
-                                        @if($ticket->status !== 'unrepairable' && $ticket->status !== 'repaired' && $ticket->status !== 'released')
-                                            <button onclick="updateStatus({{ $ticket->id }}, 'unrepairable')" class="btn-status btn-cancel">
-                                                Unrepairable
-                                            </button>
-                                        @endif
+                                    <div class="action-buttons">
                                         <button class="btn-edit" 
                                                 data-device_id="{{ $ticket->repairDevice_id }}"
                                                 data-id="{{ $ticket->id }}"
@@ -113,7 +90,8 @@
                                                 data-issue="{{ $ticket->issue }}"
                                                 data-solution="{{ $ticket->solution }}"
                                                 data-note="{{ $ticket->note }}"
-                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}">
+                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}"
+                                                data-status="{{ $ticket->status }}">
                                             Edit
                                         </button>
                                     </div>
@@ -193,6 +171,39 @@
         $('#edit_solution').val(ticket.solution);
         $('#edit_note').val(ticket.note);
         $('#edit_release_date').val(ticket.release_date);
+
+        // Populate action buttons dynamically
+        const actionContainer = $('#editActionBtn');
+        actionContainer.empty(); // clear previous buttons
+
+        if (ticket.status === 'pending') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'in_progress')" class="btn-status btn-progress">
+                    Start Progress <i class="fa-solid fa-circle-play"></i>
+                </button>
+            `);
+        }
+        if (ticket.status === 'in_progress') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'repaired')" class="btn-status btn-complete">
+                    Mark Complete <i class="fa-solid fa-circle-check"></i>
+                </button>
+            `);
+        }
+        if (ticket.status === 'repaired') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'released')" class="btn-status btn-released">
+                    Release <i class="fa-solid fa-rocket"></i>
+                </button>
+            `);
+        }
+        if (ticket.status !== 'unrepairable' && ticket.status !== 'repaired' && ticket.status !== 'released') {
+            actionContainer.append(`
+                <button onclick="updateStatus(${ticket.id}, 'cancelled')" class="btn-status btn-cancel">
+                    Cancel <i class="fa-solid fa-ban"></i>
+                </button>
+            `);
+        }
 
         $('#editRepairModal').addClass('active');
         $('#closeEditModal').on('click', function() {
