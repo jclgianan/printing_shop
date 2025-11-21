@@ -63,6 +63,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/process/store', [PrintingController::class, 'store'])->name('process.store');
     Route::get('/generate-printTicket-id', [PrintingController::class, 'generatePrintTicketId'])->name('generate.printTicket.id');
     Route::get('/generate-repairTicket-id', [RepairController::class, 'generateRepairTicketId'])->name('generate.repairTicket.id');
+    Route::get('/generate-repairDevice-id', [RepairController::class, 'generateRepairDeviceId'])->name('generate.repairDevice.id');
     
     // Print ticket status management
     Route::post('/print-tickets/{id}/status', [PrintingController::class, 'updateStatus'])->name('print-tickets.update-status');

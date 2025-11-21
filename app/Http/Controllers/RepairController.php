@@ -81,9 +81,42 @@ class RepairController extends Controller
                 } while (RepairTicket::where('repairTicket_id', $randomId)->exists());
             }
 
+            $hasId = $request->input('has_id'); // 'yes' or 'no'
+            $deviceId = $request->input('repairDevice_id');
+
+            if (!$hasId) {
+                return response()->json([
+                    'error' => 'Please select whether you have an existing Device ID.'
+                ], 422);
+            }
+
+            if ($hasId === 'yes') {
+                if (!$deviceId || !RepairTicket::where('repairDevice_id', $deviceId)->exists()) {
+                    return response()->json([
+                        'error' => 'The device ID you entered does not exist.'
+                    ], 422);
+                }
+                $finalDeviceId = $deviceId;
+            } elseif ($hasId === 'no') {
+                if (!$deviceId) {
+                    return response()->json([
+                        'error' => 'Please click "Generate" to create a Device ID.'
+                    ], 422);
+                }
+                $finalDeviceId = $deviceId;
+            }
+
+            else {
+                // No device input → generate a unique ID
+                do {
+                    $finalDeviceId = random_int(100000, 999999);
+                } while (RepairTicket::where('repairDevice_id', $finalDeviceId)->exists());
+            }
+
             // Create the print ticket record (process_id is optional)
             // Do NOT set release_date here; it will be set when status becomes 'released'.
             $ticket = RepairTicket::create([
+                'repairDevice_id' => $finalDeviceId,
                 'repairTicket_id' => $randomId,
                 'receiving_date' => $request->receiving_date,
                 'name' => $request->name,
@@ -120,6 +153,34 @@ class RepairController extends Controller
             }                    
             // Redirect with error message
             return redirect()->route('repair.form')->with('error', 'Failed to save Repair Ticket. Please try again.');
+        }
+    }
+
+    // Genrating the unique repair Device ID
+    public function generateRepairDeviceId()
+    {   
+        try {
+            // Log the start of the process
+            Log::info('Generating Device ID...');
+
+            do {
+                // Create ticket ID with today's date and random characters (PRT prefix)
+                $device_id = random_int(100000, 999999);
+
+                // Log the generated ID
+                Log::info("Generated ID: $device_id");
+
+                // Check if this ID already exists in the database
+            } while (RepairTicket::where('repairDevice_id', $device_id)->exists());
+
+            // Return the generated ID as a response
+            return response()->json(['repairDevice_id' => $device_id]);
+        } catch (\Exception $e) {
+            // Log the exception if something goes wrong
+            Log::error("Error generating Repair Ticket ID: " . $e->getMessage());
+            
+            // Return an error response
+            return response()->json(['error' => 'Error generating Ticket ID.'], 500);
         }
     }
 
@@ -221,11 +282,22 @@ class RepairController extends Controller
             'status' => 'nullable|in:pending,in_progress,printed,released,cancelled',
         ]);
 
-        $ticket->update($request->only([
-            'name', 'office_department', 'itemname', 'issue', 'solution', 'note', 'release_date', 'status'
-        ]));
+        $deviceId = $request->input('repairDevice_id');
+        if (!$deviceId) {
+            do {
+                $deviceId = random_int(100000, 999999);
+            } while (RepairTicket::where('repairDevice_id', $deviceId)->exists());
+        }
+
+        // Update including repairDevice_id
+        $ticket->update(array_merge(
+            $request->only(['name','office_department','itemname','issue','solution','note','release_date','status']),
+            ['repairDevice_id' => $deviceId]
+        ));
+
 
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }
+
 
 }

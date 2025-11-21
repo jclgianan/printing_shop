@@ -15,6 +15,12 @@
         <div class="content-placeholder-edit-repair">
             <form id="editRepairForm" class="process-form">
                 @csrf
+                <div class="form-group">
+                    <label for="repairDevice_id">Device ID</label>
+                    <input type="text" name="repairDevice_id" id="edit_device_id" class="form-control" 
+                        value="{{ $ticket->repairDevice_id ?? '' }}">
+                </div>
+
                 <input type="hidden" name="ticket_id" id="edit_ticket_id">
 
                 <div class="form-group">
@@ -38,7 +44,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="edit_issue">Solution</label>
+                    <label for="edit_solution">Solution</label>
                     <input type="text" name="solution" id="edit_solution" class="form-control">
                 </div>
 
@@ -48,7 +54,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="edit-release_date">Release Date</label>
+                    <label for="edit_release_date">Release Date</label>
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>
 
@@ -58,3 +64,56 @@
         </div>
     </div>
 </div>
+
+<script>
+    $('#editRepairForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const form = $(this);
+        const formData = form.serialize();
+        const messageBox = $('#editFormMessage');
+        const submitBtn = form.find('button[type="submit"]');
+        const ticketId = $('#edit_ticket_id').val(); // get ID from hidden input
+
+        const updateUrl = `/repair/${ticketId}/update`; // matches your route
+
+        submitBtn.prop('disabled', true).text('Updating...');
+
+        $.ajax({
+            url: updateUrl,
+            method: "POST",
+            data: formData,
+            success: function(response) {
+                messageBox
+                    .removeClass('alert-error')
+                    .addClass('alert-box alert-success')
+                    .text(response.success)
+                    .fadeIn();
+
+                submitBtn.prop('disabled', false).text('Update Ticket');
+
+                setTimeout(() => {
+                    messageBox.fadeOut();
+                    window.location.reload();
+                    document.getElementById('editRepairModal').style.display = 'none';
+                }, 1500);
+            },
+            error: function(xhr) {
+                let message = 'Failed to update. Please try again.';
+                if(xhr.responseJSON && xhr.responseJSON.details){
+                    message += ' (' + xhr.responseJSON.details + ')';
+                }
+                messageBox
+                    .removeClass('alert-success')
+                    .addClass('alert-box alert-error')
+                    .text(message)
+                    .fadeIn();
+
+                submitBtn.prop('disabled', false).text('Update Ticket');
+            }
+        });
+    });
+
+</script>
+
+

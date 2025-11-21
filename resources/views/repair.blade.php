@@ -47,6 +47,7 @@
                 <table class="process-table">
                     <thead>
                         <tr class="table-header">
+                            <th>Device ID</th>
                             <th>Ticket ID</th>
                             <th>Receiving Date</th>
                             <th>Name</th>
@@ -64,6 +65,7 @@
                     <tbody>
                         @foreach($repairTickets as $ticket)
                             <tr>
+                                <td>{{ $ticket->repairDevice_id }}</td>
                                 <td>{{ $ticket->repairTicket_id }}</td>
                                 <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('m/d/y') }}</td>
                                 <td>{{ $ticket->name }}</td>
@@ -102,6 +104,7 @@
                                             </button>
                                         @endif
                                         <button class="btn-edit" 
+                                                data-device_id="{{ $ticket->repairDevice_id }}"
                                                 data-id="{{ $ticket->id }}"
                                                 data-receiving_date="{{ $ticket->receiving_date }}"
                                                 data-name="{{ $ticket->name }}"
@@ -180,6 +183,7 @@
      $(document).on('click', '.btn-edit', function() {
         const ticket = $(this).data();
 
+        $('#edit_device_id').val(ticket.device_id || '');
         $('#edit_ticket_id').val(ticket.id);
         $('#edit_receiving_date').val(ticket.receiving_date);
         $('#edit_name').val(ticket.name);
@@ -234,13 +238,14 @@
                         
                     // Update the table row live without reloading
                     const row = $(`button[data-id='${ticketId}']`).closest('tr');
-                    row.find('td:nth-child(3)').text(response.ticket.name);
-                    row.find('td:nth-child(4)').text(response.ticket.office_department);
-                    row.find('td:nth-child(5)').text(response.ticket.itemname);
-                    row.find('td:nth-child(6)').text(response.ticket.issue);
-                    row.find('td:nth-child(7)').text(response.ticket.solution);
-                    row.find('td:nth-child(8)').text(response.ticket.note);
-                    row.find('td:nth-child(9)').text(response.ticket.release_date);
+                    row.find('td:nth-child(3)').text(response.ticket.device_id);
+                    row.find('td:nth-child(4)').text(response.ticket.name);
+                    row.find('td:nth-child(5)').text(response.ticket.office_department);
+                    row.find('td:nth-child(6)').text(response.ticket.itemname);
+                    row.find('td:nth-child(7)').text(response.ticket.issue);
+                    row.find('td:nth-child(8)').text(response.ticket.solution);
+                    row.find('td:nth-child(9)').text(response.ticket.note);
+                    row.find('td:nth-child(10)').text(response.ticket.release_date);
 
                     submitBtn.prop('disabled', false).text('Update Ticket');
 

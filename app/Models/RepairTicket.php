@@ -13,6 +13,7 @@ class RepairTicket extends Model
 
     protected $fillable = [
         'process_id',
+        'repairDevice_id',
         'repairTicket_id',
         'receiving_date',
         'name',
