@@ -1,6 +1,6 @@
 * {
     font-family: 'Arial', 'sans-serif';
-    scrollbar-width: 10px;
+    scrollbar-width: thin;
     
 }
 
@@ -383,9 +383,9 @@
 /* navbar */
 
 .sidebar-logo {
-    width: 15rem;
+    width: 5.8rem;
     height: auto;
-    filter: invert(100);
+    /* filter: invert(100%); */
 }
 
 .receiving_sidebar {
@@ -533,29 +533,29 @@ input::placeholder {
     height: 40px; /* match height of search form */
     margin-left: auto;
     cursor: pointer;
+
 }
 .receiving_newEntry:hover {
     background-color: #1e3a8a;
 }
 
 /* Process Logs Styles */
-.logs-bottomBar {
+/* .logs-bottomBar {
     margin-bottom: 0.5rem;
-}
+} */
 .process-log {
     /* flex: 1; */
-    overflow-y: auto;
+    overflow: scroll;
     padding: 0;
     /* margin-top: 1rem; */
     /* margin-bottom: 1rem; */
     display: block;
-    height: 80vh;
+    height: 73vh;
     position: relative;
     background: white;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-    scrollbar-width: 5px;
+    scrollbar-width: thin;
 }
 
 .process-log::-webkit-scrollbar {
@@ -634,12 +634,13 @@ input::placeholder {
 
 .process-table {
     width: 100%;
+    /* height: 100vh; */
     border-collapse: collapse;
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 10px;
     margin-top: 0;
-    overflow: hidden;
+    overflow-y: auto;
 }
 
 .process-table th,
@@ -685,7 +686,7 @@ input::placeholder {
 }
 
 .process-table tr:nth-child(odd) {
-    background-color: rgb(150, 150, 150); 
+    background-color: rgb(179, 179, 179); 
 }
 
 .process-table thead{
