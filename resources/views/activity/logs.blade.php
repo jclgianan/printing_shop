@@ -8,7 +8,7 @@
 
         <h2>Activity Logs</h2>
 
-        <table class="table">
+        <table class="logs-table">
             <thead>
                 <tr>
                     <th>#</th>

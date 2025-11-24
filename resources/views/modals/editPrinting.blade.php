@@ -1,6 +1,5 @@
 <div id="editPrintingModal" class="modal-overlay">
     <div class="modal-box">
-        <span id="closeEditModal" class="modal-close">&times;</span>
         <div class="header-row-modal">
             <div class="header-top-modal">
                 <div class="header-text-modal">
@@ -11,7 +10,9 @@
         
         <div id="editFormMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
-        <div class="content-placeholder-edit-print">
+        <div class="container-modal">
+            <div class="action-buttons" id="editActionBtn"></div>
+
             <form id="editPrintingForm" class="process-form">
                 @csrf
                 <input type="hidden" id="edit_ticket_id" name="id">
@@ -55,13 +56,13 @@
                     <label for="edit_release_date">Release Date</label>
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>
-
-                <button type="submit" class="btn btn-primary">Change info</button>
-                
-                <!-- Action buttons will be inserted here dynamically -->
-                <div class="action-buttons" id="editActionBtn"></div>
-                
+                <div class="formBtn">
+                    <button type="submit" class="editBtn">Save changes</button>
+                    <button id="closeEditModal" class="editBtn">Close</button>
+                </div>
             </form>
+                            <!-- Action buttons will be inserted here dynamically -->
+           
         </div>
     </div>
 </div>

@@ -635,6 +635,8 @@ input::placeholder {
     width: 5%;
 }
 
+
+
 .process-table {
     width: 100%;
     /* height: 100vh; */
@@ -731,9 +733,7 @@ input::placeholder {
     border-radius: 4px;
     cursor: pointer;
 }
-.process-form {
-    width: 20rem;
-}
+
 
 /*============= select-type modal styles ==============*/
 /* Modal Background */
@@ -826,44 +826,106 @@ input::placeholder {
 
 .modal-box {
     position: absolute;
-    height: 100%;
-    display: flex;
+    height: auto;
+    /* display: flex;
     justify-content: center;
-    align-items: center;
-    flex-grow: 1;
+    align-items: center; */
+    /* width: auto; */
     padding: 1rem;
     background-color: #f8fafc; /* light gray */
-    /* display: flex; */
-    flex-direction: column;
+
     background: #fff;
     scrollbar-width: none;
     border-radius: 12px;
-    width: 30vw;
-    max-height: 90vh;
+    width: auto;
+    max-height: 100vh;
     overflow-y: auto;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
 }
 
-.modal-close {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    cursor: pointer;
-    font-size: 22px;
-    font-weight: bold;
+.formBtn {
+    display: flex;
+    justify-content: space-between;
+}
+
+.process-form {
+    /* width: auto; */
+    display: block;
+    width: 10;
+    box-shadow: 0px 0px 5px;
+    border-radius: 10px;
+    padding: 10px;
+
+    width: 500px;
+    /* border: solid 1px black; */
+
+}
+
+.process-form input{
+    width: 20em;
+}
+
+.container-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.editBtn {
+    /* display: flex; */
+    /* margin-left: auto; */
+    padding: 8px;
+    border: 1px transparent;
+    border-radius: 10px;
+    width: 130px;
+    background-color: rgb(255, 255, 255);
+    border: 1px solid rgb(122, 122, 122);
+}
+
+.header-row-modal{
+
+    align-items: center;
 }
 
 .header-top-modal {
-    background-color: #00000049;
+    background-color: rgba(255, 255, 255, 1);
+    /* box-shadow: 0px 0px 4px 1px rgba(0, 0, 0, .25); */
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
 }
 
 .header-text-modal h2 {
     color: rgb(10, 10, 10);
     font-family: 'Roboto';
+    font-weight: 700;
     font-size: 1.3rem;
     margin: 0;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    /* border: solid black; */
+}
+
+.form-group label {
+    display: inline-block;
+    width: 180px;
+    text-align: right;
+    padding-right: 20px;
+
+    font-family: 'Roboto';
+    
+}
+
+.form-group input {
+    border-radius: 10px;
+    font-family: 'Roboto';
+
 }
 
 
@@ -893,3 +955,83 @@ input::placeholder {
     border-radius: 4px;
 }
 
+.logs-table {
+    width: 100%;
+    /* height: 100vh; */
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    margin-top: 0;
+    overflow-y: auto;
+}
+
+.logs-table th,
+.logs-table td {
+    padding: 0.2rem;
+    border: 1px solid #eee;
+    line-height: 1.5;
+
+}
+
+.logs-table td{
+    border: none;
+}
+
+.logs-table th {
+    font-family: 'Roboto';
+    font-size: 16px;
+    border: none;
+    position: relative; 
+    padding: 10px 15px;
+}
+
+/* separators */
+.logs-table th::after {
+    content: ""; /* Essential for pseudo-elements to display */
+    position: absolute;
+    right: 0;
+    top: 50%;
+    height: 60%; 
+    transform: translateY(-50%); 
+    width: 2px;
+    background-color: #ffffff; /* Your border color */
+}
+
+.logs-table th:last-child::after {
+    content: none;
+}
+
+.logs-table tr:nth-child(odd) {
+    background-color: rgb(179, 179, 179); 
+}
+
+.logs-table thead{
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    border-left: none;
+    border-right: none;
+    background-color: rgba(0, 0, 0, 0.959);
+}
+
+
+
+.logs-table th {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+
+    background-color: rgb(0, 0, 0);
+    color: white;
+    font-weight: 500;
+    font-size: 16px;
+    /* text-shadow: 1px 1px 1px rgb(114, 114, 114); */
+    font-family: 'Rubik', sans-serif;
+
+}
+
+.logs-table tbody tr:hover {
+    box-shadow: 0px 0px 0px 2px rgba(0, 0, 0, 0.795) inset;
+    
+}

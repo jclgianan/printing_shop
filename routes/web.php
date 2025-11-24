@@ -30,12 +30,12 @@ Route::post("/register", [AuthController::class, "registerPost"])
     ->name("register.post");
 Route::get("/add-new-user", [AuthController::class, "addNewUser"])
     ->name("add-new-user");
-Route::get('/activity-logs', [AuthController::class, 'ActivityLogs'])->name('activity.logs');
-Route::middleware(['auth', 'role:admin, editor'])
+Route::middleware(['auth', 'role:admin'])
     ->group(function () {
     Route::post('/users/update/{id}', [AuthController::class, 'updateUser'])->name('users.update');
     Route::delete('/users/delete/{id}', [AuthController::class, 'Destroy'])->name('user.destroy');
     Route::get("/register", [AuthController::class, "register"])->name("register");
+    Route::get('/activity-logs', [AuthController::class, 'ActivityLogs'])->name('activity.logs');
     });
 
 Route::middleware(['auth', 'role:admin,editor'])

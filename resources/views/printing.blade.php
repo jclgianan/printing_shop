@@ -27,7 +27,7 @@
                     <form action="{{ route('status-filter') }}" method="GET" class="filter-form">
                         <button class="filter-group {{ $statusFilter === null ? 'active' : '' }}" type="submit" name="filter" value="">All</button>
                         <button class="filter-group {{ $statusFilter === 'pending' ? 'active' : '' }}" type="submit" name="filter" value="pending">Pending</button>
-                        <button class="filter-group {{ $statusFilter === 'in_progress' ? 'active' : '' }}" type="submit" name="filter" value="in_progress">In Progress</button>
+                        <button class="filter-group {{ $statusFilter === 'in_progress' ? 'active' : '' }}" type="submit" name="filter" value="in_progress">Ongoing</button>
                         <button class="filter-group {{ $statusFilter === 'printed' ? 'active' : '' }}" type="submit" name="filter" value="printed">Printed</button>
                         <button class="filter-group {{ $statusFilter === 'released' ? 'active' : '' }}" type="submit" name="filter" value="released">Released</button>
                         <button class="filter-group {{ $statusFilter === 'cancelled' ? 'active' : '' }}" type="submit" name="filter" value="cancelled">Cancelled</button>
@@ -102,7 +102,7 @@
                                             data-file_link="{{ $ticket->file_link }}"
                                             data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}"
                                             data-status="{{ $ticket->status }}">
-                                        Update <i class="fa-solid fa-pen-to-square"></i>
+                                        <i class="fa-solid fa-pen-to-square"></i>
                                     </button>
                                 </td>
                             </tr>
