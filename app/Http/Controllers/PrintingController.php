@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Process;
+use App\Models\ActivityLog;
 use App\Models\PrintTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -98,6 +99,19 @@ class PrintingController extends Controller
                 'status' => 'pending',
             ]);
 
+            $user = auth()->user();
+
+            try {
+                ActivityLog::record(
+                    'Add Print Ticket',
+                    "Print Ticket {$ticket->printTicket_id} was created"
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to log Print Ticket activity: ' . $e->getMessage());
+                // don't throw, let ticket submission succeed
+            }
+
+
              // If AJAX, return JSON
             if ($request->ajax()) {
                 return response()->json([
@@ -115,7 +129,7 @@ class PrintingController extends Controller
 
             if ($request->ajax()) {
                 return response()->json([
-                    'error' => 'Failed to save Repair Ticket.',
+                    'error' => 'Failed to save Print Ticket.',
                     'details' => config('app.debug') ? $e->getMessage() : null,
                 ], 500);
             } 
@@ -193,6 +207,18 @@ class PrintingController extends Controller
             }
             $ticket->save();
 
+            $user = auth()->user();
+
+            //Activity Logs
+            try {
+                ActivityLog::record(
+                    'UpdatePrint Status',
+                    "Print Ticket {$ticket->printTicket_id} status changed from {$oldStatus} to {$ticket->formatted_status}"
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to record activity log: ' . $e->getMessage());
+            }          
+
             return response()->json([
                 'success' => true,
                 'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
@@ -231,9 +257,28 @@ class PrintingController extends Controller
             'status' => 'nullable|in:pending,in_progress,printed,released,cancelled',
         ]);
 
-        $ticket->update($request->only([
-            'name', 'office_department', 'itemname', 'size', 'quantity', 'deadline', 'file_link', 'release_date', 'status'
-        ]));
+        
+        $changes = [];
+        // Update including repairDevice_id
+        foreach ($request->only(['name', 'office_department', 'itemname', 'size', 'quantity', 'deadline', 'file_link', 'release_date', 'status']) as $field => $value) {
+            if ($ticket->$field != $value) {
+                $changes[] = ucfirst($field) .": '{$ticket->$field}' → '{$value}'";
+                $ticket->$field = $value;
+            }
+        }
+        $ticket->save();
+
+         // Record activity log
+        if (!empty($changes)) {
+            try {
+                ActivityLog::record(
+                    'Update Print Ticket',
+                    "Print Ticket {$ticket->printTicket_id} updated:<br>" . implode('<br>', $changes)
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to record activity log: ' . $e->getMessage());
+            }
+        }
 
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }
