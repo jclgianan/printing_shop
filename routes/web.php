@@ -26,26 +26,25 @@ Route::get("/login", [AuthController::class, "login"])
     ->name("login");
 Route::post("/login", [AuthController::class, "loginPost"])
     ->name("login.post");
-Route::get("/register", [AuthController::class, "register"])
-    ->name("register");
 Route::post("/register", [AuthController::class, "registerPost"])
     ->name("register.post");
 Route::get("/add-new-user", [AuthController::class, "addNewUser"])
     ->name("add-new-user");
 Route::middleware(['auth', 'role:admin'])
     ->group(function () {
-    Route::get('/add-new-user', [AuthController::class, 'addNewUser'])
-        ->name('add-new-user');});
-    // Show all users
-    Route::get('/users', [AuthController::class, 'listUsers'])
-    ->name('users.list');
-    // Update user
-    Route::post('/users/update/{id}', [AuthController::class, 'updateUser'])
-    ->name('users.update');
+    Route::post('/users/update/{id}', [AuthController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/delete/{id}', [AuthController::class, 'Destroy'])->name('user.destroy');
+    Route::get("/register", [AuthController::class, "register"])->name("register"); 
+   
+    });
+
 Route::middleware(['auth', 'role:admin,editor'])
     ->group(function () {
-    Route::get('/main', [AuthController::class, 'index'])
-        ->name('main');});
+    Route::get('/main', [AuthController::class, 'index'])->name('main');
+    Route::get('/add-new-user', [AuthController::class, 'addNewUser'])->name('add-new-user');
+    Route::get('/users', [AuthController::class, 'listUsers'])->name('users.list');
+    });
+
 
 
     
@@ -55,7 +54,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get("/main", [AuthController::class, "index"])->name("main");
     Route::get("/printing", [PrintingController::class, "printing"])->name("printing");
     Route::get("/repair", [RepairController::class, "repair"])->name("repair");
-    Route::get("/select-type", [AuthController::class, "selectType"])->name("select-type");
     
     // Forms and processes
     Route::get('/addPrinting', [PrintingController::class, 'printingForm'])->name('printing.form');

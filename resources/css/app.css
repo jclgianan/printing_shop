@@ -862,5 +862,13 @@ input::placeholder {
 }
 
 
-
+/*=======Add User Styles=======*/
+.disabled-button {
+    background: #ccc !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+}
 

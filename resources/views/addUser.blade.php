@@ -6,7 +6,19 @@
 <div class="layout-wrapper">
     <main class="receiving-main-panel">
 
-        <h2>User Management</h2>
+        <div class="content-placeholder header-row">
+            <div class="header-top">
+                <div class="header-text">
+                    <h2 class="section-heading"><i class="fa-solid fa-screwdriver-wrench"></i> User Management</h2>
+                </div>
+                <!-- Create Entry Button on the right -->
+                @if(auth()->user()->role === 'admin')
+                    <button id="btnAddUser" class="receiving_newEntry"><i class="fa-solid fa-file-circle-plus"></i> Add New User</button>
+                @else
+                    <button id="btnAddUser" class="disabled-button" disabled><i class="fa-solid fa-file-circle-plus"></i> Add New User</button>
+                @endif
+            </div>
+        </div>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
@@ -19,7 +31,7 @@
                     <th>Name</th>
                     <th>Email</th>
                     <th>Role</th>
-                    <th>Edit</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
 
@@ -31,21 +43,38 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ ucfirst($user->role) }}</td>
                     <td>
-                        <button class="btn-edit-user"
-                            data-id="{{ $user->id }}"
-                            data-name="{{ $user->name }}"
-                            data-email="{{ $user->email }}"
-                            data-role="{{ $user->role }}">
-                            Edit
-                        </button>
+                        @if(auth()->user()->role === 'admin')
+                            <button class="btn-edit-user"
+                                data-id="{{ $user->id }}"
+                                data-name="{{ $user->name }}"
+                                data-email="{{ $user->email }}"
+                                data-role="{{ $user->role }}">
+                                Edit
+                            </button>
+                        @else
+                            <button class="btn-edit-user disabled-button" disabled>
+                                Edit
+                            </button>
+                        @endif
+
+                        @if(auth()->user()->role === 'admin')
+                            <form action="{{ url('/users/delete/' . $user->id) }}"
+                                method="POST"
+                                onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn-delete-user">Delete</button>
+                            </form>
+                        @else
+                            <button class="btn-delete-user disabled-button" disabled>
+                                Delete
+                            </button>
+                        @endif
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
-        <button id="btnAddUser" class="btn btn-primary">
-            Add User
-        </button>
 
     </main>
 </div>

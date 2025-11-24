@@ -121,5 +121,14 @@ class AuthController extends Controller
         return back()->with("success", "User updated successfully.");
     }
 
+    //Delete User
+    public function Destroy($id) {
+        $user = User::findOrFail($id);
+        $name = $user->name;
+        $user->delete();
+
+        return redirect()->back()->with('success', "User {$name} deleted successfuly!");
+    }
+
      
 }
