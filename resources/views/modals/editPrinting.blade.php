@@ -1,9 +1,9 @@
 <div id="editPrintingModal" class="modal-overlay">
     <div class="modal-box">
         <span id="closeEditModal" class="modal-close">&times;</span>
-        <div class="content-placeholder header-row">
-            <div class="header-top">
-                <div class="header-text">
+        <div class="header-row-modal">
+            <div class="header-top-modal">
+                <div class="header-text-modal">
                     <h2>Edit Printing Ticket</h2>
                 </div>
             </div>

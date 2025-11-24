@@ -6,7 +6,7 @@
 
 
 ::-webkit-scrollbar {
-    width: 10px; 
+    width: 50px; 
     height: 1px; 
 }
 
@@ -509,6 +509,8 @@ input::placeholder {
     margin: 0;
     flex-grow: 1;
 }
+
+
 .section-description {
     color: #555;
     margin-top: 0.5rem;
@@ -538,30 +540,6 @@ input::placeholder {
 .receiving_newEntry:hover {
     background-color: #1e3a8a;
 }
-
-/* Process Logs Styles */
-/* .logs-bottomBar {
-    margin-bottom: 0.5rem;
-} */
-.process-log {
-    /* flex: 1; */
-    overflow: scroll;
-    padding: 0;
-    /* margin-top: 1rem; */
-    /* margin-bottom: 1rem; */
-    display: block;
-    height: 73vh;
-    position: relative;
-    background: white;
-    border-radius: 0.5rem;
-
-    scrollbar-width: thin;
-}
-
-.process-log::-webkit-scrollbar {
-    width: 5px;
-}
-
 
 .search-form {
     display: flex;
@@ -632,6 +610,31 @@ input::placeholder {
     border-color: #1e3a8a;
 }
 
+/* Process Logs Styles */
+
+.logs-bottomBar {
+    margin-bottom: 0.5rem;
+}
+
+.process-log {
+    /* flex: 1; */
+    overflow: auto;
+    padding: 0;
+    /* margin-top: 1rem; */
+    /* margin-bottom: 1rem; */
+    display: block;
+    height: 73vh;
+    position: relative;
+    background: white;
+    border-radius: 0.5rem;
+
+    scrollbar-width: thin;
+}
+
+.process-log::-webkit-scrollbar {
+    width: 5%;
+}
+
 .process-table {
     width: 100%;
     /* height: 100vh; */
@@ -670,6 +673,7 @@ input::placeholder {
     padding: 10px 15px;
 }
 
+/* separators */
 .process-table th::after {
     content: ""; /* Essential for pseudo-elements to display */
     position: absolute;
@@ -771,12 +775,14 @@ input::placeholder {
     margin-top: 1.5rem;
     flex-wrap: wrap;
 }
+
 .select-type-cards{
     display: flex;
     gap: 1.5rem;
     justify-content: center;
     margin-top: 1.5rem;
 }
+
 .select-type-card {
     width: 15rem;
     padding: 1rem; /* p-4 = 16px */
@@ -803,7 +809,7 @@ input::placeholder {
         opacity: 1;
     }
 }
-/*========= Add Printing Page Styles =========*/
+/*========= Modal Styles =========*/
 .modal-overlay {
     display: none;
     position: fixed;
@@ -830,6 +836,7 @@ input::placeholder {
     /* display: flex; */
     flex-direction: column;
     background: #fff;
+    scrollbar-width: none;
     border-radius: 12px;
     width: 30vw;
     max-height: 90vh;
@@ -844,6 +851,19 @@ input::placeholder {
     cursor: pointer;
     font-size: 22px;
     font-weight: bold;
+}
+
+.header-top-modal {
+    background-color: #00000049;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.header-text-modal h2 {
+    color: rgb(10, 10, 10);
+    font-family: 'Roboto';
+    font-size: 1.3rem;
+    margin: 0;
 }
 
 
