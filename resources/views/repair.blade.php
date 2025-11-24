@@ -49,7 +49,7 @@
                         <tr class="table-header">
                             <th>Device ID</th>
                             <th>Ticket ID</th>
-                            <th>Receiving Date</th>
+                            <th id="sortColumn" style="cursor:pointer;">Receiving Date<span id="sortArrow"></span></th>
                             <th>Name</th>
                             <th>Office</th>
                             <th>Name of Item</th>
@@ -281,6 +281,25 @@
             }
         });
     });
+
+    //up down table sorting
+    document.getElementById("sortColumn").addEventListener("click", function () {
+        const tbody = document.querySelector("table tbody");
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        const arrow = document.getElementById("sortArrow");
+
+        // Reverse rows
+        rows.reverse();
+        rows.forEach(r => tbody.appendChild(r));
+
+        if (arrow.innerHTML === "" || arrow.textContent === "") {
+            arrow.innerHTML = ""; 
+        } else {
+            arrow.innerHTML = ""; 
+        }
+    });
+
+
 
 </script>
 @endpush
