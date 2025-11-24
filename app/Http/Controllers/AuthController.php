@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Process;
+use App\Models\ActivityLog;
 use App\Models\PrintTicket;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
@@ -88,6 +89,12 @@ class AuthController extends Controller
                 ->with("success", "Registration successful.");
         }
 
+        //Activity Logs
+        ActivityLog::record(
+            'Add User',
+            "Created User {$user->name} ({$user->email})"
+        );
+
         return back()
             ->withInput($request->only('fullname', 'email'))
             ->with("error", "Registration failed. Please try again.");
@@ -118,6 +125,12 @@ class AuthController extends Controller
 
         $user->save();
 
+        //Activity Logs
+        ActivityLog::record(
+            'Update User',
+            "Updated User {$user->name} ({$user->email})"
+        );
+
         return back()->with("success", "User updated successfully.");
     }
 
@@ -127,8 +140,20 @@ class AuthController extends Controller
         $name = $user->name;
         $user->delete();
 
+        //Activity Logs
+        ActivityLo9g::record(
+            'Delete User',
+            "Deleted User {$user->name} ({$user->email})"
+        );
+
         return redirect()->back()->with('success', "User {$name} deleted successfuly!");
     }
 
+    //Activity Logs Page Controller
+    public function ActivityLogs(){
+        $logs = ActivityLog::orderBy('created_at', 'desc')->get();
+
+        return view('activity.logs', compact('logs'));
+    }
      
 }
