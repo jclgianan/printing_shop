@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Process;
+use App\Models\ActivityLog;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -128,6 +129,19 @@ class RepairController extends Controller
                 'status' => 'pending',
             ]);
 
+            $user = auth()->user();
+
+            try {
+                ActivityLog::record(
+                    'Add Repair Ticket',
+                    "Repair Ticket {$ticket->repairTicket_id} was created"
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to log Repair Ticket activity: ' . $e->getMessage());
+                // don't throw, let ticket submission succeed
+            }
+
+
              // If AJAX, return JSON
             if ($request->ajax()) {
                 $ticket = RepairTicket::latest()->first();
@@ -150,7 +164,8 @@ class RepairController extends Controller
                     'error' => 'Failed to save Repair Ticket.',
                     'details' => config('app.debug') ? $e->getMessage() : null,
                 ], 500);
-            }                    
+            }
+
             // Redirect with error message
             return redirect()->route('repair.form')->with('error', 'Failed to save Repair Ticket. Please try again.');
         }
@@ -245,6 +260,19 @@ class RepairController extends Controller
             }
             $ticket->save();
 
+            $user = auth()->user(); // current user
+
+            try {
+                ActivityLog::record(
+                    'Update Repair Status',
+                    "Repair Ticket {$ticket->repairTicket_id} status changed from {$oldStatus} to {$ticket->formatted_status}"
+
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to record activity log: ' . $e->getMessage());
+            }
+ 
+
             return response()->json([
                 'success' => true,
                 'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
@@ -288,13 +316,29 @@ class RepairController extends Controller
                 $deviceId = random_int(100000, 999999);
             } while (RepairTicket::where('repairDevice_id', $deviceId)->exists());
         }
-
+        
+        $changes = [];
         // Update including repairDevice_id
-        $ticket->update(array_merge(
-            $request->only(['name','office_department','itemname','issue','solution','note','release_date','status']),
-            ['repairDevice_id' => $deviceId]
-        ));
+        foreach ($request->only(['name','office_department','itemname','issue','solution','note','release_date','status']) as $field => $value) {
+            if ($ticket->$field != $value) {
+                $changes[] = ucfirst($field) .": '{$ticket->$field}' → '{$value}'";
+                $ticket->$field = $value;
+            }
+        }
+        $ticket->repairDevice_id = $deviceId;
+        $ticket->save();
 
+         // Record activity log
+        if (!empty($changes)) {
+            try {
+                ActivityLog::record(
+                    'Update Repair Ticket',
+                    "Repair Ticket {$ticket->repairTicket_id} updated:<br>" . implode('<br>', $changes)
+                );
+            } catch (\Exception $e) {
+                Log::error('Failed to record activity log: ' . $e->getMessage());
+            }
+        }
 
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }

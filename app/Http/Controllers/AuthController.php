@@ -104,6 +104,7 @@ class AuthController extends Controller
         $users = User::all();
         return view('users.index', compact('users'));
     }
+
     public function updateUser(Request $request, $id)
     {
         $request->validate([
@@ -114,22 +115,40 @@ class AuthController extends Controller
         ]);
 
         $user = User::findOrFail($id);
+        $changes = [];
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->role = $request->role;
+        if ($user->name !== $request->name) {
+            $changes[] = "Name: '{$user->name}' → '{$request->name}'";
+            $user->name = $request->name;
+        }
+
+        if ($user->email !== $request->email) {
+            $changes[] = "Email: '{$user->email}' → '{$request->email}'";
+            $user->email = $request->email;
+        }
+
+        if ($user->role !== $request->role) {
+            $changes[] = "Role: '{$user->role}' → '{$request->role}'";
+            $user->role = $request->role;
+        }
 
         if ($request->filled('password')) {
+            $changes[] = "Password changed";
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
 
         //Activity Logs
-        ActivityLog::record(
-            'Update User',
-            "Updated User {$user->name} ({$user->email})"
-        );
+        if(!empty($changes)) {
+
+            $description = implode("<br>", $changes);
+
+            ActivityLog::record(
+                'Update User',
+                $description
+            );
+        }
 
         return back()->with("success", "User updated successfully.");
     }

@@ -160,15 +160,16 @@
                     document.getElementById('repairDevice_id').value = this.value;
                 });
 
-            } else {
+            } else { // No selected
                 existingIdBox.style.display = "none";
-                generateIdBox.style.display = "block";
+                generateIdBox.style.display = "none";
 
-                // Clear hidden input so controller generates a new ID
-                document.getElementById('repairDevice_id').value = '';
+                // Automatically generate Device ID
+                generaterepairDeviceId();
             }
         });
     });
+
 
     // Function for Repair Ticket Generation and Selection
 
