@@ -160,7 +160,7 @@ class AuthController extends Controller
         $user->delete();
 
         //Activity Logs
-        ActivityLo9g::record(
+        ActivityLog::record(
             'Delete User',
             "Deleted User {$user->name} ({$user->email})"
         );

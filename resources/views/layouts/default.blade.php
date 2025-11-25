@@ -16,11 +16,8 @@
   </head>
   <body>
     <div class="layout-wrapper">
-      @if(isset($type) && in_array($type, ['addPrinting', 'printing']))
-        @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
-      @else
-          @include('layouts.sidebarRepair')
-      @endif
+      @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
+      @include('layouts.sidebarRepair') <!-- Shared sidebar -->
 
       <main class="main-panel">
           @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->
