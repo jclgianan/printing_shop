@@ -51,6 +51,36 @@ class AuthController extends Controller
         return back()->with('error', 'Invalid credentials.')->withInput($request->only('email'));
     }
 
+     // Dashboard counting
+    public function printMain()
+    {
+        
+
+        return view('main', compact('pending', 'in_progress', 'completed', 'released', 'unrepairable'));
+    }
+    // Dashboard counting
+    public function mainDashboard()
+    {
+        // PRINTING COUNTS
+        $pending = PrintTicket::where('status', 'pending')->count();
+        $in_progress = PrintTicket::where('status', 'in_progress')->count();
+        $printed = PrintTicket::where('status', 'printed')->count();
+        $released = PrintTicket::where('status', 'released')->count();
+        $cancelled = PrintTicket::where('status', 'cancelled')->count();
+
+        // REPAIR COUNTS
+        $repair_pending     = RepairTicket::where('status', 'pending')->count();
+        $repair_in_progress     = RepairTicket::where('status', 'ongoing')->count();
+        $repair_repaired   = RepairTicket::where('status', 'repaired')->count();
+        $repair_released    = RepairTicket::where('status', 'released')->count();
+        $repair_unrepairable    = RepairTicket::where('status', 'unrepairable')->count();
+
+        return view('main', compact(
+            'pending', 'in_progress', 'printed', 'released', 'cancelled',
+            'repair_pending', 'repair_in_progress', 'repair_repaired', 'repair_released', 'repair_unrepairable'
+        ));
+    }
+
     public function addNewUser() 
     {   
         $type = 'addUser';

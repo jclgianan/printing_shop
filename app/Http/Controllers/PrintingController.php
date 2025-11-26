@@ -283,6 +283,17 @@ class PrintingController extends Controller
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }
 
+    // Dashboard counting
+    public function printMain()
+    {
+        $pending = RepairTicket::where('status', 'pending')->count();
+        $in_progress = RepairTicket::where('status', 'in_progress')->count();
+        $printed = RepairTicket::where('status', 'printed')->count();
+        $released = RepairTicket::where('status', 'released')->count();
+        $cancelled = RepairTicket::where('status', 'cancelled')->count();
+
+        return view('main', compact('pending', 'in_progress', 'completed', 'released', 'unrepairable'));
+    }
 
 
 }
