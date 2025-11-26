@@ -1099,27 +1099,96 @@ input::placeholder {
 }
 
 /* ====== Dashboard styles====== */
-.dashboard {
-    height: 50%;
-    border-radius: 15px;
-    background-color: rgba(255, 255, 255, 0.000000000000000000000000000000000000000000000000000001);
-    backdrop-filter: blur(1px);
-    margin: 10px;
-    border: rgba(0, 0, 0, 0);
-    border-radius: 7px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, .15);
-    padding: .5rem;
-}
 
-.stats {
+.dashboard-container-main {
+    height: 100vh;
     display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    margin-top: 1rem;
+    flex-direction: column;
+    background-color: #2e3440;
+
+
+    border: 1px solid gray;
 }
 
-.card p {
-    font-family: 'Roboto', sans-serif;
-    color: #252525;
-    height: 80px;
+.dashboard-container-main h1 {
+    font-size: 50px;
+    font-family: 'Rubik';
+    color:  #5e81ac;
+    margin: 10px 0px 10px 20px;
+    /* margin: 0 auto; */
+    /* border: 1px solid black; */
+}
+
+.dashboard-container {
+    display: flex;
+    flex-grow: 1;
+
+    /* border: 1px solid black; */
+}
+
+
+.dashboard {
+    border-radius: 20px;
+    height: 64%;
+    width: 50%;
+    background-color: #3b4252;
+    margin: 10px;
+    padding: .5rem;
+
+
+    /* border: 1px solid black; */
+
+}
+
+.dashboard-header-text h2 {
+    font-size: 30px;
+    font-family: 'Rubik';
+    color:  #5e81ac;
+    margin: 5px 0px 20px 5px;
+}
+
+.in-cards {
+    padding: 20px;    
+}
+
+.in-cards p, h4 {
+    text-decoration: none;
+    color: #81a1c1;
+    font-family: 'Rubik';
+    font-weight: 600;
+    font-size: 25px;
+
+    letter-spacing: 1px;
+}
+
+.card-grid {
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* Centers the cards on the bottom row */
+    gap: 20px;
+}
+
+
+.card {
+    flex: 0 0 calc(33.333% - 20px); 
+    padding: 20px;
+    text-align: center;
+
+    border-radius: 20px;
+    background-color: #434c5e;
+
+    /* border: 1px solid black; */
+
+    transition: box-shadow 0.1s ease-in-out, transform 0.1s ease-in-out;
+    cursor: pointer;
+
+}
+
+.card:hover {
+/* Scales up by 3% */
+    box-shadow: 0px 0px 0px 2px #bf616a;
+    transform: scale(1.01);
+    /* Optional: Ensure it sits on top of neighbors */
+    z-index: 1;
 }
