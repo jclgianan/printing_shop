@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="receiving-container">
-        <div class="layout-wrapper">
+        <div class="layout-wrapper-main">
             <main class="receiving-main-panel">
 
                 <div class="dashboard-container-main">

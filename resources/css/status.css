@@ -3,7 +3,7 @@
     padding: 6px 12px;
     border-radius: 10px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     display: block;
     text-wrap-style: stable;
 }
@@ -29,7 +29,7 @@
 }
 
 .status-released {
-    background-color: #EDE9FE;
+    background-color: #ad9bff;
     color: #5B21B6;
 }
 

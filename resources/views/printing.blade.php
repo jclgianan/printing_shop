@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="receiving-container">
-    <div class="layout-wrapper">
+    <div class="layout-wrapper-printing">
         <!-- Main Content Area -->
         <main class="receiving-main-panel">
             <!-- Header with New Entry button aligned to the right -->
@@ -77,9 +77,9 @@
                                         : '-' 
                                     }}
                                 </td>
-                                <td>
+                                <td class="file-icon">
                                     @if($ticket->file_link)
-                                        <a href="{{ $ticket->file_link }}" target="_blank">Link</a>
+                                        <a href="{{ $ticket->file_link }}" target="_blank"><i class="fa-regular fa-file"></i></a>
                                     @else
                                         -
                                     @endif

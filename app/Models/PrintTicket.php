@@ -40,7 +40,7 @@ class PrintTicket extends Model
     public function getFormattedStatusAttribute()
     {
         return match($this->status) {
-            'in_progress' => 'In Progress',
+            'in_progress' => 'Ongoing',
             'pending' => 'Pending',
             'printed' => 'Printed',
             'released'      => 'Released', 

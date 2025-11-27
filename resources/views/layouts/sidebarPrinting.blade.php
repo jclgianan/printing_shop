@@ -1,7 +1,7 @@
-<aside class="receiving_sidebar">
+<aside class="receiving_topbar">
     <div class="shop_menu"><i class="fa-solid fa-list"></i></div>
-    <div class="sidebar-logo-container">
-        <img src="{{ asset('images/SecretShop_Logo_2.png') }}" alt="Logo" class="sidebar-logo">
+    <div class="topbar-logo-container">
+        <img src="{{ asset('images/SecretShop_Logo_2.png') }}" alt="Logo" class="topbar-logo">
     </div>
     {{-- <nav class="receiving_nav-menu">
         <ul>
@@ -19,7 +19,7 @@
 <script>
 document.addEventListener("DOMContentLoaded", () => {
     const leftSidebar = document.querySelector(".shop_sidebar");
-    const menuBtn = document.querySelector(".receiving_sidebar .shop_menu");
+    const menuBtn = document.querySelector(".receiving_topbar .shop_menu");
 
     menuBtn.addEventListener("click", () => {
         leftSidebar.classList.toggle("open");

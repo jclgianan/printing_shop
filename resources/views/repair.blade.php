@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="receiving-container">
-    <div class="layout-wrapper">
+    <div class="layout-wrapper-repair">
         <!-- Main Content Area -->
         <main class="receiving-main-panel">
             <!-- Header with New Entry button aligned to the right -->
@@ -45,23 +45,25 @@
             <div class="process-log">
                 @if(isset($repairTickets) && count($repairTickets) > 0)
                 <table class="process-table">
-                    <thead>
-                        <tr class="table-header">
-                            <th>Device ID</th>
-                            <th>Ticket ID</th>
-                            <th id="sortColumn" style="cursor:pointer;">Receiving Date<span id="sortArrow"></span></th>
-                            <th>Name</th>
-                            <th>Office</th>
-                            <th>Name of Item</th>
-                            <th>Issue</th>
-                            <th>Solution</th>
-                            <th>Note</th>
-                            <th>Release Date</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    
+                    <div class="thead-container">
+
+                        <thead>
+                            <tr class="table-header">
+                                <th>Device ID</th>
+                                <th>Ticket ID</th>
+                                <th id="sortColumn" style="cursor:pointer;">Receiving Date<span id="sortArrow"></span></th>
+                                <th>Name</th>
+                                <th>Office</th>
+                                <th>Name of Item</th>
+                                <th>Issue</th>
+                                <th>Solution</th>
+                                <th>Note</th>
+                                <th>Release Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                    </div>
                     <tbody>
                         @foreach($repairTickets as $ticket)
                             <tr>
@@ -92,7 +94,7 @@
                                                 data-note="{{ $ticket->note }}"
                                                 data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : ''  }}"
                                                 data-status="{{ $ticket->status }}">
-                                            Edit
+                                            <i class="fa-solid fa-pen-to-square"></i>
                                         </button>
                                     </div>
                                 </td>

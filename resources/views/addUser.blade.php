@@ -3,7 +3,7 @@
 @section('title', 'User Management')
 
 @section('content')
-<div class="layout-wrapper">
+<div class="layout-wrapper-adduser">
     <main class="receiving-main-panel">
 
         <div class="content-placeholder header-row">
