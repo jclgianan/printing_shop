@@ -6,7 +6,7 @@
 <div class="layout-wrapper">
     <main class="receiving-main-panel">
 
-        <h2>Activity Logs</h2>
+        <h2 class="logs-header-text">Activity Logs</h2>
 
         <table class="logs-table">
             <thead>
