@@ -35,7 +35,7 @@ class RepairTicket extends Model
     {
         return match($this->status) {
             'pending' => 'Pending',
-            'in_progress' => 'In Progress',
+            'in_progress' => 'Ongoing',
             'repaired' => 'Repaired',
             'released'      => 'Released', 
             'unrepairable' => 'Unrepairable',

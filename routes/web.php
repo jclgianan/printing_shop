@@ -26,42 +26,38 @@ Route::get("/login", [AuthController::class, "login"])
     ->name("login");
 Route::post("/login", [AuthController::class, "loginPost"])
     ->name("login.post");
-Route::get("/register", [AuthController::class, "register"])
-    ->name("register");
 Route::post("/register", [AuthController::class, "registerPost"])
     ->name("register.post");
 Route::get("/add-new-user", [AuthController::class, "addNewUser"])
     ->name("add-new-user");
 Route::middleware(['auth', 'role:admin'])
     ->group(function () {
-    Route::get('/add-new-user', [AuthController::class, 'addNewUser'])
-        ->name('add-new-user');});
-    // Show all users
-    Route::get('/users', [AuthController::class, 'listUsers'])
-    ->name('users.list');
-    // Update user
-    Route::post('/users/update/{id}', [AuthController::class, 'updateUser'])
-    ->name('users.update');
+    Route::post('/users/update/{id}', [AuthController::class, 'updateUser'])->name('users.update');
+    Route::delete('/users/delete/{id}', [AuthController::class, 'Destroy'])->name('user.destroy');
+    Route::get("/register", [AuthController::class, "register"])->name("register");
+    Route::get('/activity-logs', [AuthController::class, 'ActivityLogs'])->name('activity.logs');
+    });
+
 Route::middleware(['auth', 'role:admin,editor'])
     ->group(function () {
-    Route::get('/main', [AuthController::class, 'index'])
-        ->name('main');});
-
-
+    Route::get('/main', [AuthController::class, 'index'])->name('main');
+    Route::get('/add-new-user', [AuthController::class, 'addNewUser'])->name('add-new-user');
+    Route::get('/users', [AuthController::class, 'listUsers'])->name('users.list');
+    });
     
 // Protected routes - all require authentication
 Route::middleware(['auth'])->group(function () {
     // Main pages
     Route::get("/main", [AuthController::class, "index"])->name("main");
+    Route::get("/main", [AuthController::class, "mainDashboard"])->name("main");
     Route::get("/printing", [PrintingController::class, "printing"])->name("printing");
     Route::get("/repair", [RepairController::class, "repair"])->name("repair");
-    Route::get("/select-type", [AuthController::class, "selectType"])->name("select-type");
     
     // Forms and processes
     Route::get('/addPrinting', [PrintingController::class, 'printingForm'])->name('printing.form');
     Route::get('/addRepair', [RepairController::class, 'repairForm'])->name('repair.form');
-    Route::post('/printTicket', [PrintingController::class, 'printTicketStore'])->name('printTicket.store');
-    Route::post('/repairTicket', [RepairController::class, 'repairTicketStore'])->name('repairTicket.store');
+    Route::post('/printTicket', [PrintingController::class, 'printTicketStore'])->middleware('auth')->name('printTicket.store');
+    Route::post('/repairTicket', [RepairController::class, 'repairTicketStore'])->middleware('auth')->name('repairTicket.store');
     
     // Search and filtering
     Route::get("/receiving-search", [PrintingController::class, "receivingSearch"])->name("receiving-search");
@@ -72,10 +68,10 @@ Route::middleware(['auth'])->group(function () {
     // Printing ticket management
     Route::get('/dashboard', [PrintingController::class, 'dashboard'])->name('dashboard');
     Route::get('/repairDashboard', [RepairController::class, 'repairDashboard'])->name('repairDashboard');
-    Route::get('/printing/{id}/edit', [PrintingController::class, 'printEdit'])->name('print.edit');
-    Route::post('/printing/{id}/update', [PrintingController::class, 'printUpdate'])->name('print.update');
-    Route::get('/repair/{id}/edit', [RepairController::class, 'repairEdit'])->name('repair.edit');
-    Route::post('/repair/{id}/update', [RepairController::class, 'repairUpdate'])->name('repair.update');
+    Route::get('/printing/{id}/edit', [PrintingController::class, 'printEdit'])->middleware('auth')->name('print.edit');
+    Route::post('/printing/{id}/update', [PrintingController::class, 'printUpdate'])->middleware('auth')->name('print.update');
+    Route::get('/repair/{id}/edit', [RepairController::class, 'repairEdit'])->middleware('auth')->name('repair.edit');
+    Route::post('/repair/{id}/update', [RepairController::class, 'repairUpdate'])->middleware('auth')->name('repair.update');
     Route::post('/process/store', [PrintingController::class, 'store'])->name('process.store');
     Route::get('/generate-printTicket-id', [PrintingController::class, 'generatePrintTicketId'])->name('generate.printTicket.id');
     Route::get('/generate-repairTicket-id', [RepairController::class, 'generateRepairTicketId'])->name('generate.repairTicket.id');

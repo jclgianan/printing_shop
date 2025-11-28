@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Process;
+use App\Models\ActivityLog;
 use App\Models\PrintTicket;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
@@ -50,6 +51,29 @@ class AuthController extends Controller
         return back()->with('error', 'Invalid credentials.')->withInput($request->only('email'));
     }
 
+    // Dashboard counting
+    public function mainDashboard()
+    {
+        // PRINTING COUNTS
+        $pending = PrintTicket::where('status', 'pending')->count();
+        $in_progress = PrintTicket::where('status', 'in_progress')->count();
+        $printed = PrintTicket::where('status', 'printed')->count();
+        $released = PrintTicket::where('status', 'released')->count();
+        $cancelled = PrintTicket::where('status', 'cancelled')->count();
+
+        // REPAIR COUNTS
+        $repair_pending     = RepairTicket::where('status', 'pending')->count();
+        $repair_in_progress     = RepairTicket::where('status', 'ongoing')->count();
+        $repair_repaired   = RepairTicket::where('status', 'repaired')->count();
+        $repair_released    = RepairTicket::where('status', 'released')->count();
+        $repair_unrepairable    = RepairTicket::where('status', 'unrepairable')->count();
+
+        return view('main', compact(
+            'pending', 'in_progress', 'printed', 'released', 'cancelled',
+            'repair_pending', 'repair_in_progress', 'repair_repaired', 'repair_released', 'repair_unrepairable'
+        ));
+    }
+
     public function addNewUser() 
     {   
         $type = 'addUser';
@@ -88,6 +112,12 @@ class AuthController extends Controller
                 ->with("success", "Registration successful.");
         }
 
+        //Activity Logs
+        ActivityLog::record(
+            'Add User',
+            "Created User {$user->name} ({$user->email})"
+        );
+
         return back()
             ->withInput($request->only('fullname', 'email'))
             ->with("error", "Registration failed. Please try again.");
@@ -97,6 +127,7 @@ class AuthController extends Controller
         $users = User::all();
         return view('users.index', compact('users'));
     }
+
     public function updateUser(Request $request, $id)
     {
         $request->validate([
@@ -107,19 +138,64 @@ class AuthController extends Controller
         ]);
 
         $user = User::findOrFail($id);
+        $changes = [];
 
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->role = $request->role;
+        if ($user->name !== $request->name) {
+            $changes[] = "Name: '{$user->name}' → '{$request->name}'";
+            $user->name = $request->name;
+        }
+
+        if ($user->email !== $request->email) {
+            $changes[] = "Email: '{$user->email}' → '{$request->email}'";
+            $user->email = $request->email;
+        }
+
+        if ($user->role !== $request->role) {
+            $changes[] = "Role: '{$user->role}' → '{$request->role}'";
+            $user->role = $request->role;
+        }
 
         if ($request->filled('password')) {
+            $changes[] = "Password changed";
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
 
+        //Activity Logs
+        if(!empty($changes)) {
+
+            $description = implode("<br>", $changes);
+
+            ActivityLog::record(
+                'Update User',
+                $description
+            );
+        }
+
         return back()->with("success", "User updated successfully.");
     }
 
+    //Delete User
+    public function Destroy($id) {
+        $user = User::findOrFail($id);
+        $name = $user->name;
+        $user->delete();
+
+        //Activity Logs
+        ActivityLog::record(
+            'Delete User',
+            "Deleted User {$user->name} ({$user->email})"
+        );
+
+        return redirect()->back()->with('success', "User {$name} deleted successfuly!");
+    }
+
+    //Activity Logs Page Controller
+    public function ActivityLogs(){
+        $logs = ActivityLog::orderBy('created_at', 'desc')->get();
+
+        return view('activity.logs', compact('logs'));
+    }
      
 }
