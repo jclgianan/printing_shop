@@ -31,7 +31,7 @@
                             <button class="filter-group {{ $statusRepairFilter === 'pending' ? 'active' : '' }}"
                                 type="submit" name="filter" value="pending">Pending</button>
                             <button class="filter-group {{ $statusRepairFilter === 'in_progress' ? 'active' : '' }}"
-                                type="submit" name="filter" value="in_progress">In Progress</button>
+                                type="submit" name="filter" value="in_progress">Ongoing</button>
                             <button class="filter-group {{ $statusRepairFilter === 'repaired' ? 'active' : '' }}"
                                 type="submit" name="filter" value="repaired">Repaired</button>
                             <button class="filter-group {{ $statusRepairFilter === 'released' ? 'active' : '' }}"
@@ -194,14 +194,14 @@
             if (ticket.status === 'pending') {
                 actionContainer.append(`
                 <button onclick="updateStatus(${ticket.id}, 'in_progress')" class="btn-status btn-progress">
-                    Start Progress <i class="fa-solid fa-circle-play"></i>
+                    Start Progress <i class="fa-regular fa-circle-play"></i>
                 </button>
             `);
             }
             if (ticket.status === 'in_progress') {
                 actionContainer.append(`
                 <button onclick="updateStatus(${ticket.id}, 'repaired')" class="btn-status btn-complete">
-                    Mark Complete <i class="fa-solid fa-circle-check"></i>
+                    Mark Complete <i class="fa-regular fa-circle-check"></i>
                 </button>
             `);
             }

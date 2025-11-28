@@ -198,14 +198,14 @@
             if (ticket.status === 'pending') {
                 actionContainer.append(`
                 <button onclick="updateStatus(${ticket.id}, 'in_progress')" class="btn-status btn-progress">
-                    Start Progress <i class="fa-solid fa-circle-play"></i>
+                    Start Progress <i class="fa-regular fa-circle-play"></i>
                 </button>
             `);
             }
             if (ticket.status === 'in_progress') {
                 actionContainer.append(`
                 <button onclick="updateStatus(${ticket.id}, 'printed')" class="btn-status btn-complete">
-                    Mark Complete <i class="fa-solid fa-circle-check"></i>
+                    Mark Complete <i class="fa-regular fa-circle-check"></i>
                 </button>
             `);
             }
