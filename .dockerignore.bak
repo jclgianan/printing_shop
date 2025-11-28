@@ -1,0 +1,87 @@
+# Version control
+.git/
+.gitignore
+.svn/
+.hg/
+
+# Node.js dependencies and artifacts
+node_modules/
+npm-debug.log
+yarn-debug.log
+
+# PHP Composer vendor directory
+vendor/
+
+# Build outputs
+public/build/
+dist/
+build/
+out/
+tmp/
+temp/
+*.tmp
+
+# IDE/editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test files and directories
+test/
+tests/
+
+# Debug and log files
+*.log
+debug/
+
+# Environment and secrets
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.crt
+
+# Local configuration
+.local/
+local/
+config.local.*
+*.local.yml
+
+# Documentation
+README*
+*.md
+docs/
+
+# Python artifacts (for completeness)
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+
+# Go artifacts (for completeness)
+*.test
+.go-cache/
+
+# Java artifacts (for completeness)
+target/
+*.class
+.gradle/
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
+
+# Storage (should not be copied except for .gitignore files)
+storage/*
+!storage/**/*.gitignore
+
+# Database (should not be copied except for .gitignore files)
+database/*
+!database/**/*.gitignore
+
+# Bootstrap cache (should not be copied except for .gitignore files)
+bootstrap/cache/*
+!bootstrap/cache/.gitignore
