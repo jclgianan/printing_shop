@@ -2,9 +2,9 @@
     
     <nav class="shop_nav-menu">
         <ul>
-            <li><a href="{{route('main')}}" class="shop_nav-link">
+            <li><a href="{{route('main')}}" class="shop_nav-link {{ request()->routeIs('main') ? 'active' : '' }}">
                 <span class="menu_icon"><i class="fa-solid fa-house"></i></span>
-                <span class="menu_text">Home</span>
+                <span class="menu_text">Dashboard</span>
             </a></li>
             <li><a href="{{ route('printing') }}" class="shop_nav-link {{ request()->routeIs('printing') ? 'active' : '' }}">
                 <span class="menu_icon"><i class="fa-solid fa-print"></i></span>
@@ -19,13 +19,13 @@
                 <span class="menu_text">Users</span>
             </a></li>
             <li><a href="{{ route('activity.logs') }}" class="shop_nav-link {{ request()->routeIs('activity.logs') ? 'active' : '' }}">
-                <span class="menu_icon"><i class="fa-solid fa-list-check"></i></span>
+                <span class="menu_icon"><i class="fa-regular fa-clock"></i></span>
                 <span class="menu_text">Activity Logs</span>
             </a></li>
             <li><a href="#" class="shop_nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
                 <span class="menu_icon"><i class="fa-solid fa-gear"></i></span>
                 <span class="menu_text">Settings</span>
-            </a></li>
+            </a></li> 
         </ul>
     </nav>
 </aside>

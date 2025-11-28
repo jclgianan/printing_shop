@@ -51,13 +51,6 @@ class AuthController extends Controller
         return back()->with('error', 'Invalid credentials.')->withInput($request->only('email'));
     }
 
-     // Dashboard counting
-    public function printMain()
-    {
-        
-
-        return view('main', compact('pending', 'in_progress', 'completed', 'released', 'unrepairable'));
-    }
     // Dashboard counting
     public function mainDashboard()
     {

@@ -307,7 +307,7 @@ class RepairController extends Controller
             'solution' => 'nullable|string|max:50',
             'note' => 'nullable|string|max:100',
             'release_date' => 'nullable|date',
-            'status' => 'nullable|in:pending,in_progress,printed,released,cancelled',
+            'status' => 'nullable|in:pending,in_progress,repaired,released,unrepairable',
         ]);
 
         $deviceId = $request->input('repairDevice_id');
@@ -343,17 +343,7 @@ class RepairController extends Controller
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }
 
-    // Dashboard counting
-    public function repairMain()
-    {
-        $pending = RepairTicket::where('status', 'pending')->count();
-        $in_progress = RepairTicket::where('status', 'in_progress')->count();
-        $completed = RepairTicket::where('status', 'completed')->count();
-        $released = RepairTicket::where('status', 'released')->count();
-        $unrepairable = RepairTicket::where('status', 'unrepairable')->count();
-
-        return view('main', compact('pending', 'in_progress', 'completed', 'released', 'unrepairable'));
-    }
+    
 
 
 }

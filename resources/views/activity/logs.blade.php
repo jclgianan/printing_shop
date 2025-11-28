@@ -32,7 +32,7 @@
                     <td>{{ $log->user_name }}</td>
                     <td>{{ $log->user_email }}</td>
                     <td>{{ $log->action }}</td>
-                    <td>{{!! $log->description !!}}</td>
+                    <td>{!! $log->description !!}</td>
                     <td>{{ $log->created_at }}</td>
                 </tr>
                 @endforeach

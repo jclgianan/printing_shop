@@ -214,7 +214,7 @@
             }
             if (ticket.status !== 'unrepairable' && ticket.status !== 'repaired' && ticket.status !== 'released') {
                 actionContainer.append(`
-                <button onclick="updateStatus(${ticket.id}, 'cancelled')" class="btn-status btn-cancel">
+                <button onclick="updateStatus(${ticket.id}, 'unrepairable')" class="btn-status btn-cancel">
                     Unrepairable <i class="fa-solid fa-ban"></i>
                 </button>
             `);

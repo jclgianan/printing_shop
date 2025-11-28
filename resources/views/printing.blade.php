@@ -97,8 +97,7 @@
                                         </td>
 
                                         <td>
-                                            <span
-                                                class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
+                                            <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                         </td>
                                         <td>
                                             <button class="btn-edit" data-id="{{ $ticket->id }}"

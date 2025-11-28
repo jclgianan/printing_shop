@@ -115,7 +115,7 @@ class PrintingController extends Controller
              // If AJAX, return JSON
             if ($request->ajax()) {
                 return response()->json([
-                    'success' => 'Repair Ticket saved successfully!',
+                    'success' => 'Print Ticket saved successfully!',
                     'ticket' => $ticket,
                 ]);
             }
@@ -212,7 +212,7 @@ class PrintingController extends Controller
             //Activity Logs
             try {
                 ActivityLog::record(
-                    'UpdatePrint Status',
+                    'Update Print Status',
                     "Print Ticket {$ticket->printTicket_id} status changed from {$oldStatus} to {$ticket->formatted_status}"
                 );
             } catch (\Exception $e) {
@@ -283,17 +283,7 @@ class PrintingController extends Controller
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }
 
-    // Dashboard counting
-    public function printMain()
-    {
-        $pending = RepairTicket::where('status', 'pending')->count();
-        $in_progress = RepairTicket::where('status', 'in_progress')->count();
-        $printed = RepairTicket::where('status', 'printed')->count();
-        $released = RepairTicket::where('status', 'released')->count();
-        $cancelled = RepairTicket::where('status', 'cancelled')->count();
-
-        return view('main', compact('pending', 'in_progress', 'completed', 'released', 'unrepairable'));
-    }
+   
 
 
 }
