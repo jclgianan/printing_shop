@@ -49,7 +49,6 @@ Route::middleware(['auth', 'role:admin,editor'])
 Route::middleware(['auth'])->group(function () {
     // Main pages
     Route::get("/main", [AuthController::class, "index"])->name("main");
-    Route::get("/main", [AuthController::class, "mainDashboard"])->name("main");
     Route::get("/printing", [PrintingController::class, "printing"])->name("printing");
     Route::get("/repair", [RepairController::class, "repair"])->name("repair");
     

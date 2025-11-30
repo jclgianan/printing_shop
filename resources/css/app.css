@@ -12,6 +12,16 @@
     --lighter: #7c99f7;
     --whitebg: #F5F5F5;
     --dirtywhite_bg: #f0f0f0;
+    --pending_color: #065F46;
+    --ongoing_color: #1E40AF;
+    --prt-rpr_color: #065F46;
+    --released_color: #5B21B6;
+    --cld-unr_color: #D32F2F;
+    --pending_bgcolor: #FEF3C7;
+    --ongoing_bgcolor: #DBEAFE;
+    --prt-rpr_bgcolor: #D1FAE5;
+    --released_bgcolor: #dcd4ff;
+    --cld-unr_bgcolor: #fbecec;
 }
 
 ::-webkit-scrollbar {
@@ -1217,7 +1227,7 @@ input::placeholder {
     flex-wrap: wrap;
     justify-content: space-evenly;
     padding: 22px 28px;
-    gap: 15px;
+    gap: 10px;
     min-height: 110px;
     padding: 15px;
     border-radius: 12px;
@@ -1291,4 +1301,174 @@ input::placeholder {
         width: auto;
         height: auto;
     }
+}
+
+
+/* ====== Recent Activities in Dashboard styles ====== */
+.dashboard-activities {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+}
+.activities-header {
+    padding: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.activities-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.activities-menu-btn {
+    background: none;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.activities-menu-btn:hover {
+    color: #6b7280;
+}
+
+.no-activities {
+    padding: 20px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.activities-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px;
+    gap: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.activity-item:hover {
+    background-color: #f9fafb;
+}
+
+.activity-item:not(:last-child) {
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.activity-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 1px solid;
+}
+
+.activity-icon-wrapper i {
+    font-size: 20px;
+}
+
+/* Status Colors - Update Status */
+.status-pending {
+    background-color: var(--pending_bgcolor);
+    color: var(--pending_color);
+    border-color: #fde68a;
+}
+
+.status-ongoing {
+    background-color: var(--ongoing_bgcolor);
+    color: var(--ongoing_color);
+    border-color: #bfdbfe;
+}
+
+.status-printed {
+    background-color: var(--prt-rpr_bgcolor);
+    color: var(--prt-rpr_color);
+    border-color: #ddd6fe;
+}
+
+.status-released {
+    background-color: var(--released_bgcolor);
+    color: var(--released_color);
+    border-color: #a7f3d0;
+}
+
+.status-cancelled {
+    background-color: var(--cld-unr_bgcolor);
+    color: var(--cld-unr_color);
+    border-color: #fecaca;
+}
+
+/* Activity Type Colors */
+.activity-ticket {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+    border-color: #c7d2fe;
+}
+
+.activity-user {
+    background-color: #ccfbf1;
+    color: #0d9488;
+    border-color: #99f6e4;
+}
+
+.activity-password {
+    background-color: #fed7aa;
+    color: #ea580c;
+    border-color: #fdba74;
+}
+
+.activity-repair {
+    background-color: #fce7f3;
+    color: #db2777;
+    border-color: #fbcfe8;
+}
+
+.activity-default {
+    background-color: #f3f4f6;
+    color: #6b7280;
+    border-color: #e5e7eb;
+}
+
+.activity-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-description {
+    margin: 0 0 4px 0;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1f2937;
+    line-height: 1.5;
+}
+
+.activity-description strong {
+    font-weight: 600;
+    color: #111827;
+}
+
+.activity-timestamp {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
 }

@@ -21,8 +21,31 @@ class AuthController extends Controller
     // Show main page after login
     public function index()
     {
-        return view("main");
+        // RECENT ACTIVITIES
+        $recentActivities = ActivityLog::latest()->take(5)->get();
+
+        // PRINTING COUNTS
+        $pending = PrintTicket::where('status', 'pending')->count();
+        $in_progress = PrintTicket::where('status', 'in_progress')->count();
+        $printed = PrintTicket::where('status', 'printed')->count();
+        $released = PrintTicket::where('status', 'released')->count();
+        $cancelled = PrintTicket::where('status', 'cancelled')->count();
+
+        // REPAIR COUNTS
+        $repair_pending = RepairTicket::where('status', 'pending')->count();
+        $repair_in_progress = RepairTicket::where('status', 'ongoing')->count();
+        $repair_repaired = RepairTicket::where('status', 'repaired')->count();
+        $repair_released = RepairTicket::where('status', 'released')->count();
+        $repair_unrepairable = RepairTicket::where('status', 'unrepairable')->count();
+
+        return view('main', compact(
+            'recentActivities',
+            'pending', 'in_progress', 'printed', 'released', 'cancelled',
+            'repair_pending', 'repair_in_progress', 'repair_repaired',
+            'repair_released', 'repair_unrepairable'
+        ));
     }
+
 
     // Show login form
     public function login()
@@ -49,29 +72,6 @@ class AuthController extends Controller
 
         // Login failed
         return back()->with('error', 'Invalid credentials.')->withInput($request->only('email'));
-    }
-
-    // Dashboard counting
-    public function mainDashboard()
-    {
-        // PRINTING COUNTS
-        $pending = PrintTicket::where('status', 'pending')->count();
-        $in_progress = PrintTicket::where('status', 'in_progress')->count();
-        $printed = PrintTicket::where('status', 'printed')->count();
-        $released = PrintTicket::where('status', 'released')->count();
-        $cancelled = PrintTicket::where('status', 'cancelled')->count();
-
-        // REPAIR COUNTS
-        $repair_pending     = RepairTicket::where('status', 'pending')->count();
-        $repair_in_progress     = RepairTicket::where('status', 'ongoing')->count();
-        $repair_repaired   = RepairTicket::where('status', 'repaired')->count();
-        $repair_released    = RepairTicket::where('status', 'released')->count();
-        $repair_unrepairable    = RepairTicket::where('status', 'unrepairable')->count();
-
-        return view('main', compact(
-            'pending', 'in_progress', 'printed', 'released', 'cancelled',
-            'repair_pending', 'repair_in_progress', 'repair_repaired', 'repair_released', 'repair_unrepairable'
-        ));
     }
 
     public function addNewUser() 
@@ -156,11 +156,18 @@ class AuthController extends Controller
         }
 
         if ($request->filled('password')) {
-            $changes[] = "Password changed";
+            $passwordChanged = true;
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
+
+        if ($passwordChanged) {
+            ActivityLog::record(
+                'Password Changed',  // ← Now it's in the action!
+                "User {$user->name} changed their password"
+            );
+        }
 
         //Activity Logs
         if(!empty($changes)) {
