@@ -58,7 +58,7 @@
                                                         <h4> {{ $printed }} </h4>
                                                     </div>
                                                     <div class="icon-right">
-                                                        <i class="fa-regular fa-circle-check"></i>
+                                                        <i class="fa-solid fa-print"></i>
                                                     </div>
                                                 </div>
                                             </div>
@@ -147,7 +147,7 @@
                                                         <h4> {{ $repair_repaired }} </h4>
                                                     </div>
                                                     <div class="icon-right">
-                                                        <i class="fa-regular fa-circle-check"></i>
+                                                        <i class="fa-solid fa-screwdriver-wrench"></i>
                                                     </div>
                                                 </div>
                                             </div>
@@ -187,20 +187,97 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
+                        <div class="dashboard-activities">
+                            <div class="activities-header">
+                                <h3>Recent Activity</h3>
+                                <button class="activities-menu-btn">
+                                    <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                    </svg>
+                                </button>
+                            </div>
                             
-
-
-
-
-                        <div class="recent-activities">
-                            <h2>Recent Activities</h2>
-                            <div class="activities
-                            
-
+                            @if (!isset($recentActivities) || $recentActivities->isEmpty())
+                                <p class="no-activities">No recent activities available.</p>
+                            @else
+                                <ul class="activities-list">
+                                    @foreach ($recentActivities as $activity)
+                                        @php
+                                            $type = $activity->type;
+                                            $status = $activity->status;
+                                            
+                                            // Determine icon and color class based on activity type and status
+                                            if ($type === 'update_status') {
+                                                switch ($status) {
+                                                    case 'pending':
+                                                        $iconClass = 'fa-clock';
+                                                        $colorClass = 'status-pending';
+                                                        break;
+                                                    case 'ongoing':
+                                                    case 'in_progress':
+                                                        $iconClass = 'fa-spinner';
+                                                        $colorClass = 'status-ongoing';
+                                                        break;
+                                                    case 'printed':
+                                                        $iconClass = 'fa-print';
+                                                        $colorClass = 'status-printed';
+                                                        break;
+                                                    case 'repaired':
+                                                        $iconClass = 'fa-screwdriver-wrench';
+                                                        $colorClass = 'status-printed';
+                                                        break;
+                                                    case 'released':
+                                                        $iconClass = 'fa-circle-check';
+                                                        $colorClass = 'status-released';
+                                                        break;
+                                                    case 'cancelled':
+                                                    case 'unrepairable':
+                                                        $iconClass = 'fa-circle-xmark';
+                                                        $colorClass = 'status-cancelled';
+                                                        break;
+                                                    default:
+                                                        $iconClass = 'fa-circle-info';
+                                                        $colorClass = 'status-default';
+                                                }
+                                            } elseif ($type === 'create_ticket' || $type === 'repair') {
+                                                $iconClass = 'fa-file-lines';
+                                                $colorClass = 'activity-ticket';
+                                            } elseif ($type === 'update_ticket') {
+                                                $iconClass = 'fa-pen-to-square';  // or 'fa-edit' or 'fa-pencil'
+                                                $colorClass = 'activity-ticket';  // Use same color as create_ticket    
+                                            } elseif ($type === 'update_user') {
+                                                $iconClass = 'fa-user';
+                                                $colorClass = 'activity-user';
+                                            } elseif ($type === 'password_changed') {
+                                                $iconClass = 'fa-lock';
+                                                $colorClass = 'activity-password';
+                                            } elseif ($type === 'delete_user') {
+                                                $iconClass = 'fa-user-slash';
+                                                $colorClass = 'activity-delete';
+                                            } else {
+                                                $iconClass = 'fa-circle-info';
+                                                $colorClass = 'activity-default';
+                                            }
+                                        @endphp
+                                        
+                                        <li class="activity-item">
+                                            <div class="activity-icon-wrapper {{ $colorClass }}">
+                                                <i class="fa-solid {{ $iconClass }}"></i>
+                                            </div>
+                                            <div class="activity-details">
+                                                <p class="activity-description">
+                                                    <strong>{{ $activity->user_name }}</strong> {{ $activity->short_description }}
+                                                </p>
+                                                <span class="activity-timestamp">{{ $activity->created_at->format('h:i A') }}</span>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @endif
                         </div>
+
                     </div>
                 </div>
             </main>
