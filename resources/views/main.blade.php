@@ -191,7 +191,7 @@
 
                         <div class="dashboard-activities">
                             <div class="activities-header">
-                                <h3>Recent Activity</h3>
+                                <h3>Recent Activities</h3>
                                 <button class="activities-menu-btn">
                                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
@@ -245,8 +245,8 @@
                                                 $iconClass = 'fa-file-lines';
                                                 $colorClass = 'activity-ticket';
                                             } elseif ($type === 'update_ticket') {
-                                                $iconClass = 'fa-pen-to-square';  // or 'fa-edit' or 'fa-pencil'
-                                                $colorClass = 'activity-ticket';  // Use same color as create_ticket    
+                                                $iconClass = 'fa-pen-to-square'; 
+                                                $colorClass = 'activity-ticket';  
                                             } elseif ($type === 'update_user') {
                                                 $iconClass = 'fa-user';
                                                 $colorClass = 'activity-user';
@@ -264,13 +264,13 @@
                                         
                                         <li class="activity-item">
                                             <div class="activity-icon-wrapper {{ $colorClass }}">
-                                                <i class="fa-solid {{ $iconClass }}"></i>
+                                                <i class="fa-regular {{ $iconClass }}"></i>
                                             </div>
                                             <div class="activity-details">
                                                 <p class="activity-description">
                                                     <strong>{{ $activity->user_name }}</strong> {{ $activity->short_description }}
                                                 </p>
-                                                <span class="activity-timestamp">{{ $activity->created_at->format('h:i A') }}</span>
+                                                <span class="activity-timestamp">{{ $activity->created_at->diffForHumans() }}</span>
                                             </div>
                                         </li>
                                     @endforeach
