@@ -39,27 +39,6 @@
     
     @stack('scripts')
 
-<<<<<<< HEAD
-    {{-- Real-time Activity Updates --}}
-    <script type="module">
-        window.Echo.channel('activities')
-            .listen('ActivityUpdated', (e) => {
-                console.log('Activity updated:', e.activity);
-                
-                // Find and update the specific activity element
-                const activityElement = document.querySelector(`[data-activity-id="${e.activity.id}"]`);
-                if (activityElement) {
-                    // Update only the changed parts
-                    activityElement.querySelector('.activity-timestamp').textContent = 
-                        new Date(e.activity.created_at).toLocaleString();
-                    // Update other fields as needed
-                } else {
-                    // If activity not on current page, just reload
-                    location.reload();
-                }
-            });
-    </script>
-=======
     {{-- Auto-refresh dashboard when inactive --}}
     @if(request()->is('main'))
     <script>
@@ -81,7 +60,6 @@
         }, refreshInterval);
     </script>
     @endif
->>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
 
     <style>
         .material-symbols-outlined {

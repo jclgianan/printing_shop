@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Process;
 use App\Models\ActivityLog;
-use App\Events\ActivityUpdated;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -345,16 +344,6 @@ class RepairController extends Controller
     }
 
     
-    // Auto Refresh of page when data updates
 
-    public function update(Request $request, $id)
-    {
-        $activity = Activity::findOrFail($id);
-        $activity->update($request->all());
-        
-        broadcast(new ActivityUpdated($activity))->toOthers();
-        
-        return response()->json($activity);
-    }
 
 }

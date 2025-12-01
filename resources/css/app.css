@@ -1313,22 +1313,14 @@ input::placeholder {
 
 /* ====== Recent Activities in Dashboard styles ====== */
 .dashboard-activities {
-<<<<<<< HEAD
     background-color: var(--dirtywhite_bg);
-=======
     border: 1px solid #e5e7eb;
->>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
     overflow: hidden;
     border-radius: 20px;
     height: auto;
     width: 20%;
-<<<<<<< HEAD
-=======
-    background-color: var(--dirtywhite_bg);
->>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
     margin-left: 5px;
     padding: 0.2rem;
-    border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 .activities-header {
@@ -1387,11 +1379,7 @@ input::placeholder {
 }
 
 .activity-item:not(:last-child) {
-<<<<<<< HEAD
     border-bottom: 1px solid #d0d3d3;
-=======
-    border-bottom: 1px solid #d6d6d6;
->>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
 }
 
 .activity-icon-wrapper {

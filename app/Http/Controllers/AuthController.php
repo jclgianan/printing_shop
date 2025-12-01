@@ -205,19 +205,4 @@ class AuthController extends Controller
 
         return view('activity.logs', compact('logs'));
     }
-<<<<<<< HEAD
-
-    public function update(Request $request, $id)
-    {
-        $activity = Activity::findOrFail($id);
-        $activity->update($request->all());
-        
-        broadcast(new ActivityUpdated($activity))->toOthers();
-        
-        return response()->json($activity);
-    }
-     
-=======
-    
->>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
 }
