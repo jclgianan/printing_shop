@@ -26,6 +26,25 @@
                 <span class="menu_icon"><i class="fa-solid fa-gear"></i></span>
                 <span class="menu_text">Settings</span>
             </a></li> 
+            <li class="logout-item">
+                <form method="POST" action="{{ route('logout') }}" id="logout-form" onsubmit="return confirmLogout(event)" style="margin: 0;">
+                    @csrf
+                    <button type="submit" class="shop_nav-link shop_logout-btn">
+                        <span class="menu_icon"><i class="fa-solid fa-right-from-bracket"></i></span>
+                        <span class="menu_text">Logout</span>
+                    </button>
+                </form>
+            </li>
         </ul>
     </nav>
 </aside>
+
+<script>
+    function confirmLogout(event) {
+        if (!confirm('Are you sure you want to logout?')) {
+            event.preventDefault(); // Stop form submission
+            return false;
+        }
+        return true; // Allow form submission
+    }
+</script>
