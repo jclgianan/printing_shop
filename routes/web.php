@@ -80,4 +80,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/print-tickets/{id}/status', [PrintingController::class, 'updateStatus'])->name('print-tickets.update-status');
     Route::post('/repair-tickets/{id}/status', [RepairController::class, 'updateRepairStatus'])->name('repair-tickets.update-status');
 
+    //Refreshing of Data
+    Route::put('/activities/{id}', [AuthController::class, 'update']);
+    Route::put('/tickets/{id}', [PrintingController::class, 'update']);
+    Route::put('/other-data/{id}', [RepairController::class, 'update']);
+
 });

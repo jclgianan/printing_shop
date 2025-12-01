@@ -37,6 +37,28 @@
     </script>
     @stack('scripts')
 
+    {{-- Auto-refresh dashboard when inactive --}}
+    @if(request()->is('main'))
+    <script>
+        let lastActivity = Date.now();
+        let refreshInterval = 30000; // 30 seconds
+
+        // Track user activity
+        document.addEventListener('mousemove', () => lastActivity = Date.now());
+        document.addEventListener('keypress', () => lastActivity = Date.now());
+        document.addEventListener('click', () => lastActivity = Date.now());
+        document.addEventListener('scroll', () => lastActivity = Date.now());
+
+        // Check every 30 seconds
+        setInterval(() => {
+            // Only reload if user hasn't been active for 10 seconds
+            if (Date.now() - lastActivity > 10000) {
+                location.reload();
+            }
+        }, refreshInterval);
+    </script>
+    @endif
+
     <style>
         .material-symbols-outlined {
             font-variation-settings:

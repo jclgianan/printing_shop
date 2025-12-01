@@ -204,5 +204,5 @@ class AuthController extends Controller
 
         return view('activity.logs', compact('logs'));
     }
-     
+    
 }
