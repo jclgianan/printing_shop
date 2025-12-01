@@ -87,13 +87,13 @@
                                         </td>
                                         <td class="file-icon">
                                             @if ($ticket->file_link)
-                                                <a href="{{ $ticket->file_link }}" target="_blank"><i
-                                                        class="fa-regular fa-file"></i></a>
+                                                <a href="{{ $ticket->file_link }}" target="_blank">
+                                                    <i class="fa-regular fa-file"></i></a>
                                             @else
                                                 -
                                             @endif
                                         </td>
-                                        <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y H:i') : '-' }}
+                                        <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y, H:i') : '-' }}
                                         </td>
 
                                         <td>
