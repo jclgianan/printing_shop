@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\Process;
 use App\Models\ActivityLog;
 use App\Models\PrintTicket;
+use App\Events\ActivityUpdated;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -203,6 +204,16 @@ class AuthController extends Controller
         $logs = ActivityLog::orderBy('created_at', 'desc')->get();
 
         return view('activity.logs', compact('logs'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $activity = Activity::findOrFail($id);
+        $activity->update($request->all());
+        
+        broadcast(new ActivityUpdated($activity))->toOthers();
+        
+        return response()->json($activity);
     }
      
 }

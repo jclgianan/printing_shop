@@ -32,10 +32,32 @@
             @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->
         </main>
     </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
     </script>
+    
     @stack('scripts')
+
+    {{-- Real-time Activity Updates --}}
+    <script type="module">
+        window.Echo.channel('activities')
+            .listen('ActivityUpdated', (e) => {
+                console.log('Activity updated:', e.activity);
+                
+                // Find and update the specific activity element
+                const activityElement = document.querySelector(`[data-activity-id="${e.activity.id}"]`);
+                if (activityElement) {
+                    // Update only the changed parts
+                    activityElement.querySelector('.activity-timestamp').textContent = 
+                        new Date(e.activity.created_at).toLocaleString();
+                    // Update other fields as needed
+                } else {
+                    // If activity not on current page, just reload
+                    location.reload();
+                }
+            });
+    </script>
 
     <style>
         .material-symbols-outlined {
