@@ -26,8 +26,11 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
 import Echo from 'laravel-echo';
 import Pusher from 'pusher-js';
 
@@ -41,4 +44,8 @@ window.Echo = new Echo({
     wssPort: import.meta.env.VITE_REVERB_PORT ?? 443,
     forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
     enabledTransports: ['ws', 'wss'],
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5

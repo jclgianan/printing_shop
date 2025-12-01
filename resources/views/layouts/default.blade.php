@@ -39,6 +39,7 @@
     
     @stack('scripts')
 
+<<<<<<< HEAD
     {{-- Real-time Activity Updates --}}
     <script type="module">
         window.Echo.channel('activities')
@@ -58,6 +59,29 @@
                 }
             });
     </script>
+=======
+    {{-- Auto-refresh dashboard when inactive --}}
+    @if(request()->is('main'))
+    <script>
+        let lastActivity = Date.now();
+        let refreshInterval = 30000; // 30 seconds
+
+        // Track user activity
+        document.addEventListener('mousemove', () => lastActivity = Date.now());
+        document.addEventListener('keypress', () => lastActivity = Date.now());
+        document.addEventListener('click', () => lastActivity = Date.now());
+        document.addEventListener('scroll', () => lastActivity = Date.now());
+
+        // Check every 30 seconds
+        setInterval(() => {
+            // Only reload if user hasn't been active for 10 seconds
+            if (Date.now() - lastActivity > 10000) {
+                location.reload();
+            }
+        }, refreshInterval);
+    </script>
+    @endif
+>>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
 
     <style>
         .material-symbols-outlined {

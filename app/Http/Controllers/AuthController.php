@@ -205,6 +205,7 @@ class AuthController extends Controller
 
         return view('activity.logs', compact('logs'));
     }
+<<<<<<< HEAD
 
     public function update(Request $request, $id)
     {
@@ -216,4 +217,7 @@ class AuthController extends Controller
         return response()->json($activity);
     }
      
+=======
+    
+>>>>>>> 0c1c0cb4b998026e57ff35c78968b64a7b591be5
 }
