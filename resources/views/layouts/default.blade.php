@@ -40,7 +40,7 @@
     @stack('scripts')
 
     {{-- Auto-refresh dashboard when inactive --}}
-    @if(request()->is('main'))
+    {{-- @if(request()->is('main'))
     <script>
         let lastActivity = Date.now();
         let refreshInterval = 30000; // 30 seconds
@@ -59,7 +59,7 @@
             }
         }, refreshInterval);
     </script>
-    @endif
+    @endif --}}
 
     <style>
         .material-symbols-outlined {
