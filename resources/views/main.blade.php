@@ -268,7 +268,8 @@
                                             </div>
                                             <div class="activity-details">
                                                 <p class="activity-description">
-                                                    <strong>{{ $activity->user_name }}</strong> {{ $activity->short_description }}
+                                                    <strong>{{ $activity->user_name }}</strong>
+                                                    <span class="activity-text-subtle">{{ $activity->short_description }}</span>
                                                 </p>
                                                 <span class="activity-timestamp">{{ $activity->created_at->diffForHumans() }}</span>
                                             </div>
