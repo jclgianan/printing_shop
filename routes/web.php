@@ -51,6 +51,11 @@ Route::middleware(['auth', 'role:admin,editor'])
 Route::middleware(['auth'])->group(function () {
     // Main pages
     Route::get("/main", [AuthController::class, "index"])->name("main");
+    //Refreshing of Data
+    // API endpoints
+    Route::get('/api/dashboard/stats', [AuthController::class, 'getDashboardStats'])->name('api.dashboard.stats');
+    Route::get('/api/dashboard/activities', [AuthController::class, 'getRecentActivities'])->name('api.dashboard.activities');
+
     Route::get("/printing", [PrintingController::class, "printing"])->name("printing");
     Route::get("/repair", [RepairController::class, "repair"])->name("repair");
     
@@ -82,9 +87,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/print-tickets/{id}/status', [PrintingController::class, 'updateStatus'])->name('print-tickets.update-status');
     Route::post('/repair-tickets/{id}/status', [RepairController::class, 'updateRepairStatus'])->name('repair-tickets.update-status');
 
-    //Refreshing of Data
-    Route::put('/activities/{id}', [AuthController::class, 'update']);
-    Route::put('/tickets/{id}', [PrintingController::class, 'update']);
-    Route::put('/other-data/{id}', [RepairController::class, 'update']);
+    
 
 });

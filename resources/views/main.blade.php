@@ -4,11 +4,12 @@
     <div class="receiving-container">
         <div class="layout-wrapper-main">
             <main class="receiving-main-panel">
-
                 <div class="dashboard-container-main">
                     <h1>Dashboard</h1>
                     <div class="dashboard-container">
-                        <div class="dashboard">
+                        <!-- Dashboard Stats -->
+                        <div class="dashboard" id="dashboard-stats">
+                            <!-- Printing Section -->
                             <div class="dashboard-status">
                                 <div class="dashboard-header-top">
                                     <div class="dashboard-header-text">
@@ -23,7 +24,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Pending</p>
-                                                        <h4> {{ $pending }} </h4>
+                                                        <h4 id="printing-pending">{{ $pending }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-regular fa-clock"></i>
@@ -35,11 +36,11 @@
 
                                     <div class="card inp">
                                         <a href="{{ route('status-filter', ['filter' => 'in_progress']) }}" class="text-decoration-none">
-                                            <div class="in-cards  in_progress">
+                                            <div class="in-cards in_progress">
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Ongoing</p>
-                                                        <h4> {{ $in_progress }} </h4>
+                                                        <h4 id="printing-in-progress">{{ $in_progress }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-spinner"></i>
@@ -55,7 +56,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Printed</p>
-                                                        <h4> {{ $printed }} </h4>
+                                                        <h4 id="printing-printed">{{ $printed }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-print"></i>
@@ -71,7 +72,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Released</p>
-                                                        <h4> {{ $released }} </h4>
+                                                        <h4 id="printing-released">{{ $released }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-box-open"></i>
@@ -87,7 +88,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Cancelled</p>
-                                                        <h4> {{ $cancelled }} </h4>
+                                                        <h4 id="printing-cancelled">{{ $cancelled }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-ban"></i>
@@ -98,6 +99,8 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Repair Section -->
                             <div class="dashboard-status">
                                 <div class="dashboard-header-top">
                                     <div class="dashboard-header-text">
@@ -112,7 +115,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Pending</p>
-                                                        <h4> {{ $repair_pending }} </h4>
+                                                        <h4 id="repair-pending">{{ $repair_pending }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-regular fa-clock"></i>
@@ -128,7 +131,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Ongoing</p>
-                                                        <h4> {{ $repair_in_progress }} </h4>
+                                                        <h4 id="repair-in-progress">{{ $repair_in_progress }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-spinner"></i>
@@ -144,7 +147,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Repaired</p>
-                                                        <h4> {{ $repair_repaired }} </h4>
+                                                        <h4 id="repair-repaired">{{ $repair_repaired }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-screwdriver-wrench"></i>
@@ -160,7 +163,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Released</p>
-                                                        <h4> {{ $repair_released }} </h4>
+                                                        <h4 id="repair-released">{{ $repair_released }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-box-open"></i>
@@ -176,7 +179,7 @@
                                                 <div class="card-content">
                                                     <div class="text-left">
                                                         <p>Unrepairable</p>
-                                                        <h4> {{ $repair_unrepairable }} </h4>
+                                                        <h4 id="repair-unrepairable">{{ $repair_unrepairable }}</h4>
                                                     </div>
                                                     <div class="icon-right">
                                                         <i class="fa-solid fa-ban"></i>
@@ -189,6 +192,7 @@
                             </div>
                         </div>
 
+                        <!-- Recent Activities -->
                         <div class="dashboard-activities">
                             <div class="activities-header">
                                 <h3>Recent Activities</h3>
@@ -199,16 +203,15 @@
                                 </button>
                             </div>
                             
-                            @if (!isset($recentActivities) || $recentActivities->isEmpty())
-                                <p class="no-activities">No recent activities available.</p>
-                            @else
-                                <ul class="activities-list">
+                            <ul class="activities-list" id="activities-list">
+                                @if ($recentActivities->isEmpty())
+                                    <p class="no-activities">No recent activities available.</p>
+                                @else
                                     @foreach ($recentActivities as $activity)
                                         @php
                                             $type = $activity->type;
                                             $status = $activity->status;
                                             
-                                            // Determine icon and color class based on activity type and status
                                             if ($type === 'update_status') {
                                                 switch ($status) {
                                                     case 'pending':
@@ -275,13 +278,89 @@
                                             </div>
                                         </li>
                                     @endforeach
-                                </ul>
-                            @endif
+                                @endif
+                            </ul>
                         </div>
-
                     </div>
                 </div>
             </main>
         </div>
     </div>
+
+    {{-- Auto-refresh Script --}}
+    <script>
+        // Function to update dashboard stats
+        function updateDashboardStats() {
+            fetch('{{ route('api.dashboard.stats') }}')
+                .then(response => response.json())
+                .then(data => {
+                    // Update printing stats
+                    document.getElementById('printing-pending').textContent = data.printing.pending;
+                    document.getElementById('printing-in-progress').textContent = data.printing.in_progress;
+                    document.getElementById('printing-printed').textContent = data.printing.printed;
+                    document.getElementById('printing-released').textContent = data.printing.released;
+                    document.getElementById('printing-cancelled').textContent = data.printing.cancelled;
+                    
+                    // Update repair stats
+                    document.getElementById('repair-pending').textContent = data.repair.pending;
+                    document.getElementById('repair-in-progress').textContent = data.repair.in_progress;
+                    document.getElementById('repair-repaired').textContent = data.repair.repaired;
+                    document.getElementById('repair-released').textContent = data.repair.released;
+                    document.getElementById('repair-unrepairable').textContent = data.repair.unrepairable;
+                    
+                    console.log('✅ Dashboard stats updated');
+                })
+                .catch(error => console.error('Error updating stats:', error));
+        }
+
+        // Function to update recent activities
+        function updateRecentActivities() {
+            fetch('{{ route('api.dashboard.activities') }}')
+                .then(response => response.json())
+                .then(data => {
+                    const activitiesList = document.getElementById('activities-list');
+                    
+                    if (data.activities.length === 0) {
+                        activitiesList.innerHTML = '<p class="no-activities">No recent activities available.</p>';
+                        return;
+                    }
+                    
+                    activitiesList.innerHTML = data.activities.map(activity => `
+                        <li class="activity-item">
+                            <div class="activity-icon-wrapper ${activity.color_class}">
+                                <i class="fa-solid ${activity.icon_class}"></i>
+                            </div>
+                            <div class="activity-details">
+                                <p class="activity-description">
+                                    <strong>${activity.user_name}</strong>
+                                    <span class="activity-text-subtle">${activity.short_description}</span>
+                                </p>
+                                <span class="activity-timestamp">${activity.created_at}</span>
+                            </div>
+                        </li>
+                    `).join('');
+                    
+                    console.log('✅ Recent activities updated');
+                })
+                .catch(error => console.error('Error updating activities:', error));
+        }
+
+        // Track user activity
+        let lastActivity = Date.now();
+        ['mousemove', 'keypress', 'click', 'scroll'].forEach(event => {
+            document.addEventListener(event, () => {
+                lastActivity = Date.now();
+            });
+        });
+
+        // Auto-refresh every 30 seconds if user inactive for 10 seconds
+        setInterval(() => {
+            if (Date.now() - lastActivity > 10000) {
+                updateDashboardStats();
+                updateRecentActivities();
+            }
+        }, 30000);
+
+        console.log('Dashboard auto-refresh initialized');
+    </script>
 @endsection

@@ -47,6 +47,104 @@ class AuthController extends Controller
         ));
     }
 
+    // API endpoint for dashboard stats
+    public function getDashboardStats()
+    {
+        return response()->json([
+            'printing' => [
+                'pending' => PrintTicket::where('status', 'pending')->count(),
+                'in_progress' => PrintTicket::where('status', 'in_progress')->count(),
+                'printed' => PrintTicket::where('status', 'printed')->count(),
+                'released' => PrintTicket::where('status', 'released')->count(),
+                'cancelled' => PrintTicket::where('status', 'cancelled')->count(),
+            ],
+            'repair' => [
+                'pending' => RepairTicket::where('status', 'pending')->count(),
+                'in_progress' => RepairTicket::where('status', 'in_progress')->count(),
+                'repaired' => RepairTicket::where('status', 'repaired')->count(),
+                'released' => RepairTicket::where('status', 'released')->count(),
+                'unrepairable' => RepairTicket::where('status', 'unrepairable')->count(),
+            ]
+        ]);
+    }
+
+    // API endpoint for recent activities
+    public function getRecentActivities()
+    {
+        $activities = ActivityLog::orderBy('created_at', 'desc')->limit(5)->get();
+        
+        return response()->json([
+            'activities' => $activities->map(function($activity) {
+                return [
+                    'id' => $activity->id,
+                    'user_name' => $activity->user_name,
+                    'short_description' => $activity->short_description,
+                    'type' => $activity->type,
+                    'status' => $activity->status,
+                    'created_at' => $activity->created_at->diffForHumans(),
+                    'icon_class' => $this->getIconClass($activity->type, $activity->status),
+                    'color_class' => $this->getColorClass($activity->type, $activity->status),
+                ];
+            })
+        ]);
+    }
+
+    // Helper method to get icon class
+    private function getIconClass($type, $status)
+    {
+        if ($type === 'update_status') {
+            switch ($status) {
+                case 'pending': return 'fa-clock';
+                case 'ongoing':
+                case 'in_progress': return 'fa-spinner';
+                case 'printed': return 'fa-print';
+                case 'repaired': return 'fa-screwdriver-wrench';
+                case 'released': return 'fa-circle-check';
+                case 'cancelled':
+                case 'unrepairable': return 'fa-circle-xmark';
+                default: return 'fa-circle-info';
+            }
+        } elseif ($type === 'create_ticket' || $type === 'repair') {
+            return 'fa-file-lines';
+        } elseif ($type === 'update_ticket') {
+            return 'fa-pen-to-square';
+        } elseif ($type === 'update_user') {
+            return 'fa-user';
+        } elseif ($type === 'password_changed') {
+            return 'fa-lock';
+        } elseif ($type === 'delete_user') {
+            return 'fa-user-slash';
+        }
+        return 'fa-circle-info';
+    }
+
+    // Helper method to get color class
+    private function getColorClass($type, $status)
+    {
+        if ($type === 'update_status') {
+            switch ($status) {
+                case 'pending': return 'status-pending';
+                case 'ongoing':
+                case 'in_progress': return 'status-ongoing';
+                case 'printed':
+                case 'repaired': return 'status-printed';
+                case 'released': return 'status-released';
+                case 'cancelled':
+                case 'unrepairable': return 'status-cancelled';
+                default: return 'status-default';
+            }
+        } elseif ($type === 'create_ticket' || $type === 'repair' || $type === 'update_ticket') {
+            return 'activity-ticket';
+        } elseif ($type === 'update_user') {
+            return 'activity-user';
+        } elseif ($type === 'password_changed') {
+            return 'activity-password';
+        } elseif ($type === 'delete_user') {
+            return 'activity-delete';
+        }
+        return 'activity-default';
+    }
+
 
     // Show login form
     public function login()
