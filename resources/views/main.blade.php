@@ -264,7 +264,7 @@
                                         
                                         <li class="activity-item">
                                             <div class="activity-icon-wrapper {{ $colorClass }}">
-                                                <i class="fa-regular {{ $iconClass }}"></i>
+                                                <i class="fa-solid {{ $iconClass }}"></i>
                                             </div>
                                             <div class="activity-details">
                                                 <p class="activity-description">
