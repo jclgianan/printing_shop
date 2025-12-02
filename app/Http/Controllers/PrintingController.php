@@ -253,22 +253,64 @@ class PrintingController extends Controller
             'quantity' => 'nullable|integer',
             'deadline' => 'nullable|date',
             'file_link' => 'nullable|string|max:255',
-            'release_date' => 'nullable|date',
+            'release_date' => 'nullable',
             'status' => 'nullable|in:pending,in_progress,printed,released,cancelled',
         ]);
 
-        
         $changes = [];
-        // Update including repairDevice_id
-        foreach ($request->only(['name', 'office_department', 'itemname', 'size', 'quantity', 'deadline', 'file_link', 'release_date', 'status']) as $field => $value) {
+        
+        // Update fields except release_date (handle separately)
+        foreach ($request->only(['name', 'office_department', 'itemname', 'size', 'quantity', 'deadline', 'file_link', 'status']) as $field => $value) {
             if ($ticket->$field != $value) {
-                $changes[] = ucfirst($field) .": '{$ticket->$field}' → '{$value}'";
+                $changes[] = ucfirst($field) . ": '{$ticket->$field}' → '{$value}'";
                 $ticket->$field = $value;
             }
         }
+        
+        // Handle release_date separately to preserve time component
+        if ($request->has('release_date') && $request->release_date) {
+            $newReleaseDate = $request->release_date;
+            $oldReleaseDate = $ticket->release_date;
+            
+            // Check if the incoming date has time component
+            if (strpos($newReleaseDate, ':') !== false || strpos($newReleaseDate, 'T') !== false) {
+                // Full datetime provided (e.g., "2024-12-15 14:30:00" or "2024-12-15T14:30")
+                $formattedDate = str_replace('T', ' ', $newReleaseDate);
+
+                // Ensure no seconds in the time
+                $carbonDate = \Carbon\Carbon::parse($formattedDate);
+                $formattedDate = $carbonDate->format('Y-m-d H:i:00');
+                
+                if ($oldReleaseDate != $formattedDate) {
+                    $changes[] = "Release Date: '{$oldReleaseDate}' → '{$formattedDate}'";
+                    $ticket->release_date = $formattedDate;
+                }
+            } else {
+                // Only date provided (e.g., "2024-12-15")
+                // Preserve existing time if available
+                if ($oldReleaseDate) {
+                    $existingTime = \Carbon\Carbon::parse($oldReleaseDate)->format('H:i:00');
+                    $newDateTime = $newReleaseDate . ' ' . $existingTime;
+                    
+                    // Only log change if the DATE part actually changed
+                    $oldDateOnly = \Carbon\Carbon::parse($oldReleaseDate)->format('Y-m-d');
+                    if ($oldDateOnly != $newReleaseDate) {
+                        $changes[] = "Release Date: '{$oldReleaseDate}' → '{$newDateTime}'";
+                    }
+                    
+                    $ticket->release_date = $newDateTime;
+                } else {
+                    // No existing time, use current time
+                    $newDateTime = $newReleaseDate . ' 00:00:00';
+                    $changes[] = "Release Date: 'null' → '{$newDateTime}'";
+                    $ticket->release_date = $newDateTime;
+                }
+            }
+        }
+        
         $ticket->save();
 
-         // Record activity log
+        // Record activity log
         if (!empty($changes)) {
             try {
                 ActivityLog::record(
@@ -276,7 +318,7 @@ class PrintingController extends Controller
                     "Print Ticket {$ticket->printTicket_id} updated:<br>" . implode('<br>', $changes)
                 );
             } catch (\Exception $e) {
-                Log::error('Failed to record activity log: ' . $e->getMessage());
+                \Illuminate\Support\Facades\Log::error('Failed to record activity log: ' . $e->getMessage());
             }
         }
 

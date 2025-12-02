@@ -108,7 +108,7 @@
                                                 data-quantity="{{ $ticket->quantity }}"
                                                 data-deadline="{{ $ticket->deadline }}"
                                                 data-file_link="{{ $ticket->file_link }}"
-                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : '' }}"
+                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d\TH:i') : '' }}"
                                                 data-status="{{ $ticket->status }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
@@ -189,7 +189,18 @@
             $('#edit_quantity').val(ticket.quantity);
             $('#edit_deadline').val(ticket.deadline);
             $('#edit_file_link').val(ticket.file_link);
-            $('#edit_release_date').val(ticket.release_date);
+            // FIX: Only set the DATE part for the date input, but store original datetime
+            if (ticket.release_date) {
+                // Extract just the date portion for the input (YYYY-MM-DD)
+                let dateOnly = ticket.release_date.split(' ')[0].split('T')[0];
+                $('#edit_release_date').val(dateOnly);
+                
+                // Store the FULL datetime in a hidden field or data attribute
+                $('#edit_release_date').data('original-datetime', ticket.release_date);
+            } else {
+                $('#edit_release_date').val('');
+                $('#edit_release_date').data('original-datetime', '');
+            }
 
             // Populate action buttons dynamically
             const actionContainer = $('#editActionBtn');
@@ -225,11 +236,13 @@
             }
 
             $('#editPrintingModal').addClass('active');
-            $('#closeEditModal').on('click', function() {
-                $('#editPrintingModal').removeClass('active');
-            });
         });
 
+        //Close button
+        $('#closeEditModal').off('click').on('click', function() {
+            $('#editPrintingModal').removeClass('active');
+        });
+        
         // Close edit modal when clicking outside the modal box
         $(document).on('click', '#editPrintingModal', function(e) {
             if ($(e.target).is('#editPrintingModal')) {
@@ -237,26 +250,44 @@
             }
         });
 
-        //Edit Modal submission
+        // Edit Modal submission - UPDATED to preserve datetime
         $(document).on('submit', '#editPrintingForm', function(e) {
             e.preventDefault();
 
             const form = $(this);
-            const formData = form.serialize();
             const messageBox = $('#editFormMessage');
             const submitBtn = form.find('button[type="submit"]');
             const ticketId = $('#edit_ticket_id').val();
+            
+            // Get the original datetime
+            const releaseDateInput = $('#edit_release_date');
+            const originalDateTime = releaseDateInput.data('original-datetime');
+            const newDate = releaseDateInput.val();
+            
+            // Build form data
+            let formData = form.serializeArray();
+            
+            // If release_date wasn't changed, use original datetime
+            if (originalDateTime && newDate) {
+                const originalDate = originalDateTime.split(' ')[0].split('T')[0];
+                
+                if (newDate === originalDate) {
+                    // Date unchanged - use full original datetime
+                    formData = formData.filter(item => item.name !== 'release_date');
+                    formData.push({ name: 'release_date', value: originalDateTime });
+                }
+                // If date was changed, the new date value from form will be used
+            }
 
             submitBtn.prop('disabled', true).text('Updating...');
 
-            // Dynamically build the update URL
             let updateUrl = "{{ route('print.update', ':id') }}";
             updateUrl = updateUrl.replace(':id', ticketId);
 
             $.ajax({
                 url: updateUrl,
                 method: "POST",
-                data: formData,
+                data: $.param(formData),
                 success: function(response) {
                     if (response.success) {
                         messageBox
@@ -264,17 +295,6 @@
                             .addClass('alert-box alert-success')
                             .text(response.success)
                             .fadeIn();
-
-                        // Update the table row live without reloading
-                        const row = $(`button[data-id='${ticketId}']`).closest('tr');
-                        row.find('td:nth-child(3)').text(response.ticket.name);
-                        row.find('td:nth-child(4)').text(response.ticket.office_department);
-                        row.find('td:nth-child(5)').text(response.ticket.itemname);
-                        row.find('td:nth-child(6)').text(response.ticket.size);
-                        row.find('td:nth-child(7)').text(response.ticket.quantity);
-                        row.find('td:nth-child(8)').text(response.ticket.deadline);
-                        row.find('td:nth-child(9)').text(response.ticket.file_link);
-                        row.find('td:nth-child(10)').text(response.ticket.release_date);
 
                         submitBtn.prop('disabled', false).text('Update Ticket');
 

@@ -103,7 +103,7 @@
                                                     data-issue="{{ $ticket->issue }}"
                                                     data-solution="{{ $ticket->solution }}"
                                                     data-note="{{ $ticket->note }}"
-                                                    data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : '' }}"
+                                                    data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d\TH:i') : '' }}"
                                                     data-status="{{ $ticket->status }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
@@ -185,7 +185,18 @@
             $('#edit_issue').val(ticket.issue);
             $('#edit_solution').val(ticket.solution);
             $('#edit_note').val(ticket.note);
-            $('#edit_release_date').val(ticket.release_date);
+           // FIX: Only set the DATE part for the date input, but store original datetime
+            if (ticket.release_date) {
+                // Extract just the date portion for the input (YYYY-MM-DD)
+                let dateOnly = ticket.release_date.split(' ')[0].split('T')[0];
+                $('#edit_release_date').val(dateOnly);
+                
+                // Store the FULL datetime in a hidden field or data attribute
+                $('#edit_release_date').data('original-datetime', ticket.release_date);
+            } else {
+                $('#edit_release_date').val('');
+                $('#edit_release_date').data('original-datetime', '');
+            }
 
             // Populate action buttons dynamically
             const actionContainer = $('#editActionBtn');
@@ -219,11 +230,12 @@
                 </button>
             `);
             }
-
+            
             $('#editRepairModal').addClass('active');
-            $('#closeEditModal').on('click', function() {
-                $('#editRepairModal').removeClass('active');
-            });
+        });
+        // Close edit modal
+        $('#closeEditModal').off('click').on('click', function() {
+            $('#editRepairModal').removeClass('active');
         });
 
         // Close edit modal when clicking outside the modal box
@@ -233,26 +245,44 @@
             }
         });
 
-        //Edit Modal submission
+        // Edit Modal submission - UPDATED to preserve datetime
         $(document).on('submit', '#editRepairForm', function(e) {
             e.preventDefault();
 
             const form = $(this);
-            const formData = form.serialize();
             const messageBox = $('#editFormMessage');
             const submitBtn = form.find('button[type="submit"]');
             const ticketId = $('#edit_ticket_id').val();
+            
+            // Get the original datetime
+            const releaseDateInput = $('#edit_release_date');
+            const originalDateTime = releaseDateInput.data('original-datetime');
+            const newDate = releaseDateInput.val();
+            
+            // Build form data
+            let formData = form.serializeArray();
+            
+            // If release_date wasn't changed, use original datetime
+            if (originalDateTime && newDate) {
+                const originalDate = originalDateTime.split(' ')[0].split('T')[0];
+                
+                if (newDate === originalDate) {
+                    // Date unchanged - use full original datetime
+                    formData = formData.filter(item => item.name !== 'release_date');
+                    formData.push({ name: 'release_date', value: originalDateTime });
+                }
+                // If date was changed, the new date value from form will be used
+            }
 
             submitBtn.prop('disabled', true).text('Updating...');
 
-            // Dynamically build the update URL
             let updateUrl = "{{ route('repair.update', ':id') }}";
             updateUrl = updateUrl.replace(':id', ticketId);
 
             $.ajax({
                 url: updateUrl,
                 method: "POST",
-                data: formData,
+                data: $.param(formData),
                 success: function(response) {
                     if (response.success) {
                         messageBox
@@ -260,18 +290,6 @@
                             .addClass('alert-box alert-success')
                             .text(response.success)
                             .fadeIn();
-
-
-                        // Update the table row live without reloading
-                        const row = $(`button[data-id='${ticketId}']`).closest('tr');
-                        row.find('td:nth-child(3)').text(response.ticket.device_id);
-                        row.find('td:nth-child(4)').text(response.ticket.name);
-                        row.find('td:nth-child(5)').text(response.ticket.office_department);
-                        row.find('td:nth-child(6)').text(response.ticket.itemname);
-                        row.find('td:nth-child(7)').text(response.ticket.issue);
-                        row.find('td:nth-child(8)').text(response.ticket.solution);
-                        row.find('td:nth-child(9)').text(response.ticket.note);
-                        row.find('td:nth-child(10)').text(response.ticket.release_date);
 
                         submitBtn.prop('disabled', false).text('Update Ticket');
 

@@ -57,11 +57,10 @@
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>
                 <div class="formBtn">
-                    <button type="submit" class="editBtn">Save changes</button>
                     <button id="closeEditModal" class="editBtn">Close</button>
+                    <button type="submit" class="editBtn">Save changes</button>
                 </div>
             </form>
-                            <!-- Action buttons will be inserted here dynamically -->
            
         </div>
     </div>
