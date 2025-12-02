@@ -353,13 +353,17 @@
             });
         });
 
-        // Auto-refresh every 30 seconds if user inactive for 10 seconds
+        // Auto-refresh every 30 seconds adn 5 minutes if user inactive for 10 seconds
         setInterval(() => {
             if (Date.now() - lastActivity > 10000) {
-                updateDashboardStats();
                 updateRecentActivities();
             }
         }, 30000);
+        setInterval(() => {
+            if (Date.now() - lastActivity > 10000) {
+                updateDashboardStats();
+            }
+        }, 300000);
 
         console.log('Dashboard auto-refresh initialized');
     </script>

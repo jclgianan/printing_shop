@@ -1,4 +1,4 @@
-require('./bootstrap');
+// require('./bootstrap');
 
 document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('registerModal');
