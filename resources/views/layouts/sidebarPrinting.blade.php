@@ -6,14 +6,13 @@
     </div>
     <div class="header-right">
         <div class="user-info">
-            <div class="user-avatar">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-            </div>
             <div class="user-details">
                 <span class="user-name">{{ Auth::user()->name }}</span>
                 <span class="user-email">{{ Auth::user()->email }}</span>
             </div>
-            
+            <div class="user-avatar">
+                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            </div>
         </div>
     </div>
 </aside>

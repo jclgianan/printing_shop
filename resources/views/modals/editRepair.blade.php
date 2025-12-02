@@ -1,18 +1,21 @@
 <!-- resources/views/modals/editPrinting.blade.php -->
 <div id="editRepairModal" class="modal-overlay">
     <div class="modal-box">
-        <span id="closeEditModal" class="modal-close">&times;</span>
-        <div class="content-placeholder header-row">
-            <div class="header-top">
-                <div class="header-text">
-                    <h2>Edit Printing Ticket</h2>
+        <div class="header-row-modal">
+            <div class="header-top-modal">
+                <div class="header-text-modal">
+                    <h2>Edit Repair Ticket</h2>
                 </div>
             </div>
         </div>
 
         <div id="editFormMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
-        <div class="content-placeholder-edit-repair">
+        <div class="container-modal">
+
+            <!-- Action buttons will be inserted here dynamically -->
+            <div class="action-buttons" id="editActionBtn"></div>
+
             <form id="editRepairForm" class="process-form">
                 @csrf
                 <div class="form-group">
@@ -59,64 +62,14 @@
                 </div>
 
                 <br>
-                <button type="submit" class="btn btn-primary">Update Ticket</button>
-
-                <!-- Action buttons will be inserted here dynamically -->
-                <div class="action-buttons" id="editActionBtn"></div>
+                <div class="formBtn">
+                    <button id="closeEditModal" class="editBtn">Close</button>
+                    <button type="submit" class="editBtn">Save changes</button>
+                </div>
             </form>
         </div>
     </div>
 </div>
 
-<script>
-    $('#editRepairForm').on('submit', function(e) {
-        e.preventDefault();
-
-        const form = $(this);
-        const formData = form.serialize();
-        const messageBox = $('#editFormMessage');
-        const submitBtn = form.find('button[type="submit"]');
-        const ticketId = $('#edit_ticket_id').val(); // get ID from hidden input
-
-        const updateUrl = `/repair/${ticketId}/update`; // matches your route
-
-        submitBtn.prop('disabled', true).text('Updating...');
-
-        $.ajax({
-            url: updateUrl,
-            method: "POST",
-            data: formData,
-            success: function(response) {
-                messageBox
-                    .removeClass('alert-error')
-                    .addClass('alert-box alert-success')
-                    .text(response.success)
-                    .fadeIn();
-
-                submitBtn.prop('disabled', false).text('Update Ticket');
-
-                setTimeout(() => {
-                    messageBox.fadeOut();
-                    window.location.reload();
-                    document.getElementById('editRepairModal').style.display = 'none';
-                }, 1500);
-            },
-            error: function(xhr) {
-                let message = 'Failed to update. Please try again.';
-                if(xhr.responseJSON && xhr.responseJSON.details){
-                    message += ' (' + xhr.responseJSON.details + ')';
-                }
-                messageBox
-                    .removeClass('alert-success')
-                    .addClass('alert-box alert-error')
-                    .text(message)
-                    .fadeIn();
-
-                submitBtn.prop('disabled', false).text('Update Ticket');
-            }
-        });
-    });
-
-</script>
 
 
