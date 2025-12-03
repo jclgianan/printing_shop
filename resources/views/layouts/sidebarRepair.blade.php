@@ -14,6 +14,10 @@
                 <span class="menu_icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
                 <span class="menu_text">Repair</span>
             </a></li>
+            <li><a href="{{ route('inventory') }}" class="shop_nav-link {{ request()->routeIs('inventory') ? 'active' : '' }}">
+                <span class="menu_icon"><i class="fa-solid fa-boxes-packing"></i></span>
+                <span class="menu_text">Inventory</span>
+            </a></li>
             <li><a href="{{ route('add-new-user') }} " class="shop_nav-link {{ request()->routeIs('add-new-user') ? 'active' : '' }}">
                 <span class="menu_icon"><i class="fa-solid fa-users"></i></span>
                 <span class="menu_text">Users</span>
