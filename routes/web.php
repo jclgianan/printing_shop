@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PrintingController;
 use App\Http\Controllers\RepairController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\ProcessController;
 
 /*
@@ -58,6 +59,32 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get("/printing", [PrintingController::class, "printing"])->name("printing");
     Route::get("/repair", [RepairController::class, "repair"])->name("repair");
+
+    // Inventory Management Routes
+    
+    // Main inventory list (grouped by device name)
+    Route::get('/inventory', [InventoryController::class, 'inventory'])->name('inventory');
+    
+    // Create new inventory item
+    Route::get('/create', [InventoryController::class, 'create'])->name('inventory.create');
+    Route::post('/store', [InventoryController::class, 'store'])->name('inventory.store');
+    
+    // View all units of a specific device name
+    Route::get('/view/{deviceId}', [InventoryController::class, 'view'])->name('inventory.view');
+    
+    // Edit specific inventory item
+    Route::get('/edit/{id}', [InventoryController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}', [InventoryController::class, 'update'])->name('update');
+    
+    // Delete specific inventory item
+    Route::delete('/destroy/{id}', [InventoryController::class, 'destroy'])->name('destroy');
+    
+    // Delete all items with a specific device name (optional)
+    Route::delete('/destroy-device/{deviceName}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
+
+    // Alias for compatibility with your blade file
+    Route::delete('/devices/{id}', [InventoryController::class, 'destroy'])->name('devices.destroy');
+
     
     // Forms and processes
     Route::get('/addPrinting', [PrintingController::class, 'printingForm'])->name('printing.form');
