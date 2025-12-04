@@ -71,6 +71,7 @@ Route::middleware(['auth'])->group(function () {
     
     // View all units of a specific device name
     Route::get('/view/{deviceId}', [InventoryController::class, 'view'])->name('inventory.view');
+    Route::get("inventory/search", [InventoryController::class, "inventorySearch"])->name("inventory-search");
     
     // Edit specific inventory item
     Route::get('/edit/{id}', [InventoryController::class, 'edit'])->name('edit');

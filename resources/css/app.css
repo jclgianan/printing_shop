@@ -1632,3 +1632,192 @@ input::placeholder {
     color: #6b7280;
     margin-top: 4px;
 }
+
+
+/* Inventory Styles */
+
+/* Header */
+.inv-header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.inv-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.inv-back-link {
+    text-decoration: none;
+    color: #0d6efd;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.inv-back-link:hover {
+    text-decoration: underline;
+}
+
+.inv-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.inv-device-id {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.inv-header-right {
+    margin-top: 0.5rem;
+}
+
+.inv-add-unit {
+    background-color: #0d6efd;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.35rem;
+    font-weight: 500;
+}
+
+.inv-add-unit:hover {
+    background-color: #0b5ed7;
+}
+
+
+/* Cards */
+.inv-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+.inv-card {
+    flex: 1 1 20%;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    text-align: center;
+    padding: 15px;
+    min-width: 150px;
+}
+
+.inv-card h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.inv-card small {
+    color: #888;
+}
+
+/* Table */
+.inv-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+.inv-table thead tr {
+    background-color: #2c3e50;
+    color: #fff;
+    text-align: left;
+}
+
+.inv-table th, 
+.inv-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.inv-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Status Badges */
+.inv-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.inv-new { background-color: #17a2b8; } /* info */
+.inv-good { background-color: #28a745; } /* green */
+.inv-fair { background-color: #ffc107; } /* yellow */
+.inv-poor { background-color: #dc3545; } /* red */
+.inv-status-available { background-color: #28a745; } /* green */
+.inv-status-issued    { background-color: #0d6efd; } /* blue */
+.inv-status-unusable  { background-color: #dc3545; } /* red */
+
+
+/* Action Buttons */
+.inv-btn {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    border-radius: 5px;
+    text-decoration: none;
+    margin-right: 5px;
+    transition: 0.3s;
+    color: #fff;
+    cursor: pointer;
+}
+
+.inv-btn.view { background-color: #3498db; }
+.inv-btn.view:hover { background-color: #2980b9; }
+
+.inv-btn.edit { background-color: #f39c12; }
+.inv-btn.edit:hover { background-color: #d68910; }
+
+.inv-btn.delete { background-color: #e74c3c; }
+.inv-btn.delete:hover { background-color: #c0392b; }
+
+/* Modal */
+.inv-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(2px);
+    background-color: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.inv-modal.active {
+    display: flex;
+}
+
+.inv-modal-content {
+    background-color: #fff;
+    border-radius: 10px;
+    max-width: 700px;
+    width: 100%;
+    padding: 20px;
+    position: relative;
+}
+
+.inv-modal-content .inv-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.inv-modal-content .inv-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}

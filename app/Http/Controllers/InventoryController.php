@@ -49,6 +49,29 @@ class InventoryController extends Controller
         return view('addInventory');
     }
 
+    // Inventory search page fucntion
+    public function inventorySearch(Request $request)
+    {
+        $query = $request->input('query');
+
+        // Aggregate devices by device_id and device_name
+        $devices = InventoryItem::select(
+                    'device_id',
+                    'device_name',
+                    DB::raw('COUNT(*) as total_units'),
+                    DB::raw("SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available"),
+                    DB::raw("SUM(CASE WHEN status = 'issued' THEN 1 ELSE 0 END) as issued"),
+                    DB::raw("SUM(CASE WHEN status = 'damaged' OR status = 'unusable' THEN 1 ELSE 0 END) as unusable")
+                )
+                ->where('device_id', 'LIKE', "%{$query}%")
+                ->orWhere('device_name', 'LIKE', "%{$query}%")
+                ->groupBy('device_id', 'device_name')
+                ->get();
+
+        return view('inventory', compact('devices'));
+    }
+
+
     /**
      * Store a newly created inventory item
      */
@@ -92,7 +115,9 @@ class InventoryController extends Controller
             abort(404);
         }
 
-        return view('viewInventory', compact('items', 'deviceId'));
+        $category = $items->first()->category;
+
+        return view('viewInventory', compact('items', 'deviceId', 'category'));
     }
 
     /**

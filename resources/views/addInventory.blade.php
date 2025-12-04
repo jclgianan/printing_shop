@@ -88,7 +88,7 @@
                                             <option value="Components" {{ old('category') == 'Components' ? 'selected' : '' }}>Components</option>
                                             <option value="Peripherals" {{ old('category') == 'Peripherals' ? 'selected' : '' }}>Peripherals</option>
                                             <option value="Networking" {{ old('category') == 'Networking' ? 'selected' : '' }}>Networking</option>
-                                            <option value="Storage" {{ old('category') == 'Storage' ? 'selected' : '' }}>Storage</option>
+                                            <option value="Cables & Adapters" {{ old('category') == 'Cables & Adapters' ? 'selected' : '' }}>Cables & Adapters</option>
                                             <option value="Others" {{ old('category') == 'Others' ? 'selected' : '' }}>Others</option>
                                         </select>
                                         @error('category')
