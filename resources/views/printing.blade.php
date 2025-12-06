@@ -59,7 +59,7 @@
                                     <th>Ticket ID</th>
                                     <th>Receiving Date</th>
                                     <th>Name</th>
-                                    <th>Office/Department</th>
+                                    <th>Office</th>
                                     <th>Name of Item</th>
                                     <th>Size</th>
                                     <th>Quantity</th>
@@ -83,7 +83,7 @@
                                         <td class="mono">{{ $ticket->size }}</td>
                                         <td class="mono">{{ $ticket->quantity }}</td>
                                         <td class="mono">
-                                            {{ $ticket->deadline ? \Carbon\Carbon::parse($ticket->deadline)->format('m/d/y') : '-' }}
+                                            {{ $ticket->deadline ? \Carbon\Carbon::parse($ticket->deadline)->timezone('Asia/Manila')->format('m/d/y') : '-' }}
                                         </td>
                                         <td class="file-icon">
                                             @if ($ticket->file_link)
@@ -106,7 +106,7 @@
                                                 data-office_department="{{ $ticket->office_department }}"
                                                 data-itemname="{{ $ticket->itemname }}" data-size="{{ $ticket->size }}"
                                                 data-quantity="{{ $ticket->quantity }}"
-                                                data-deadline="{{ $ticket->deadline }}"
+                                                data-deadline="{{ $ticket->deadline ? \Carbon\Carbon::parse($ticket->deadline)->format('Y-m-d') : '' }}"
                                                 data-file_link="{{ $ticket->file_link }}"
                                                 data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d\TH:i') : '' }}"
                                                 data-status="{{ $ticket->status }}">

@@ -18,6 +18,12 @@
                 </div>
             </div>
 
+            @if(session('success'))
+                <div id="flash-success" class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <!-- Search Bar on the right -->
             <form action="{{ route('inventory-search') }}" method="GET" class="search-form">
                 <div class="search-group">
@@ -38,7 +44,7 @@
                             <th>Available</th>
                             <th>Issued</th>
                             <th>Unusable</th>
-                            <th style="width: 180px;">Actions</th>
+                            <th style="width: 200px;">Actions</th>
                         </tr>
                     </thead>
 
@@ -57,7 +63,7 @@
                                         View Units
                                     </a>
                                     
-                                    <form action="" method="POST" 
+                                    <form action="{{ route('destroy-device', $device->device_id) }}" method="POST" 
                                         style="display:inline-block;">
                                         @csrf
                                         @method('DELETE')

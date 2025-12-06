@@ -13,26 +13,32 @@
                         <h1 class="inv-title">{{ $items->first()->device_name }} — Units</h1>
                         <small class="inv-device-id">Device ID: {{ $deviceId }}</small>
                     </div>
-                    <div class="inv-header-right">
-                        <a href="{{ route('inventory.create') }}" class="inv-add-unit">+ Add Unit</a>
-                    </div>
+                    <button type="button" class="inv-add-unit" data-bs-toggle="modal" data-bs-target="#addUnitModal">
+                            + Add Unit
+                    </button>
                 </div>
-                <div class="inv-row mb-4">
-                    <div class="inv-card">
+                @if(session('success'))
+                    <div id="flash-success" class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                <div class="inv-row">
+                    <div class="inv-card total-units">
                         <h3>{{ $items->count() }}</h3>
-                        <small>Total Units</small>
+                        <p>Total Units</p>
                     </div>
-                    <div class="inv-card">
+                    <div class="inv-card available-units">
                         <h3>{{ $items->where('status','available')->count() }}</h3>
-                        <small>Available</small>
+                        <p>Available</p>
                     </div>
-                    <div class="inv-card">
+                    <div class="inv-card issued-units">
                         <h3>{{ $items->where('status','issued')->count() }}</h3>
-                        <small>Issued</small>
+                        <p>Issued</p>
                     </div>
-                    <div class="inv-card">
+                    <div class="inv-card unusable-units">
                         <h3>{{ $items->where('status','unusable')->count() }}</h3>
-                        <small>Unusable</small>
+                        <p>Unusable</p>
                     </div>
                 </div>
                 <div class="process-log">
@@ -40,6 +46,7 @@
                         <thead>
                             <tr class="table-header">
                                 <th>Unique ID</th>
+                                <th>S/N</th>
                                 <th>Status</th>
                                 <th>Condition</th>
                                 <th>Assigned To</th>
@@ -52,6 +59,7 @@
                             @forelse($items as $item)
                                 <tr>
                                     <td>{{ $item->individual_id }}</td>
+                                    <td>{{ $item->serial_number ?? '—' }}</td>
                                     <td>
                                         @if($item->status === 'available')
                                             <span class="inv-badge inv-status-available">Available</span>
@@ -61,7 +69,6 @@
                                             <span class="inv-badge inv-status-unusable">Unusable</span>
                                         @endif
                                     </td>
-
                                     <td>
                                         @if($item->condition === 'new')
                                             <span class="inv-badge inv-new">New</span>
@@ -82,7 +89,7 @@
                                             View Units
                                         </button>
 
-                                        <form action="" method="POST" style="display:inline-block;">
+                                        <form action="{{ route('destroy', $item) }}" method="POST" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete all units of this device?')">
@@ -92,12 +99,13 @@
                                     </td>
                                 </tr>
                                 @include('modals.viewDetails', ['item' => $item])
-
                             @empty
                                 <tr>
                                     <td colspan="7" class="text-center">No units found for this device.</td>
                                 </tr>
                             @endforelse
+
+                            @include('modals.addUnit')
                         </tbody>
                     </table>
                 </div>
@@ -106,3 +114,41 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        // Preview Individual IDs
+        document.getElementById('addQuantity').addEventListener('input', function() {
+            const deviceId = '{{ $deviceId }}';
+            const currentCount = {{ $items->count() }};
+            const quantity = parseInt(this.value) || 1;
+            const previewDiv = document.getElementById('addUnitPreview');
+
+            let previewText = '';
+            const maxPreview = 5;
+            
+            for (let i = 1; i <= Math.min(quantity, maxPreview); i++) {
+                const newNumber = currentCount + i;
+                const individualId = `${deviceId}(${String(newNumber).padStart(2, '0')})`;
+                previewText += `<span class="badge bg-secondary me-1 mb-1">${individualId}</span>`;
+            }
+
+            if (quantity > maxPreview) {
+                previewText += `<span class="text-muted">... and ${quantity - maxPreview} more</span>`;
+            }
+
+            previewDiv.innerHTML = previewText;
+        });
+
+        // Show/hide assignment section based on status
+        document.getElementById('addStatus').addEventListener('change', function() {
+            const assignmentSection = document.getElementById('addAssignmentSection');
+            assignmentSection.style.display = this.value === 'issued' ? 'block' : 'none';
+        });
+
+        // Initialize preview on modal open
+        document.getElementById('addUnitModal').addEventListener('shown.bs.modal', function() {
+            document.getElementById('addQuantity').dispatchEvent(new Event('input'));
+        });
+    </script>
+@endpush
