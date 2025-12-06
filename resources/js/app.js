@@ -89,3 +89,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
         dateInput.value = formattedDate;
     }
 });
+
+// FLASH MESSAGE AUTO DISMISS
+window.addEventListener('DOMContentLoaded', (event) => {
+    const flash = document.getElementById('flash-success');
+    if(flash){
+        setTimeout(() => {
+            flash.style.transition = "opacity 0.3s ease";
+            flash.style.opacity = "0";
+            setTimeout(() => flash.remove(), 500); // remove from DOM after fade
+        }, 3000); // 3000ms = 3 seconds
+    }
+});

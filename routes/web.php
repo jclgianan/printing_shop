@@ -75,7 +75,7 @@ Route::middleware(['auth'])->group(function () {
     
     // Edit specific inventory item
     Route::get('/edit/{id}', [InventoryController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}', [InventoryController::class, 'update'])->name('update');
+    Route::put('/update/{id}', [InventoryController::class, 'update'])->name('inventory.update');
     
     // Delete specific inventory item
     Route::delete('/destroy/{id}', [InventoryController::class, 'destroy'])->name('destroy');
@@ -86,6 +86,9 @@ Route::middleware(['auth'])->group(function () {
     // Alias for compatibility with your blade file
     Route::delete('/devices/{id}', [InventoryController::class, 'destroy'])->name('devices.destroy');
 
+    // Generate Device ID for new inventory item
+    Route::get('/generate-device-id', [InventoryController::class, 'generateDeviceId'])->name('generate-device-id');
+    Route::post('/inventory/units/{deviceId}/add', [InventoryController::class, 'addUnits'])->name('inventory.add-units');
     
     // Forms and processes
     Route::get('/addPrinting', [PrintingController::class, 'printingForm'])->name('printing.form');

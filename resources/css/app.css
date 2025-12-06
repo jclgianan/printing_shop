@@ -684,6 +684,8 @@ input::placeholder {
 
 .search-form {
     display: flex;
+    justify-content: end;
+
 }
 .search-group {
     display: flex;
@@ -694,7 +696,6 @@ input::placeholder {
     font-size: 1rem;
     border: 1px solid #ccc;
     flex-grow: 1;
-
     border-top-left-radius: 8px;
     border-bottom-left-radius: 8px;
     border-top-right-radius: 0px;
@@ -1398,15 +1399,15 @@ input::placeholder {
     max-width: 190px;
 }
 
-.pending {
+.pending, .total-units {
     color: #92400E;
 }
 
-.in_progress {
+.in_progress, .issued-units {
     color: #1E40AF;
 }
 
-.printed, .repaired {
+.printed, .repaired, .available-units {
     color: #065F46;
 }
 
@@ -1414,7 +1415,7 @@ input::placeholder {
     color: #5B21B6;
 }
 
-.cancelled, .unrepaired {
+.cancelled, .unrepaired, .unusable-units {
     color: #D32F2F;
 }
 .unr, .cld {
@@ -1706,6 +1707,8 @@ input::placeholder {
     text-align: center;
     padding: 15px;
     min-width: 150px;
+    width: 100%;
+    padding-top: 20px;
 }
 
 .inv-card h3 {
@@ -1715,6 +1718,22 @@ input::placeholder {
 
 .inv-card small {
     color: #888;
+}
+/* Background colors per card type */
+.total-units {
+    background-color: #FEF9C3 !important;  /* soft yellow */
+}
+
+.available-units {
+    background-color: #D1FAE5 !important;  /* soft green */
+}
+
+.issued-units {
+    background-color: #DBEAFE !important;  /* soft blue */
+}
+
+.unusable-units {
+    background-color: #fae0e0 !important;  /* soft red/pink */
 }
 
 /* Table */
