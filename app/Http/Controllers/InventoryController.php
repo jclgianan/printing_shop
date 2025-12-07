@@ -16,7 +16,6 @@ class InventoryController extends Controller
         $search = $request->input('search');
         $category = $request->input('category');
 
-        // Get grouped summary of devices
         $query = InventoryItem::selectRaw('
                 device_id,
                 device_name,
@@ -28,18 +27,25 @@ class InventoryController extends Controller
             ')
             ->groupBy('device_id', 'device_name', 'category');
 
+        // Search filter (fixed)
         if ($search) {
-            $query->where('device_id', 'device_name', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('device_name', 'like', "%{$search}%")
+                ->orWhere('device_id', 'like', "%{$search}%");
+            });
         }
 
+        // Category filter
         if ($category) {
             $query->where('category', $category);
         }
 
-        $devices = $query->paginate(100);
+        // Pagination
+        $devices = $query->paginate(15);
 
         return view('inventory', compact('devices'));
     }
+
 
     /**
      * Show the form for creating a new inventory item
@@ -47,28 +53,6 @@ class InventoryController extends Controller
     public function create()
     {
         return view('addInventory');
-    }
-
-    // Inventory search page fucntion
-    public function inventorySearch(Request $request)
-    {
-        $query = $request->input('query');
-
-        // Aggregate devices by device_id and device_name
-        $devices = InventoryItem::select(
-                    'device_id',
-                    'device_name',
-                    DB::raw('COUNT(*) as total_units'),
-                    DB::raw("SUM(CASE WHEN status = 'available' THEN 1 ELSE 0 END) as available"),
-                    DB::raw("SUM(CASE WHEN status = 'issued' THEN 1 ELSE 0 END) as issued"),
-                    DB::raw("SUM(CASE WHEN status = 'damaged' OR status = 'unusable' THEN 1 ELSE 0 END) as unusable")
-                )
-                ->where('device_id', 'LIKE', "%{$query}%")
-                ->orWhere('device_name', 'LIKE', "%{$query}%")
-                ->groupBy('device_id', 'device_name')
-                ->get();
-
-        return view('inventory', compact('devices'));
     }
 
     public function generateDeviceId()
@@ -210,6 +194,11 @@ class InventoryController extends Controller
             $validated['date_issued'] = null;
         }
 
+        // Always poor condition if status is unusable
+        if ($request->status === 'unusable') {
+            $request->merge(['condition' => 'poor']);
+        }
+
         $item->update($validated);
 
         return redirect()->back()
@@ -315,4 +304,48 @@ class InventoryController extends Controller
         return redirect()->route('inventory.view', $deviceId)
             ->with('success', $message);
     }
+
+    public function issue(Request $request, $id)
+    {
+        $item = InventoryItem::findOrFail($id);
+
+        $request->validate([
+            'issued_to' => 'required|string',
+            'office' => 'required|string',
+            'date_issued' => 'required|date',
+        ]);
+
+        $item->update([
+            'status' => 'issued',
+            'issued_to' => $request->issued_to,
+            'office' => $request->office,
+            'date_issued' => $request->date_issued,
+        ]);
+
+        return back()->with('success', 'Device issued successfully.');
+    }
+
+    public function return(Request $request, $id)
+    {
+        $item = InventoryItem::findOrFail($id);
+
+        $request->validate([
+            'condition' => 'required|in:new,good,fair,poor',
+            'date_returned' => 'required|date',
+        ]);
+
+        $item->update([
+            'status' => 'available',
+            'condition' => $request->condition,
+            'date_returned' => $request->date_returned,
+
+            // Clear assignment fields
+            'issued_to' => null,
+            'office' => null,
+            'date_issued' => null,
+        ]);
+
+        return back()->with('success', 'Device returned successfully.');
+    }
+
 }

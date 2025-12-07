@@ -80,16 +80,17 @@
                         </div>
                     </div>
 
-                    @if($item->issued_to || $item->office)
+                    @if($item->status === 'issued')
                         <hr>
                         <h6 class="mb-3">Assignment Information</h6>
                         <div class="row">
-                            @if($item->issued_to)
+                            @if(!empty($item->issued_to))
                                 <div class="col-md-6 mb-2">
                                     <strong>Issued To:</strong> {{ $item->issued_to }}
                                 </div>
                             @endif
-                            @if($item->office)
+
+                            @if(!empty($item->office))
                                 <div class="col-md-6 mb-2">
                                     <strong>Office:</strong> {{ $item->office }}
                                 </div>
@@ -97,6 +98,7 @@
                         </div>
                     @endif
 
+                    @if(!empty($item->date_acquired) || !empty($item->date_issued) || !empty($item->date_returned))
                     <hr>
                     <h6 class="mb-3">Dates</h6>
                     <div class="row">
@@ -112,7 +114,14 @@
                                 {{ $item->date_issued->format('M d, Y') }}
                             </div>
                         @endif
+                        @if($item->status !== 'issued' && $item->date_returned)
+                            <div class="col-md-4 mb-2">
+                                <strong>Date returned:</strong>
+                                {{ $item->date_returned->format('M d, Y') }}
+                            </div>
+                        @endif
                     </div>
+                    @endif
 
                     @if($item->notes)
                         <hr>
@@ -121,6 +130,16 @@
                     @endif
                 </div>
                 <div class="modal-footer">
+                    @if($item->status === 'available')
+                        <button type="button" class="btn btn-primary" onclick="toggleIssue{{ $item->id }}()">
+                            Issue
+                        </button>
+                    @endif
+                    @if($item->status === 'issued')
+                        <button type="button" class="btn btn-primary" onclick="toggleReturn{{ $item->id }}()">
+                            Return
+                        </button>
+                    @endif
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-warning" onclick="toggleEditMode{{ $item->id }}()">
                         <i class="bi bi-pencil"></i> Edit
@@ -174,30 +193,33 @@
                             <textarea class="form-control" id="editOtherSpecs{{ $item->id }}" name="other_specs" rows="2" placeholder="Any additional specifications...">{{ $item->other_specs }}</textarea>
                         </div>
 
-                        <hr>
+                        @if(empty($item->status) || $item->status === 'available' || $item->status === 'unusable')
+                            <hr>
+                            <!-- Status & Condition (Editable) -->
+                            <h6 class="mb-3">Status & Condition</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editStatus{{ $item->id }}" class="form-label">Status <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editStatus{{ $item->id }}" name="status" required>
+                                        <option value="available" {{ $item->status === 'available' ? 'selected' : '' }}>Available</option>
+                                        @if(empty($item->status) || $item->status === 'issued')
+                                            <option value="issued" {{ $item->status === 'issued' ? 'selected' : '' }}>Issued</option>
+                                        @endif
+                                        <option value="unusable" {{ $item->status === 'unusable' ? 'selected' : '' }}>Unusable</option>
+                                    </select>
+                                </div>
 
-                        <!-- Status & Condition (Editable) -->
-                        <h6 class="mb-3">Status & Condition</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="editStatus{{ $item->id }}" class="form-label">Status <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editStatus{{ $item->id }}" name="status" required>
-                                    <option value="available" {{ $item->status === 'available' ? 'selected' : '' }}>Available</option>
-                                    <option value="issued" {{ $item->status === 'issued' ? 'selected' : '' }}>Issued</option>
-                                    <option value="unusable" {{ $item->status === 'unusable' ? 'selected' : '' }}>Unusable</option>
-                                </select>
+                                <div class="col-md-6">
+                                    <label for="editCondition{{ $item->id }}" class="form-label">Condition <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editCondition{{ $item->id }}" name="condition" required>
+                                        <option value="new" {{ $item->condition === 'new' ? 'selected' : '' }}>New</option>
+                                        <option value="good" {{ $item->condition === 'good' ? 'selected' : '' }}>Good</option>
+                                        <option value="fair" {{ $item->condition === 'fair' ? 'selected' : '' }}>Fair</option>
+                                        <option value="poor" {{ $item->condition === 'poor' ? 'selected' : '' }}>Poor</option>
+                                    </select>
+                                </div>
                             </div>
-
-                            <div class="col-md-6">
-                                <label for="editCondition{{ $item->id }}" class="form-label">Condition <span class="text-danger">*</span></label>
-                                <select class="form-select" id="editCondition{{ $item->id }}" name="condition" required>
-                                    <option value="new" {{ $item->condition === 'new' ? 'selected' : '' }}>New</option>
-                                    <option value="good" {{ $item->condition === 'good' ? 'selected' : '' }}>Good</option>
-                                    <option value="fair" {{ $item->condition === 'fair' ? 'selected' : '' }}>Fair</option>
-                                    <option value="poor" {{ $item->condition === 'poor' ? 'selected' : '' }}>Poor</option>
-                                </select>
-                            </div>
-                        </div>
+                        @endif
 
                         <!-- Assignment Information (Editable, conditional) -->
                         <div id="editAssignmentSection{{ $item->id }}" style="display: {{ $item->status === 'issued' ? 'block' : 'none' }};">
@@ -258,11 +280,111 @@
                     </div>
                 </form>
             </div>
+
+            <!-- Issue Modal -->
+            <div id="issueModal{{ $item->id }}" style="display: none;">
+                <form class="modal-content" action="{{ route('inventory.issue', $item->id) }}" method="POST">
+                    @csrf
+
+                    <div class="modal-body">
+                        <p><strong>Device:</strong> {{ $item->device_name }}</p>
+
+                        <div class="mb-3">
+                            <label class="form-label">Issued To <span class="text-danger">*</span></label>
+                            <input type="text" name="issued_to" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Office / Location <span class="text-danger">*</span></label>
+                            <input type="text" name="office" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date Issued <span class="text-danger">*</span></label>
+                            <input type="date" name="date_issued" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="toggleIssue{{ $item->id }}()">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </button>
+                        <button class="btn btn-primary">Issue Device</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Return Modal -->
+            <div id="returnModal{{ $item->id }}" style="display: none;">
+                <form class="modal-content" action="{{ route('inventory.return', $item->id) }}" method="POST">
+                    @csrf
+
+                    <div class="modal-body">
+                        <p><strong>Device:</strong> {{ $item->device_name }}</p>
+
+                        <div class="mb-3">
+                            <label for="editCondition{{ $item->id }}" class="form-label">Condition <span class="text-danger">*</span></label>
+                            <select class="form-select" id="editCondition{{ $item->id }}" name="condition" required>
+                                <option value="new" {{ $item->condition === 'new' ? 'selected' : '' }}>New</option>
+                                <option value="good" {{ $item->condition === 'good' ? 'selected' : '' }}>Good</option>
+                                <option value="fair" {{ $item->condition === 'fair' ? 'selected' : '' }}>Fair</option>
+                                <option value="poor" {{ $item->condition === 'poor' ? 'selected' : '' }}>Poor</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Date Returned <span class="text-danger">*</span></label>
+                            <input type="date" name="date_returned" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="toggleReturn{{ $item->id }}()">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </button>
+                        <button class="btn btn-primary">Return Device</button>
+                    </div>
+                </form>
+            </div>
+
         </div>
     </div>
 </div>
 
 <script>
+    // Issue Modal Toggle
+    function toggleIssue{{ $item->id }}() {
+        const viewMode = document.getElementById('viewMode{{ $item->id }}');
+        const issueMode = document.getElementById('issueModal{{ $item->id }}');
+        
+        if (viewMode.style.display === 'none') {
+            // Switch to view mode
+            viewMode.style.display = 'block';
+            issueMode.style.display = 'none';
+        } else {
+            // Switch to issue mode
+            viewMode.style.display = 'none';
+            issueMode.style.display = 'block';
+        }
+    }
+
+    // Return Modal Toggle
+    function toggleReturn{{ $item->id }}() {
+        const viewMode = document.getElementById('viewMode{{ $item->id }}');
+        const returnMode = document.getElementById('returnModal{{ $item->id }}');
+
+        if (viewMode.style.display === 'none') {
+            // Switch to view mode
+            viewMode.style.display = 'block';
+            returnMode.style.display = 'none';
+        } else {
+            // Switch to return mode
+            viewMode.style.display = 'none';
+            returnMode.style.display = 'block';
+        }
+    }
+
+    //  Edit Mode Toggle
     function toggleEditMode{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const editMode = document.getElementById('editMode{{ $item->id }}');
@@ -277,6 +399,15 @@
             editMode.style.display = 'block';
         }
     }
+
+    //always poor condition if unusable
+    document.getElementById('editStatus{{ $item->id }}').addEventListener('change', function() {
+        const conditionSelect = document.getElementById('editCondition{{ $item->id }}');
+
+        if (this.value === 'unusable') {
+            conditionSelect.value = 'poor';   // auto set to poor
+        }
+    });
 
     // Show/hide assignment fields based on status in edit mode
     document.getElementById('editStatus{{ $item->id }}').addEventListener('change', function() {

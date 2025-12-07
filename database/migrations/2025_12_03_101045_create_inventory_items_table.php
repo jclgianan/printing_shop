@@ -41,6 +41,7 @@ return new class extends Migration
             // Dates
             $table->date('date_acquired')->nullable();
             $table->date('date_issued')->nullable();
+            $table->date('date_returned')->nullable();
             
             // Additional Info
             $table->text('notes')->nullable();
