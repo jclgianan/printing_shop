@@ -27,12 +27,14 @@ class InventoryItem extends Model
         'office',
         'date_acquired',
         'date_issued',
+        'date_returned',
         'notes',
     ];
 
     protected $casts = [
         'date_acquired' => 'date',
         'date_issued' => 'date',
+        'date_returned' => 'date',
     ];
 
     /**

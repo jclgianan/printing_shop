@@ -71,11 +71,12 @@ Route::middleware(['auth'])->group(function () {
     
     // View all units of a specific device name
     Route::get('/view/{deviceId}', [InventoryController::class, 'view'])->name('inventory.view');
-    Route::get("inventory/search", [InventoryController::class, "inventorySearch"])->name("inventory-search");
     
     // Edit specific inventory item
     Route::get('/edit/{id}', [InventoryController::class, 'edit'])->name('edit');
     Route::put('/update/{id}', [InventoryController::class, 'update'])->name('inventory.update');
+    Route::post('/inventory/issue/{id}', [InventoryController::class, 'issue'])->name('inventory.issue');
+    Route::post('/inventory/return/{id}', [InventoryController::class, 'return'])->name('inventory.return');
     
     // Delete specific inventory item
     Route::delete('/destroy/{id}', [InventoryController::class, 'destroy'])->name('destroy');
