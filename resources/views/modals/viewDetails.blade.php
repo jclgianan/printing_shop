@@ -169,35 +169,37 @@
                         </div>
 
                         <!-- Specifications (Editable) -->
-                        <h6 class="mb-3">Specifications</h6>
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="editProcessor{{ $item->id }}" class="form-label">Processor</label>
-                                <input type="text" class="form-control" id="editProcessor{{ $item->id }}" name="processor" value="{{ $item->processor }}" placeholder="e.g., Intel Core i7-11800H">
+                        @if(array($item->category === 'Computer System', 'Components'))
+                            <h6 class="mb-3">Specifications</h6>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editProcessor{{ $item->id }}" class="form-label">Processor</label>
+                                    <input type="text" class="form-control" id="editProcessor{{ $item->id }}" name="processor" value="{{ $item->processor }}" placeholder="e.g., Intel Core i7-11800H">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="editRam{{ $item->id }}" class="form-label">RAM</label>
+                                    <input type="text" class="form-control" id="editRam{{ $item->id }}" name="ram" value="{{ $item->ram }}" placeholder="e.g., 16GB DDR4">
+                                </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <label for="editRam{{ $item->id }}" class="form-label">RAM</label>
-                                <input type="text" class="form-control" id="editRam{{ $item->id }}" name="ram" value="{{ $item->ram }}" placeholder="e.g., 16GB DDR4">
-                            </div>
-                        </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="editStorage{{ $item->id }}" class="form-label">Storage</label>
+                                    <input type="text" class="form-control" id="editStorage{{ $item->id }}" name="storage" value="{{ $item->storage }}" placeholder="e.g., 512GB SSD">
+                                </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <label for="editStorage{{ $item->id }}" class="form-label">Storage</label>
-                                <input type="text" class="form-control" id="editStorage{{ $item->id }}" name="storage" value="{{ $item->storage }}" placeholder="e.g., 512GB SSD">
+                                <div class="col-md-6">
+                                    <label for="editGraphicsCard{{ $item->id }}" class="form-label">Graphics Card</label>
+                                    <input type="text" class="form-control" id="editGraphicsCard{{ $item->id }}" name="graphics_card" value="{{ $item->graphics_card }}" placeholder="e.g., NVIDIA RTX 3060">
+                                </div>
                             </div>
 
-                            <div class="col-md-6">
-                                <label for="editGraphicsCard{{ $item->id }}" class="form-label">Graphics Card</label>
-                                <input type="text" class="form-control" id="editGraphicsCard{{ $item->id }}" name="graphics_card" value="{{ $item->graphics_card }}" placeholder="e.g., NVIDIA RTX 3060">
+                            <div class="mb-3">
+                                <label for="editOtherSpecs{{ $item->id }}" class="form-label">Other Specifications</label>
+                                <textarea class="form-control" id="editOtherSpecs{{ $item->id }}" name="other_specs" rows="2" placeholder="Any additional specifications...">{{ $item->other_specs }}</textarea>
                             </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="editOtherSpecs{{ $item->id }}" class="form-label">Other Specifications</label>
-                            <textarea class="form-control" id="editOtherSpecs{{ $item->id }}" name="other_specs" rows="2" placeholder="Any additional specifications...">{{ $item->other_specs }}</textarea>
-                        </div>
+                        @endif
 
                         @if($item->status === 'available' || $item->status === 'unusable')
                             <hr>
