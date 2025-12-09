@@ -34,7 +34,7 @@ class AuthController extends Controller
 
         // REPAIR COUNTS
         $repair_pending = RepairTicket::where('status', 'pending')->count();
-        $repair_in_progress = RepairTicket::where('status', 'ongoing')->count();
+        $repair_in_progress = RepairTicket::where('status', 'in_progress')->count();
         $repair_repaired = RepairTicket::where('status', 'repaired')->count();
         $repair_released = RepairTicket::where('status', 'released')->count();
         $repair_unrepairable = RepairTicket::where('status', 'unrepairable')->count();
