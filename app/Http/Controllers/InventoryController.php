@@ -41,7 +41,7 @@ class InventoryController extends Controller
         }
 
         // Pagination
-        $devices = $query->paginate(15);
+        $devices = $query->paginate(10);
 
         return view('inventory', compact('devices'));
     }

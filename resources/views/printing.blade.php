@@ -121,6 +121,9 @@
                         <p>No processes available yet. Create a new entry to begin.</p>
                     @endif
                 </div>
+                <div class="custom-pagination">
+                    {{ $printTickets->appends(request()->input())->links('pagination::bootstrap-5') }}
+                </div>
             </main>
         </div>
     </div>

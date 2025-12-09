@@ -20,7 +20,7 @@ class RepairController extends Controller
     {
         $type = 'repair';
         // Fetch data from the database
-        $repairTickets = RepairTicket::orderBy('receiving_date', 'desc')->paginate(15);
+        $repairTickets = RepairTicket::orderBy('receiving_date', 'desc')->paginate(10);
 
         return view('repair', compact('repairTickets', 'type'));
     }

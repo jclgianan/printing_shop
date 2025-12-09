@@ -20,7 +20,7 @@ class PrintingController extends Controller
     {
         $type = 'printing';
         // Fetch print tickets for the printing dashboard
-        $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->paginate(15);
+        $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->paginate(10);
 
         return view('printing', compact('printTickets', 'type'));   
     }
