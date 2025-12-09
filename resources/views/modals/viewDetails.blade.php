@@ -169,10 +169,10 @@
                         </div>
 
                         <!-- Specifications (Editable) -->
-                        @if(array($item->category === 'Computer System', 'Components'))
+                        @if($item->category === 'Computer System' || $item->category === 'Components')
                             <h6 class="mb-3">Specifications</h6>
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md-6">  
                                     <label for="editProcessor{{ $item->id }}" class="form-label">Processor</label>
                                     <input type="text" class="form-control" id="editProcessor{{ $item->id }}" name="processor" value="{{ $item->processor }}" placeholder="e.g., Intel Core i7-11800H">
                                 </div>
