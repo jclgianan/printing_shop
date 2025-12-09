@@ -153,6 +153,12 @@
                     @csrf
                     @method('PUT')
                     
+                    {{-- If the item is already issued, lock these fields --}}
+                    @if($item->status === 'issued')
+                        <input type="hidden" name="status" value="issued">
+                        <input type="hidden" name="condition" value="{{ $item->condition }}">
+                    @endif
+                    
                     <div class="modal-body">
                         
                         {{-- Serial Number --}}
@@ -193,7 +199,7 @@
                             <textarea class="form-control" id="editOtherSpecs{{ $item->id }}" name="other_specs" rows="2" placeholder="Any additional specifications...">{{ $item->other_specs }}</textarea>
                         </div>
 
-                        @if(empty($item->status) || $item->status === 'available' || $item->status === 'unusable')
+                        @if($item->status === 'available' || $item->status === 'unusable')
                             <hr>
                             <!-- Status & Condition (Editable) -->
                             <h6 class="mb-3">Status & Condition</h6>
