@@ -124,3 +124,19 @@
         </div>
     </div>
 </div>
+@push('scripts')
+    <script>
+        // Auto-set condition to 'poor' if status is 'unusable'
+        const addStatus = document.getElementById('addStatus');
+        const addCondition = document.getElementById('addCondition');
+
+        addStatus.addEventListener('change', function() {
+            if (this.value === 'unusable') {
+                addCondition.value = 'poor';   // auto set to poor
+                addCondition.disabled = true;
+            } else {
+                addCondition.disabled = false; 
+            }
+        });
+    </script>
+@endpush
