@@ -46,7 +46,7 @@
                             <td>{{ ucfirst($user->role) }}</td>
                             <td>
                                 @if (auth()->user()->role === 'admin')
-                                    <button class="btn-edit-user" data-id="{{ $user->id }}"
+                                    <button id="userEdit" class="btn-edit-user" data-id="{{ $user->id }}"
                                         data-name="{{ $user->name }}" data-email="{{ $user->email }}"
                                         data-role="{{ $user->role }}">
                                         Edit
@@ -82,46 +82,48 @@
     @include('auth.register')
 
 @endsection
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+            // Register modal elements
+            const addUserBtn = document.getElementById('btnAddUser');
+            const registerModal = document.getElementById('registerModal');
 
-<script>
-    // Edit modal
-    $(document).ready(function() {
+            // Edit modal elements
+            const editButtons = document.querySelectorAll('.btn-edit-user');
+            const editModal = document.getElementById('editUserModal');
 
-        // === Edit modal ===
-        $(document).on('click', '.btn-edit-user', function() {
-            let id = $(this).data('id');
-            $('#editUserForm').attr('action', '/users/update/' + id);
-            $('#edit_user_name').val($(this).data('name'));
-            $('#edit_user_email').val($(this).data('email'));
-            $('#edit_user_role').val($(this).data('role'));
-            $('#editUserModal').fadeIn(200);
+            // OPEN REGISTER MODAL
+            if (addUserBtn && registerModal) {
+                addUserBtn.addEventListener('click', () => {
+                    registerModal.classList.add('active');
+                });
+            }
+
+            // OPEN EDIT MODAL
+            editButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+
+                    // Fill modal fields
+                    let id = this.dataset.id;
+                    document.getElementById('editUserForm').action = '/users/update/' + id;
+
+                    document.getElementById('edit_user_name').value = this.dataset.name;
+                    document.getElementById('edit_user_email').value = this.dataset.email;
+                    document.getElementById('edit_user_role').value = this.dataset.role;
+
+                    // Show modal
+                    editModal.classList.add('active');
+                });
+            });
+
+            // CLICK OUTSIDE TO CLOSE MODALS
+            window.addEventListener('click', (e) => {
+                if (e.target === registerModal) registerModal.classList.remove('active');
+                if (e.target === editModal) editModal.classList.remove('active');
+            });
 
         });
-
-        $('#closeEditUserModal').click(function() {
-            $('#editUserModal').fadeOut(200);
-        });
-
-        // Optional: click outside to close edit modal
-        $('#editUserModal').click(function(e) {
-            if (e.target === this) $(this).fadeOut(200);
-        });
-
-        // === Register modal ===
-        $('#btnAddUser').click(function() {
-            $('#registerModal').fadeIn(200);
-        });
-
-        $('#closeRegisterModal').click(function() {
-            $('#registerModal').fadeOut(200);
-        });
-
-        // Optional: click outside to close register modal
-        $('#registerModal').click(function(e) {
-            if (e.target === this) $(this).fadeOut(200);
-        });
-
-    });
-</script>
+    </script>
+@endpush

@@ -148,7 +148,18 @@ class InventoryController extends Controller
 
         $category = $items->first()->category;
 
-        return view('viewInventory', compact('items', 'deviceId', 'category'));
+        // Get all existing individual numbers for this device (to fill gaps)
+        $allIds = InventoryItem::where('device_id', $deviceId)
+            ->pluck('individual_id')
+            ->map(function ($id) {
+                preg_match('/\((\d+)\)$/', $id, $matches);
+                return isset($matches[1]) ? (int) $matches[1] : 0;
+            })
+            ->sort()
+            ->values()
+            ->all();
+
+        return view('viewInventory', compact('items', 'deviceId', 'category', 'allIds'));
     }
 
     /**
@@ -259,40 +270,53 @@ class InventoryController extends Controller
         // Get the existing device info
         $existingDevice = InventoryItem::where('device_id', $deviceId)->firstOrFail();
 
-        // Get current highest individual ID number for this device
-        $lastUnit = InventoryItem::where('device_id', $deviceId)
-            ->orderByRaw('CAST(SUBSTRING_INDEX(individual_id, "(", -1) AS UNSIGNED) DESC')
-            ->first();
-
-        // Extract the number from the individual_id (e.g., "00001(05)" -> 5)
-        preg_match('/\((\d+)\)/', $lastUnit->individual_id, $matches);
-        $startNumber = isset($matches[1]) ? intval($matches[1]) : 0;
+        // Get all existing individual numbers
+        $existingNumbers = InventoryItem::where('device_id', $deviceId)
+            ->pluck('individual_id')
+            ->map(function($id) {
+                preg_match('/\((\d+)\)/', $id, $matches);
+                return isset($matches[1]) ? intval($matches[1]) : 0;
+            })
+            ->sort()
+            ->values()
+            ->toArray();
 
         $quantity = $validated['quantity'];
-        
-        // Create new units
-        for ($i = 1; $i <= $quantity; $i++) {
-            $newNumber = $startNumber + $i;
-            $individualId = $deviceId . '(' . str_pad($newNumber, 2, '0', STR_PAD_LEFT) . ')';
-            
-            InventoryItem::create([
-                'device_id' => $deviceId,
-                'individual_id' => $individualId,
-                'device_name' => $existingDevice->device_name,
-                'category' => $existingDevice->category,
-                'processor' => $existingDevice->processor,
-                'ram' => $existingDevice->ram,
-                'storage' => $existingDevice->storage,
-                'graphics_card' => $existingDevice->graphics_card,
-                'other_specs' => $existingDevice->other_specs,
-                'status' => $validated['status'],
-                'condition' => $validated['condition'],
-                'issued_to' => $validated['issued_to'],
-                'office' => $validated['office'],
-                'date_acquired' => $validated['date_acquired'],
-                'date_issued' => $validated['date_issued'],
-                'notes' => $validated['notes'],
-            ]);
+        $newIds = [];
+
+        $current = 1; // Start from 1
+        $added = 0;
+
+        while ($added < $quantity) {
+            if (!in_array($current, $existingNumbers)) {
+                $individualId = $deviceId . '(' . str_pad($current, 2, '0', STR_PAD_LEFT) . ')';
+                InventoryItem::create([
+                    'device_id' => $deviceId,
+                    'individual_id' => $individualId,
+                    'device_name' => $existingDevice->device_name,
+                    'category' => $existingDevice->category,
+                    'processor' => $existingDevice->processor,
+                    'ram' => $existingDevice->ram,
+                    'storage' => $existingDevice->storage,
+                    'graphics_card' => $existingDevice->graphics_card,
+                    'other_specs' => $existingDevice->other_specs,
+                    'status' => $validated['status'],
+                    'condition' => $validated['condition'],
+                    'issued_to' => $validated['issued_to'],
+                    'office' => $validated['office'],
+                    'date_acquired' => $validated['date_acquired'],
+                    'date_issued' => $validated['date_issued'],
+                    'notes' => $validated['notes'],
+                ]);
+
+                $added++;
+            }
+            $current++;
+        }
+
+        // Always poor condition if status is unusable
+        if ($request->status === 'unusable') {
+            $request->merge(['condition' => 'poor']);
         }
 
         $message = $quantity > 1 
@@ -302,6 +326,7 @@ class InventoryController extends Controller
         return redirect()->route('inventory.view', $deviceId)
             ->with('success', $message);
     }
+
 
     public function issue(Request $request, $id)
     {
