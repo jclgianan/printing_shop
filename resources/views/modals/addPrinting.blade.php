@@ -1,8 +1,8 @@
 <!-- resources/views/modals/addPrinting.blade.php -->
 <div id="addPrintingModal" class="modal-overlay">
     <div class="modal-box">
-        <span id="closeModal" class="modal-close">&times;</span>
-        <div class="content-placeholder header-row">
+        <span id="closeModal" class="modal-close"><i class="fa-regular fa-circle-xmark"></i></span>
+        <div class="content-placeholder header-row-modal">
             <div class="header-top">
                 <div class="header-text">
                     <h2>Add Printing Ticket</h2>
@@ -29,9 +29,9 @@
 
                 <div class="form-group">
                     <label for="printTicket_id">Ticket ID</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="printTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
-                        <input type="hidden" name="printTicket_id" id="printTicket_id">
+                    <div class="idgen-container">
+                        <input type="text" id="printTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly disabled>
+                        <input type="hidden" name="printTicket_id" id="printTicket_id" disabled>
                         <button type="button" onclick="generateprintTicketId()" class="btn btn-secondary btn-generate-id">Generate <i class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
@@ -101,7 +101,7 @@
                 </div>
 
                 <br>
-                <button type="submit" class="btn btn-primary">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
+                <button type="submit" class="submit-btn">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>
@@ -124,7 +124,7 @@
                 if (data.error) throw new Error(data.error);
                 document.getElementById('printTicket_id_display').value = data.printTicket_id;
                 document.getElementById('printTicket_id').value = data.printTicket_id;
-                button.textContent = 'Generated';
+                button.remove();
             })
             .catch(error => {
                 console.error('Error:', error);

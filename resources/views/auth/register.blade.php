@@ -30,40 +30,40 @@
             </div>
         @endif
 
-        <div class="register-form">
+        <div class="process-form">
 
             <form action="{{ route('register.post') }}" method="POST">
                 @csrf
-                <div class="register-group">
-                    <label class="register-label">User Role</label>
-                    <select name="role" class="register-input">
+                <div class="form-group">
+                    <label>User Role</label>
+                    <select name="role" required>
                         <option value="admin">Admin</option>
                         <option value="editor" selected>Editor</option>
                     </select>
                 </div>
 
-                <div class="register-group">
-                    <label class="register-label" for="register-fullname">Full Name:</label>
-                    <input class="register-input" type="text" id="register-fullname" name="fullname" value="{{ old('fullname') }}" required>
+                <div class="form-group">
+                    <label class="label" for="register-fullname">Full Name:</label>
+                    <input class="form-control" type="text" id="register-fullname" name="fullname" value="{{ old('fullname') }}" required>
                 </div>
 
-                <div class="register-group">
-                    <label class="register-label" for="register-email">Email:</label>
-                    <input class="register-input" type="email" id="register-email" name="email" value="{{ old('email') }}" required>
+                <div class="form-group">
+                    <label class="label" for="register-email">Email:</label>
+                    <input class="form-control" type="email" id="register-email" name="email" value="{{ old('email') }}" required>
                 </div>
 
-                <div class="register-group">
-                    <label class="register-label" for="register-password">Password:</label>
-                    <input class="register-input" type="password" id="register-password" name="password" required>
+                <div class="form-group">
+                    <label class="label" for="register-password">Password:</label>
+                    <input class="form-control" type="password" id="register-password" name="password" required>
                 </div>
 
-                <div class="register-group">
-                    <label class="register-label" for="register-confirm-password">Confirm Password:</label>
-                    <input class="register-input" type="password" id="register-confirm-password" name="password_confirmation" required>
+                <div class="form-group">
+                    <label class="label" for="register-confirm-password">Confirm Password:</label>
+                    <input class="form-control" type="password" id="register-confirm-password" name="password_confirmation" required>
                 </div>
 
-                <div class="register-group">
-                    <button class="signup-button" type="submit">Add User</button>
+                <div class="form-group">
+                    <button class="submit-btn" type="submit">Add User</button>
                 </div>
 
             </form>

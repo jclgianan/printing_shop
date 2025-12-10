@@ -97,6 +97,7 @@
             $('#edit_user_email').val($(this).data('email'));
             $('#edit_user_role').val($(this).data('role'));
             $('#editUserModal').fadeIn(200);
+
         });
 
         $('#closeEditUserModal').click(function() {
