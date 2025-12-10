@@ -1,4 +1,4 @@
-<div id="editUserModal" class="modal-overlay" style="display:none;">
+<div id="editUserModal" class="modal-overlay">
     <div class="modal-box">
         <span id="closeEditUserModal" class="modal-close">&times;</span>
 

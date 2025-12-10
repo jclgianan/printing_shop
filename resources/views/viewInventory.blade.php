@@ -122,21 +122,36 @@
         // Preview Individual IDs
         document.getElementById('addQuantity').addEventListener('input', function() {
             const deviceId = '{{ $deviceId }}';
-            const currentCount = {{ $items->count() }};
             const quantity = parseInt(this.value) || 1;
             const previewDiv = document.getElementById('addUnitPreview');
 
+            // Get exisitng number of units
+            const existingIds = @json($allIds);
+
             let previewText = '';
             const maxPreview = 5;
-            
-            for (let i = 1; i <= Math.min(quantity, maxPreview); i++) {
-                const newNumber = currentCount + i;
-                const individualId = `${deviceId}(${String(newNumber).padStart(2, '0')})`;
+
+            const usedIds = [...existingIds];
+            let newIds = [];
+
+             // First, fill gaps
+            let current = 1;
+            while (newIds.length < quantity) {
+                if (!usedIds.includes(current)) {
+                    newIds.push(current);
+                    usedIds.push(current);
+                }
+                current++;
+            }
+
+            // Show preview (max 5)
+            for (let i = 0; i < Math.min(newIds.length, maxPreview); i++) {
+                const individualId = `${deviceId}(${String(newIds[i]).padStart(2, '0')})`;
                 previewText += `<span class="badge bg-secondary me-1 mb-1">${individualId}</span>`;
             }
 
-            if (quantity > maxPreview) {
-                previewText += `<span class="text-muted">... and ${quantity - maxPreview} more</span>`;
+            if (newIds.length > maxPreview) {
+                previewText += `<span class="text-muted">... and ${newIds.length - maxPreview} more</span>`;
             }
 
             previewDiv.innerHTML = previewText;
