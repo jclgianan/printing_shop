@@ -109,7 +109,9 @@
                         </tbody>
                     </table>
                 </div>
-                
+                <div class="custom-pagination">
+                    {{ $items->appends(request()->input())->links('pagination::bootstrap-5') }}
+                </div>
             </main>
         </div>
     </div>
