@@ -45,8 +45,8 @@
                 <div class="form-group" id="generateIdBox" style="display: none;">
                     <label for="repairDevice_id">Device ID</label>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="repairDevice_id_display" class="form-control" placeholder="Click 'Generate'" readonly disabled>
-                        <input type="hidden" name="repairDevice_id" id="repairDevice_id" disabled>
+                        <input type="text" id="repairDevice_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
+                        <input type="hidden" name="repairDevice_id" id="repairDevice_id">
                         <button type="button" onclick="generaterepairDeviceId()" class="btn btn-secondary btn-generate-device-id">Generate <i class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
