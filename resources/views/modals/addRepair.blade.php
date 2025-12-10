@@ -2,7 +2,7 @@
 <div id="addRepairModal" class="modal-overlay">
     <div class="modal-box">
         <span id="closeModal" class="modal-close">&times;</span>
-        <div class="content-placeholder header-row">
+        <div class="content-placeholder header-row-modal">
             <div class="header-top">
                 <div class="header-text">
                     <h2>Add Repair Ticket</h2>
@@ -23,15 +23,17 @@
         <div id="formMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
         
         <div class="content-placeholder-add-repair">
-            <form id="repairForm"  class="process-form">
+            <form id="repairForm" class="process-form">
                 @csrf
                 <input type="hidden" name="type">
 
-                <div class="form-group">
+                <div class="radio-group-container">
                     <label>Do you have an existing Device ID?</label>
-                    <div style="display: flex; gap: 15px; margin-bottom: 10px;">
-                        <label><input type="radio" name="has_id" value="yes"> Yes</label>
-                        <label><input type="radio" name="has_id" value="no"> No</label>
+                    <div class="radio-group">
+                        <input id="radio-yes" type="radio" name="has_id" value="yes">
+                        <label for="radio-yes">Yes</label>
+                        <input id="radio-no" type="radio" name="has_id" value="no">
+                        <label for="radio-no">No</label>
                     </div>
                 </div>
 
@@ -43,18 +45,18 @@
                 <div class="form-group" id="generateIdBox" style="display: none;">
                     <label for="repairDevice_id">Device ID</label>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="repairDevice_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
-                        <input type="hidden" name="repairDevice_id" id="repairDevice_id">
-                        <button type="button" onclick="generaterepairDeviceId()" class="btn btn-secondary btn-generate-device-id">Generate</button>
+                        <input type="text" id="repairDevice_id_display" class="form-control" placeholder="Click 'Generate'" readonly disabled>
+                        <input type="hidden" name="repairDevice_id" id="repairDevice_id" disabled>
+                        <button type="button" onclick="generaterepairDeviceId()" class="btn btn-secondary btn-generate-device-id">Generate <i class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="repairTicket_id">Ticket ID</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="repairTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
-                        <input type="hidden" name="repairTicket_id" id="repairTicket_id">
-                        <button type="button" onclick="generaterepairTicketId()" class="btn btn-secondary btn-generate-id">Generate</button>
+                    <div class="idgen-container">
+                        <input type="text" id="repairTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly disabled>
+                        <input type="hidden" name="repairTicket_id" id="repairTicket_id" disabled>
+                        <button type="button" onclick="generaterepairTicketId()" class="btn btn-secondary btn-generate-id">Generate <i class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
 
@@ -107,7 +109,7 @@
                 </div>
 
                 <br>
-                <button type="submit" class="btn btn-primary">Submit Ticket</button>
+                <button type="submit" class="submit-btn">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>
@@ -131,7 +133,8 @@
                 if (data.error) throw new Error(data.error);
                 document.getElementById('repairDevice_id_display').value = data.repairDevice_id;
                 document.getElementById('repairDevice_id').value = data.repairDevice_id;
-                button.textContent = 'Generated';
+                button.remove();
+
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -148,7 +151,7 @@
             const generateIdBox = document.getElementById('generateIdBox');
 
             if (this.value === "yes") {
-                existingIdBox.style.display = "block";
+                existingIdBox.style.display = "flex";
                 generateIdBox.style.display = "none";
 
                 // Sync hidden input with manual Device ID
@@ -187,7 +190,7 @@
                 if (data.error) throw new Error(data.error);
                 document.getElementById('repairTicket_id_display').value = data.repairTicket_id;
                 document.getElementById('repairTicket_id').value = data.repairTicket_id;
-                button.textContent = 'Generated';
+                button.remove();
             })
             .catch(error => {
                 console.error('Error:', error);
