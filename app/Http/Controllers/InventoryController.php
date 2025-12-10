@@ -17,21 +17,22 @@ class InventoryController extends Controller
         $category = $request->input('category');
 
         $query = InventoryItem::selectRaw('
-                device_id,
-                device_name,
-                category,
-                COUNT(*) as total_units,
-                SUM(CASE WHEN status = "available" THEN 1 ELSE 0 END) as available,
-                SUM(CASE WHEN status = "issued" THEN 1 ELSE 0 END) as issued,
-                SUM(CASE WHEN status = "unusable" THEN 1 ELSE 0 END) as unusable
-            ')
-            ->groupBy('device_id', 'device_name', 'category');
+            device_id,
+            device_name,
+            category,
+            COUNT(*) as total_units,
+            SUM(status = "available") as available,
+            SUM(status = "issued") as issued,
+            SUM(status = "unusable") as unusable
+        ')
+        ->groupBy('device_id', 'device_name', 'category');
+
 
         // Search filter (fixed)
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('device_name', 'like', "%{$search}%")
-                ->orWhere('device_id', 'like', "%{$search}%");
+                $q->where('device_name', 'like', $search . '%')
+                ->orWhere('device_id', 'like', $search, '%');
             });
         }
 
@@ -40,8 +41,11 @@ class InventoryController extends Controller
             $query->where('category', $category);
         }
 
-        // Pagination
-        $devices = $query->paginate(10);
+        $cacheKey = 'inventory-' . md5(json_encode($request->all()));
+
+        $devices = cache()->remember($cacheKey, 15, function () use ($query) {
+            return $query->paginate(10);
+        });
 
         return view('inventory', compact('devices'));
     }
@@ -58,18 +62,12 @@ class InventoryController extends Controller
     public function generateDeviceId()
     {
         // Get the highest existing device_id (numeric) and increment
-        $lastDevice = InventoryItem::whereRaw('device_id REGEXP \'^[0-9]+$\'')
+        $lastDevice = InventoryItem::whereRaw('device_id REGEXP "^[0-9]+$"')
             ->orderByRaw('CAST(device_id AS UNSIGNED) DESC')
             ->first();
         
         $nextId = $lastDevice ? (intval($lastDevice->device_id) + 1) : 1;
         $deviceId = str_pad($nextId, 5, '0', STR_PAD_LEFT);
-        
-        // Double-check uniqueness
-        while (InventoryItem::where('device_id', $deviceId)->exists()) {
-            $nextId++;
-            $deviceId = str_pad($nextId, 5, '0', STR_PAD_LEFT);
-        }
         
         return response()->json([
             'device_id' => $deviceId
@@ -142,7 +140,7 @@ class InventoryController extends Controller
     {
         $items = InventoryItem::where('device_id', $deviceId)
             ->orderBy('individual_id')
-            ->get();
+            ->paginate(10);
 
         if ($items->isEmpty()) {
             abort(404);

@@ -303,10 +303,6 @@
             }
         } catch (error) {
             console.error('Error generating Device ID:', error);
-            // Fallback: generate a random ID if server call fails
-            const randomId = String(Math.floor(Math.random() * 100000)).padStart(5, '0');
-            document.getElementById('device_id').value = randomId;
-            updateIndividualIdPreview();
         }
     });
 
@@ -327,7 +323,7 @@
         const maxPreview = 5; // Show max 5 examples
         
         for (let i = 1; i <= Math.min(quantity, maxPreview); i++) {
-            const individualId = `${deviceId}(${String(i).padStart(3, '0')})`;
+            const individualId = `${deviceId}(${String(i).padStart(2, '0')})`;
             previewText += `<span class="badge bg-secondary me-1 mb-1">${individualId}</span>`;
         }
 
@@ -357,11 +353,19 @@
         const statusSelect = document.getElementById('statusSelect');
         const assignmentSection = document.getElementById('assignmentSection');
         const dateIssuedField = document.getElementById('date_issued').closest('.col-md-4');
+
+        const categorySelect = document.getElementById('category');
+        const specificationsSection = document.getElementById('Specifications');
         
         // Hide by default if status is not 'issued'
         if (statusSelect.value !== 'issued') {
             assignmentSection.style.display = 'none';
             dateIssuedField.style.display = 'none';
+        }
+
+        // Hide by default if status is not 'issued'
+        if (statusSelect.value !== 'Computer System') {
+            specificationsSection.style.display = 'none';
         }
         
     });
@@ -375,18 +379,6 @@
         } else {
             specificationsSection.style.display = 'none';
         }
-    });
-
-    // Initialize visibility on page load
-    window.addEventListener('DOMContentLoaded', function() {
-        const categorySelect = document.getElementById('category');
-        const specificationsSection = document.getElementById('Specifications');
-        
-        // Hide by default if status is not 'issued'
-        if (statusSelect.value !== 'Computer System') {
-            specificationsSection.style.display = 'none';
-        }
-        
     });
 
     // Generate Device ID on page load if empty
