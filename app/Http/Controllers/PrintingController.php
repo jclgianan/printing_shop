@@ -11,6 +11,7 @@ use App\Models\Process;
 use App\Models\ActivityLog;
 use App\Models\PrintTicket;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Types\Relations\Car;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
 class PrintingController extends Controller
@@ -224,7 +225,7 @@ class PrintingController extends Controller
                 'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
                 'new_status' => $ticket->formatted_status,
                 'release_date' => $ticket->release_date 
-                                ? $ticket->release_date->format('m-d-Y H:i')
+                                ? \Carbon\Carbon::parse ($ticket->release_date)->format('m-d-Y H:i')
                                 : null
             ]);
         } catch (\Exception $e) {
