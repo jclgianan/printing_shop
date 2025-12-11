@@ -43,7 +43,7 @@ class RepairController extends Controller
         $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
-            ->get();
+            ->paginate(10);
 
         return view('repair', compact('repairTickets'));
     }
@@ -51,7 +51,7 @@ class RepairController extends Controller
     // Repair Logs data view
     public function repairDashboard()
     {
-        $repairTickets = RepairTicket::orderBy('receiving_date')->get(); // Add filters as needed
+        $repairTickets = RepairTicket::orderBy('receiving_date')->paginate(10); // Add filters as needed
         return view('repair', compact('repairTickets'));
     }
 
@@ -237,7 +237,7 @@ class RepairController extends Controller
             $query->where('status', 'like', '%' . $request->filter . '%');
         }
 
-        $repairTickets = $query->orderBy('receiving_date', 'desc')->get();
+        $repairTickets = $query->orderBy('receiving_date', 'desc')->paginate(10);
 
         return view('repair', compact('repairTickets', 'type'));
     }

@@ -44,7 +44,7 @@ class PrintingController extends Controller
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
             ->orderBy('receiving_date', 'desc')
-            ->get();
+            ->paginate(10);
 
         return view('printing', compact('printTickets', 'type'));
     }
@@ -52,7 +52,7 @@ class PrintingController extends Controller
     // Printing Logs data view
     public function dashboard()
     {
-       $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->get();  // Add filters as needed
+       $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->paginate(10);  // Add filters as needed
         return view('printing', compact('printTickets'));
     }
 
@@ -183,7 +183,7 @@ class PrintingController extends Controller
             $query->orderBy('receiving_date', 'desc');
         }
 
-        $printTickets = $query->get();
+        $printTickets = $query->paginate(10);
 
         return view('printing', compact('printTickets', 'type'));
     }
