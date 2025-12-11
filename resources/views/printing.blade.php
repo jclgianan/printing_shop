@@ -233,7 +233,7 @@
             }
             if (ticket.status !== 'cancelled' && ticket.status !== 'printed' && ticket.status !== 'released') {
                 actionContainer.append(`
-                <button onclick="updateStatus(${ticket.id})" class="btn-status btn-cancel">
+                <button onclick="updateStatus(${ticket.id}, 'cancelled')" class="btn-status btn-cancel">
                     Cancel <i class="fa-solid fa-ban"></i>
                 </button>
             `);
