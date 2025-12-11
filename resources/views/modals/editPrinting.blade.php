@@ -58,7 +58,7 @@
                 </div>
                 <div class="formBtn">
                     <button id="closeEditModal" class="editBtn">Close</button>
-                    <button type="submit" class="editBtn">Save changes</button>
+                    <button type="submit" class="btn-normal">Save changes</button>
                 </div>
             </form>
            

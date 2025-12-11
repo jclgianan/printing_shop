@@ -58,11 +58,14 @@
                                 @endif
 
                                 @if (auth()->user()->role === 'admin')
-                                    <form action="{{ url('/users/delete/' . $user->id) }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this user?');">
+                                    <form class="delete-user-form" action="{{ url('/users/delete/' . $user->id) }}"
+                                        method="POST">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn-delete-user">Delete</button>
+                                        <button type="button" class="btn-delete-user confirm-delete"
+                                            data-user-name="{{ $user->name }}" data-user-id="{{ $user->id }}">
+                                            Delete
+                                        </button>
                                     </form>
                                 @else
                                     <button class="btn-delete-user disabled-button" disabled>
@@ -103,7 +106,7 @@
 
             // OPEN EDIT MODAL
             editButtons.forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function() {
 
                     // Fill modal fields
                     let id = this.dataset.id;

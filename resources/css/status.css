@@ -52,6 +52,12 @@
     /* max-width: 100%; */
 }
 
+.btn {
+    text-decoration: none;
+    text-align: center;
+    font-family: 'Rubik', sans-serif;
+}
+
 .btn-status {
     padding: 9px;
     border-radius: 4px;
@@ -119,6 +125,7 @@
     border-radius: 5px;
     cursor: pointer;
     color: white;
+    font-family: 'Rubik', sans-serif;
     font-size: 1rem;
     font-weight: 500;
     transition: background-color 0.2s ease-in-out;
@@ -131,4 +138,43 @@
 .submit-btn:hover {
     background-color: var(--light);
     width: auto;
+}
+
+.btn-normal {
+    background-color: var(--bg-button);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: white;
+    font-family: 'Rubik', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    min-width: 50px;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.btn-normal:hover {
+    background-color: var(--light);
+}
+
+.btn-danger {
+    background-color: rgb(192, 13, 13);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    font-family: 'Rubik', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+    min-width: 50px;
+
+}
+
+.btn-danger:hover {
+    opacity: 0.9;
 }

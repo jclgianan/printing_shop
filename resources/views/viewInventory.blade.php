@@ -92,7 +92,7 @@
                                         <form action="{{ route('destroy', $item) }}" method="POST" style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete all units of this device?')">
+                                            <button type="submit" class="btn btn-sm btn-danger confirm-delete">
                                                 Delete All
                                             </button>
                                         </form>
