@@ -93,11 +93,12 @@
                                                 -
                                             @endif
                                         </td>
-                                        <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y, H:i') : '-' }}
+                                        <td>{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y, H:i') : '-' }}
                                         </td>
 
                                         <td>
-                                            <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
+                                            <span
+                                                class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                         </td>
                                         <td>
                                             <button class="btn-edit" data-id="{{ $ticket->id }}"
@@ -197,7 +198,7 @@
                 // Extract just the date portion for the input (YYYY-MM-DD)
                 let dateOnly = ticket.release_date.split(' ')[0].split('T')[0];
                 $('#edit_release_date').val(dateOnly);
-                
+
                 // Store the FULL datetime in a hidden field or data attribute
                 $('#edit_release_date').data('original-datetime', ticket.release_date);
             } else {
@@ -232,7 +233,7 @@
             }
             if (ticket.status !== 'cancelled' && ticket.status !== 'printed' && ticket.status !== 'released') {
                 actionContainer.append(`
-                <button onclick="updateStatus(${ticket.id}, 'cancelled')" class="btn-status btn-cancel">
+                <button onclick="updateStatus(${ticket.id})" class="btn-status btn-cancel">
                     Cancel <i class="fa-solid fa-ban"></i>
                 </button>
             `);
@@ -245,7 +246,7 @@
         $('#closeEditModal').off('click').on('click', function() {
             $('#editPrintingModal').removeClass('active');
         });
-        
+
         // Close edit modal when clicking outside the modal box
         $(document).on('click', '#editPrintingModal', function(e) {
             if ($(e.target).is('#editPrintingModal')) {
@@ -261,23 +262,26 @@
             const messageBox = $('#editFormMessage');
             const submitBtn = form.find('button[type="submit"]');
             const ticketId = $('#edit_ticket_id').val();
-            
+
             // Get the original datetime
             const releaseDateInput = $('#edit_release_date');
             const originalDateTime = releaseDateInput.data('original-datetime');
             const newDate = releaseDateInput.val();
-            
+
             // Build form data
             let formData = form.serializeArray();
-            
+
             // If release_date wasn't changed, use original datetime
             if (originalDateTime && newDate) {
                 const originalDate = originalDateTime.split(' ')[0].split('T')[0];
-                
+
                 if (newDate === originalDate) {
                     // Date unchanged - use full original datetime
                     formData = formData.filter(item => item.name !== 'release_date');
-                    formData.push({ name: 'release_date', value: originalDateTime });
+                    formData.push({
+                        name: 'release_date',
+                        value: originalDateTime
+                    });
                 }
                 // If date was changed, the new date value from form will be used
             }

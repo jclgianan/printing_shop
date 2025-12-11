@@ -1,7 +1,7 @@
 <!-- resources/views/modals/addPrinting.blade.php -->
 <div id="addRepairModal" class="modal-overlay">
     <div class="modal-box">
-        <span id="closeModal" class="modal-close">&times;</span>
+        <span id="closeModal" class="modal-close"><i class="fa-regular fa-circle-xmark"></i></span>
         <div class="content-placeholder header-row-modal">
             <div class="header-top">
                 <div class="header-text">
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="form-group" id="generateIdBox" style="display: none;">
-                    <label for="repairDevice_id">Device ID</label>
+                    <label>Device ID</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="text" id="repairDevice_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
                         <input type="hidden" name="repairDevice_id" id="repairDevice_id">
@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="repairTicket_id">Ticket ID</label>
+                    <label>Ticket ID</label>
                     <div class="idgen-container">
                         <input type="text" id="repairTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly disabled>
                         <input type="hidden" name="repairTicket_id" id="repairTicket_id" disabled>
@@ -70,7 +70,7 @@
 
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                    <input type="text" name="name" id="name" autocomplete="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
