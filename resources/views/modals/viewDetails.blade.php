@@ -1,10 +1,10 @@
 <!-- Details Modal -->
-<div class="modal fade" id="viewModal{{ $item->id }}" tabindex="-1">
+<div class="modal fade" id="viewModal{{ $item->id }}" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ $item->individual_id }}</h5>
-                <button id="closeModal" type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">Device Details - {{ $item->individual_id }}</h5>
+                <button id="btnClose{{ $item->id }}" type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <!-- View Mode -->
@@ -419,15 +419,20 @@
     function toggleIssue{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const issueMode = document.getElementById('issueModal{{ $item->id }}');
-
+        const closeBtn = document.getElementById('btnClose{{ $item->id }}');
+        
         if (viewMode.style.display === 'none') {
             // Switch to view mode
             viewMode.style.display = 'block';
+            closeBtn.style.display = 'block';
             issueMode.style.display = 'none';
+            enableBackdropClose();
         } else {
             // Switch to issue mode
             viewMode.style.display = 'none';
+            closeBtn.style.display = 'none';
             issueMode.style.display = 'block';
+            disableBackdropClose();
         }
     }
 
@@ -435,15 +440,18 @@
     function toggleReturn{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const returnMode = document.getElementById('returnModal{{ $item->id }}');
+        const closeBtn = document.getElementById('btnClose{{ $item->id }}');
 
         if (viewMode.style.display === 'none') {
             // Switch to view mode
             viewMode.style.display = 'block';
             returnMode.style.display = 'none';
+            closeBtn.style.display = 'block';
         } else {
             // Switch to return mode
             viewMode.style.display = 'none';
             returnMode.style.display = 'block';
+            closeBtn.style.display = 'none';
         }
     }
 
@@ -451,15 +459,18 @@
     function toggleEditMode{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const editMode = document.getElementById('editMode{{ $item->id }}');
-
+        const closeBtn = document.getElementById('btnClose{{ $item->id }}');
+        
         if (viewMode.style.display === 'none') {
             // Switch to view mode
             viewMode.style.display = 'block';
             editMode.style.display = 'none';
+            closeBtn.style.display = 'block';
         } else {
             // Switch to edit mode
             viewMode.style.display = 'none';
             editMode.style.display = 'block';
+            closeBtn.style.display = 'none';
         }
     }
 
@@ -485,4 +496,5 @@
             dateIssuedField.style.display = 'none';
         }
     });
+    
 </script>

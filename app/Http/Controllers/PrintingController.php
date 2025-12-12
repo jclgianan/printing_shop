@@ -21,7 +21,9 @@ class PrintingController extends Controller
     {
         $type = 'printing';
         // Fetch print tickets for the printing dashboard
-        $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->paginate(10);
+        $printTickets = PrintTicket::orderBy('receiving_date', 'desc')
+        ->orderBy('id', 'desc')    
+        ->paginate(10);
 
         return view('printing', compact('printTickets', 'type'));   
     }
@@ -45,6 +47,7 @@ class PrintingController extends Controller
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
             ->orderBy('receiving_date', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('printing', compact('printTickets', 'type'));
@@ -179,9 +182,11 @@ class PrintingController extends Controller
 
         // Check if the filter is 'released' to sort by release_date
         if ($request->filter === 'released') {
-            $query->orderBy('release_date', 'desc');
+            $query->orderBy('release_date', 'desc')
+                ->orderBy('id', 'desc');
         } else {
-            $query->orderBy('receiving_date', 'desc');
+            $query->orderBy('receiving_date', 'desc')
+                ->orderBy('id', 'desc');
         }
 
         $printTickets = $query->paginate(10);
