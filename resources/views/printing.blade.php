@@ -136,8 +136,25 @@
 
 @push('scripts')
     <script>
-        function updateStatus(ticketId, newStatus) {
-            if (!confirm('Are you sure you want to change the status?')) {
+        async function updateStatus(ticketId, newStatus) {
+            const result = await Swal.fire({
+                title: 'Confirm Status Change',
+                text: 'Are you sure you want to change the status?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                customClass: {
+                    container: "pop-up-container",
+                    popup: "pop-up-confirm",
+                    title: "pop-up-confirm-title",
+                    htmlContainer: "pop-up-confirm-text",
+                    confirmButton: "btn-normal",
+                    cancelButton: "btn-normal",
+                    icon: "pop-up-icon",
+                },
+            });
+            if (!result.isConfirmed) {
                 return;
             }
 

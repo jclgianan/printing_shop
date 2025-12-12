@@ -25,59 +25,59 @@
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
-
-            <table class="user-accounts-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach ($users as $user)
+            <div class="process-log">
+                <table class="user-accounts-table">
+                    <thead>
                         <tr>
-                            <td>{{ $user->id }}</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ ucfirst($user->role) }}</td>
-                            <td>
-                                @if (auth()->user()->role === 'admin')
-                                    <button id="userEdit" class="btn-edit-user" data-id="{{ $user->id }}"
-                                        data-name="{{ $user->name }}" data-email="{{ $user->email }}"
-                                        data-role="{{ $user->role }}">
-                                        Edit
-                                    </button>
-                                @else
-                                    <button class="btn-edit-user disabled-button" disabled>
-                                        Edit
-                                    </button>
-                                @endif
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
 
-                                @if (auth()->user()->role === 'admin')
-                                    <form class="delete-user-form" action="{{ url('/users/delete/' . $user->id) }}"
-                                        method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="button" class="btn-delete-user confirm-delete"
-                                            data-user-name="{{ $user->name }}" data-user-id="{{ $user->id }}">
+                    <tbody>
+                        @foreach ($users as $user)
+                            <tr>
+                                <td>{{ $user->id }}</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
+                                <td>{{ ucfirst($user->role) }}</td>
+                                <td>
+                                    @if (auth()->user()->role === 'admin')
+                                        <button id="userEdit" class="btn-edit-user" data-id="{{ $user->id }}"
+                                            data-name="{{ $user->name }}" data-email="{{ $user->email }}"
+                                            data-role="{{ $user->role }}">
+                                            Edit
+                                        </button>
+                                    @else
+                                        <button class="btn-edit-user disabled-button" disabled>
+                                            Edit
+                                        </button>
+                                    @endif
+
+                                    @if (auth()->user()->role === 'admin')
+                                        <form class="delete-user-form" action="{{ url('/users/delete/' . $user->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn-delete-user confirm-delete"
+                                                data-user-name="{{ $user->name }}" data-user-id="{{ $user->id }}">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button class="btn-delete-user disabled-button" disabled>
                                             Delete
                                         </button>
-                                    </form>
-                                @else
-                                    <button class="btn-delete-user disabled-button" disabled>
-                                        Delete
-                                    </button>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
+                                    @endif
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </main>
     </div>
 
