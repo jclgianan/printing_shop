@@ -129,6 +129,7 @@ document.addEventListener("click", function (event) {
                 htmlContainer: "pop-up-confirm-text",
                 confirmButton: "btn-danger",
                 cancelButton: "btn-normal",
+                icon: "pop-up-icon",
             },
         }).then((result) => {
             if (result.isConfirmed) {
