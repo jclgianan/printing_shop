@@ -64,33 +64,27 @@ Route::middleware(['auth'])->group(function () {
     
     // Main inventory list (grouped by device name)
     Route::get('/inventory', [InventoryController::class, 'inventory'])->name('inventory');
-    
     // Create new inventory item
-    Route::get('/create', [InventoryController::class, 'create'])->name('inventory.create');
+    Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
     Route::post('/store', [InventoryController::class, 'store'])->name('inventory.store');
-    
     // View all units of a specific device name
     Route::get('/view/{deviceId}', [InventoryController::class, 'view'])->name('inventory.view');
-    
     // Edit specific inventory item
     Route::get('/edit/{id}', [InventoryController::class, 'edit'])->name('edit');
     Route::put('/update/{id}', [InventoryController::class, 'update'])->name('inventory.update');
     Route::post('/inventory/issue/{id}', [InventoryController::class, 'issue'])->name('inventory.issue');
     Route::post('/inventory/return/{id}', [InventoryController::class, 'return'])->name('inventory.return');
-    
     // Delete specific inventory item
     Route::delete('/destroy/{id}', [InventoryController::class, 'destroy'])->name('destroy');
-    
     // Delete all items with a specific device name (optional)
     Route::delete('/destroy-device/{deviceName}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
-
     // Alias for compatibility with your blade file
     Route::delete('/devices/{id}', [InventoryController::class, 'destroy'])->name('devices.destroy');
-
     // Generate Device ID for new inventory item
     Route::get('/generate-device-id', [InventoryController::class, 'generateDeviceId'])->name('generate-device-id');
     Route::post('/inventory/units/{deviceId}/add', [InventoryController::class, 'addUnits'])->name('inventory.add-units');
     
+
     // Forms and processes
     Route::get('/addPrinting', [PrintingController::class, 'printingForm'])->name('printing.form');
     Route::get('/addRepair', [RepairController::class, 'repairForm'])->name('repair.form');

@@ -20,7 +20,9 @@ class RepairController extends Controller
     {
         $type = 'repair';
         // Fetch data from the database
-        $repairTickets = RepairTicket::orderBy('receiving_date', 'desc')->paginate(10);
+        $repairTickets = RepairTicket::orderBy('receiving_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         return view('repair', compact('repairTickets', 'type'));
     }
@@ -43,6 +45,8 @@ class RepairController extends Controller
         $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
+            ->orderBy('receiving_date', 'desc')
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('repair', compact('repairTickets'));
@@ -237,7 +241,9 @@ class RepairController extends Controller
             $query->where('status', 'like', '%' . $request->filter . '%');
         }
 
-        $repairTickets = $query->orderBy('receiving_date', 'desc')->paginate(10);
+        $repairTickets = $query->orderBy('receiving_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         return view('repair', compact('repairTickets', 'type'));
     }

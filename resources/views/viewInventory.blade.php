@@ -167,5 +167,6 @@
         document.getElementById('addUnitModal').addEventListener('shown.bs.modal', function() {
             document.getElementById('addQuantity').dispatchEvent(new Event('input'));
         });
+        
     </script>
 @endpush
