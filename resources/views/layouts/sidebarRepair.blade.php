@@ -6,15 +6,15 @@
                 <span class="menu_icon"><i class="fa-solid fa-house"></i></span>
                 <span class="menu_text">Dashboard</span>
             </a></li>
-            <li><a href="{{ route('printing') }}" class="shop_nav-link {{ request()->routeIs('printing') ? 'active' : '' }}">
+            <li><a href="{{ route('printing') }}" class="shop_nav-link {{ request()->routeIs('printing*', 'status-filter', 'receiving*') ? 'active' : '' }}">
                 <span class="menu_icon"><i class="fa-solid fa-print"></i></span>
                 <span class="menu_text">Printing</span>
             </a></li>
-            <li><a href="{{ route('repair') }}" class="shop_nav-link {{ request()->routeIs('repair') ? 'active' : '' }}">
+            <li><a href="{{ route('repair') }}" class="shop_nav-link {{ request()->routeIs('repair*', 'status-repair-filter') ? 'active' : '' }}">
                 <span class="menu_icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
                 <span class="menu_text">Repair</span>
             </a></li>
-            <li><a href="{{ route('inventory') }}" class="shop_nav-link {{ request()->routeIs('inventory') ? 'active' : '' }}">
+            <li><a href="{{ route('inventory') }}" class="shop_nav-link {{ request()->routeIs('inventory*') ? 'active' : '' }}">
                 <span class="menu_icon"><i class="fa-solid fa-boxes-packing"></i></span>
                 <span class="menu_text">Inventory</span>
             </a></li>
