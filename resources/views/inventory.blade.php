@@ -76,9 +76,9 @@
                                 <td>{{ $device->available }}</td>
                                 <td>{{ $device->issued }}</td>
                                 <td>{{ $device->unusable }}</td>
-                                <td>
+                                <td class="action-buttons">
                                     <a href="{{ route('inventory.view', $device->device_id) }}" class="btn btn-sm btn-info">
-                                        View Units
+                                        View
                                     </a>
                                     
                                     <form action="{{ route('destroy-device', $device->device_id) }}" method="POST" 
@@ -88,7 +88,7 @@
                                         <button type="submit" 
                                                 class="btn btn-sm btn-danger confirm-delete"
                                                 >
-                                            Delete All
+                                            Delete
                                         </button>
                                     </form>
                                 </td>

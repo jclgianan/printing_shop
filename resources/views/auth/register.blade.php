@@ -1,19 +1,23 @@
 <div id="registerModal" class="modal-overlay">
     <div class="modal-box">
-        <span id="closeRegisterModal" class="modal-close">&times;</span>
+        {{-- <span id="closeModal" class="modal-close"><i class="fa-regular fa-circle-xmark"></i></span> --}}
         {{-- <div class="login-logo">
             <img src="{{ asset('images/Capitol_Logo.png') }}" alt="Logo" class="logo-image">
         </div> --}}
-
-        <h1 class="form-title">Add New User</h1>
-
-        @if(session()->has('success'))
+        <div class="content-placeholder header-row-modal">
+            <div class="header-top">
+                <div class="header-text">
+                    <h2>Add User</h2>
+                </div>
+            </div>
+        </div>
+        @if (session()->has('success'))
             <div class="alert alert-success">
                 {{ session()->get('success') }}
             </div>
         @endif
 
-        @if(session()->has('error'))
+        @if (session()->has('error'))
             <div class="alert alert-danger">
                 {{ session()->get('error') }}
             </div>
@@ -44,12 +48,14 @@
 
                 <div class="form-group">
                     <label class="label" for="register-fullname">Full Name:</label>
-                    <input class="form-control" type="text" id="register-fullname" name="fullname" value="{{ old('fullname') }}" required>
+                    <input class="form-control" type="text" id="register-fullname" name="fullname"
+                        value="{{ old('fullname') }}" required>
                 </div>
 
                 <div class="form-group">
                     <label class="label" for="register-email">Email:</label>
-                    <input class="form-control" type="email" id="register-email" name="email" value="{{ old('email') }}" required>
+                    <input class="form-control" type="email" id="register-email" name="email"
+                        value="{{ old('email') }}" required>
                 </div>
 
                 <div class="form-group">
@@ -59,7 +65,8 @@
 
                 <div class="form-group">
                     <label class="label" for="register-confirm-password">Confirm Password:</label>
-                    <input class="form-control" type="password" id="register-confirm-password" name="password_confirmation" required>
+                    <input class="form-control" type="password" id="register-confirm-password"
+                        name="password_confirmation" required>
                 </div>
 
                 <div class="form-group">
@@ -69,6 +76,5 @@
             </form>
 
         </div>
-    </div>   
+    </div>
 </div>
-

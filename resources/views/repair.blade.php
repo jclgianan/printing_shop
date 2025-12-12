@@ -131,8 +131,25 @@
 
 @push('scripts')
     <script>
-        function updateStatus(ticketId, newStatus) {
-            if (!confirm('Are you sure you want to change the status?')) {
+        async function updateStatus(ticketId, newStatus) {
+            const result = await Swal.fire({
+                title: 'Confirm Status Change',
+                text: 'Are you sure you want to change the status?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                customClass: {
+                    container: "pop-up-container",
+                    popup: "pop-up-confirm",
+                    title: "pop-up-confirm-title",
+                    htmlContainer: "pop-up-confirm-text",
+                    confirmButton: "btn-normal",
+                    cancelButton: "btn-normal",
+                    icon: "pop-up-icon",
+                },
+            });
+            if (!result.isConfirmed) {
                 return;
             }
 
@@ -188,12 +205,12 @@
             $('#edit_issue').val(ticket.issue);
             $('#edit_solution').val(ticket.solution);
             $('#edit_note').val(ticket.note);
-           // FIX: Only set the DATE part for the date input, but store original datetime
+            // FIX: Only set the DATE part for the date input, but store original datetime
             if (ticket.release_date) {
                 // Extract just the date portion for the input (YYYY-MM-DD)
                 let dateOnly = ticket.release_date.split(' ')[0].split('T')[0];
                 $('#edit_release_date').val(dateOnly);
-                
+
                 // Store the FULL datetime in a hidden field or data attribute
                 $('#edit_release_date').data('original-datetime', ticket.release_date);
             } else {
@@ -233,7 +250,7 @@
                 </button>
             `);
             }
-            
+
             $('#editRepairModal').addClass('active');
         });
         // Close edit modal
@@ -256,23 +273,26 @@
             const messageBox = $('#editFormMessage');
             const submitBtn = form.find('button[type="submit"]');
             const ticketId = $('#edit_ticket_id').val();
-            
+
             // Get the original datetime
             const releaseDateInput = $('#edit_release_date');
             const originalDateTime = releaseDateInput.data('original-datetime');
             const newDate = releaseDateInput.val();
-            
+
             // Build form data
             let formData = form.serializeArray();
-            
+
             // If release_date wasn't changed, use original datetime
             if (originalDateTime && newDate) {
                 const originalDate = originalDateTime.split(' ')[0].split('T')[0];
-                
+
                 if (newDate === originalDate) {
                     // Date unchanged - use full original datetime
                     formData = formData.filter(item => item.name !== 'release_date');
-                    formData.push({ name: 'release_date', value: originalDateTime });
+                    formData.push({
+                        name: 'release_date',
+                        value: originalDateTime
+                    });
                 }
                 // If date was changed, the new date value from form will be used
             }

@@ -7,17 +7,17 @@
         <div class="layout-wrapper">
             <main class="receiving-main-panel">
                 <!-- Breadcrumb Header -->
+                <a href="{{ route('inventory') }}" class="inv-back-link"><i class="fa-solid fa-arrow-left-long"></i> Return</a>
                 <div class="inv-header-wrapper">
                     <div class="inv-header-left">
-                        <a href="{{ route('inventory') }}" class="inv-back-link">&laquo; Inventory Management</a>
                         <h1 class="inv-title">{{ $items->first()->device_name }} — Units</h1>
                         <small class="inv-device-id">Device ID: {{ $deviceId }}</small>
                     </div>
                     <button type="button" class="inv-add-unit" data-bs-toggle="modal" data-bs-target="#addUnitModal">
-                            + Add Unit
+                        + Add Unit
                     </button>
                 </div>
-                @if(session('success'))
+                @if (session('success'))
                     <div id="flash-success" class="alert alert-success">
                         {{ session('success') }}
                     </div>
@@ -29,15 +29,15 @@
                         <p>Total Units</p>
                     </div>
                     <div class="inv-card available-units">
-                        <h3>{{ $items->where('status','available')->count() }}</h3>
+                        <h3>{{ $items->where('status', 'available')->count() }}</h3>
                         <p>Available</p>
                     </div>
                     <div class="inv-card issued-units">
-                        <h3>{{ $items->where('status','issued')->count() }}</h3>
+                        <h3>{{ $items->where('status', 'issued')->count() }}</h3>
                         <p>Issued</p>
                     </div>
                     <div class="inv-card unusable-units">
-                        <h3>{{ $items->where('status','unusable')->count() }}</h3>
+                        <h3>{{ $items->where('status', 'unusable')->count() }}</h3>
                         <p>Unusable</p>
                     </div>
                 </div>
@@ -61,7 +61,7 @@
                                     <td>{{ $item->individual_id }}</td>
                                     <td>{{ $item->serial_number ?? '—' }}</td>
                                     <td>
-                                        @if($item->status === 'available')
+                                        @if ($item->status === 'available')
                                             <span class="inv-badge inv-status-available">Available</span>
                                         @elseif($item->status === 'issued')
                                             <span class="inv-badge inv-status-issued">Issued</span>
@@ -70,7 +70,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if($item->condition === 'new')
+                                        @if ($item->condition === 'new')
                                             <span class="inv-badge inv-new">New</span>
                                         @elseif($item->condition === 'good')
                                             <span class="inv-badge inv-good">Good</span>
@@ -85,15 +85,17 @@
                                     <td>{{ $item->date_issued ? $item->date_issued->format('M d, Y') : '—' }}</td>
                                     <td>
                                         <!-- View Units Modal Trigger -->
-                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal{{ $item->id }}">
-                                            View Units
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                                            data-bs-target="#viewModal{{ $item->id }}">
+                                            View
                                         </button>
 
-                                        <form action="{{ route('destroy', $item) }}" method="POST" style="display:inline-block;">
+                                        <form action="{{ route('destroy', $item) }}" method="POST"
+                                            style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-danger confirm-delete">
-                                                Delete All
+                                                Delete
                                             </button>
                                         </form>
                                     </td>
@@ -134,7 +136,7 @@
             const usedIds = [...existingIds];
             let newIds = [];
 
-             // First, fill gaps
+            // First, fill gaps
             let current = 1;
             while (newIds.length < quantity) {
                 if (!usedIds.includes(current)) {
