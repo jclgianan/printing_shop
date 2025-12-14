@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\InventoryItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Models\ActivityLog;
 
 class InventoryController extends Controller
 {
@@ -105,7 +107,7 @@ class InventoryController extends Controller
             // Generate Individual ID: e.g., 00001(01), 00001(02)
             $individualId = $validated['device_id'] . '(' . str_pad($i, 2, '0', STR_PAD_LEFT) . ')';
             
-            InventoryItem::create([
+            $device = InventoryItem::create([
                 'device_id' => $validated['device_id'],
                 'individual_id' => $individualId,
                 'device_name' => $validated['device_name'],
@@ -123,6 +125,15 @@ class InventoryController extends Controller
                 'date_issued' => $validated['date_issued'],
                 'notes' => $validated['notes'],
             ]);
+        }
+
+        try {
+            ActivityLog::record(
+                'Add Inventory Item',
+                "Inventory Item {$device->device_id} was added"
+            );
+        }catch (\Exception $e) {
+            Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
         $message = $quantity > 1 
@@ -210,6 +221,15 @@ class InventoryController extends Controller
 
         $item->update($validated);
 
+        try {
+            ActivityLog::record(
+                'Edit Inventory Item',
+                "Inventory Item {$item->individual_id} was edited"
+            );
+        }catch (\Exception $e) {
+            Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
+        }
+
         return redirect()->back()
             ->with('success', "Unit {$item->individual_id} successfully updated.");
     }
@@ -233,6 +253,15 @@ class InventoryController extends Controller
                 ->with('success', 'Inventory item deleted successfully.');
         }
 
+        try {
+            ActivityLog::record(
+                'Delete Inventory Item',
+                "Inventory Unit {$item->individual_id} was deleted"
+            );
+        }catch (\Exception $e) {
+            Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
+        }
+
         // Otherwise, stay on the device view page
         return redirect()->route('inventory.view', $deviceId)
             ->with('success', "Inventory item {$item->individual_id} deleted successfully.");
@@ -243,8 +272,17 @@ class InventoryController extends Controller
      */
     public function destroyDevice($deviceId)
     {
-        
+       
         InventoryItem::where('device_id', $deviceId)->delete();
+
+        try {
+            ActivityLog::record(
+                'Delete Inventory Item',
+                "Inventory Item {$deviceId} was deleted"
+            );
+        }catch (\Exception $e) {
+            Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
+        }
 
         return redirect()->route('inventory')
             ->with('success', "Device Item {$deviceId} has been deleted successfully.");
@@ -290,7 +328,7 @@ class InventoryController extends Controller
         while ($added < $quantity) {
             if (!in_array($current, $existingNumbers)) {
                 $individualId = $deviceId . '(' . str_pad($current, 2, '0', STR_PAD_LEFT) . ')';
-                InventoryItem::create([
+                $item = InventoryItem::create([
                     'device_id' => $deviceId,
                     'individual_id' => $individualId,
                     'device_name' => $existingDevice->device_name,
@@ -312,6 +350,15 @@ class InventoryController extends Controller
                 $added++;
             }
             $current++;
+
+            try {
+                ActivityLog::record(
+                    'Add Inventory Item',
+                    "Inventory Unit {$item->individual_id} was added" 
+                );
+            }catch (\Exception $e) {
+                Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
+            }
         }
 
         // Always poor condition if status is unusable
