@@ -3,8 +3,8 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Device Details - {{ $item->individual_id }}</h5>
-                <button id="btnClose{{ $item->id }}" type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <h5 class="modal-title">{{ $item->individual_id }}</h5>
+                <button id="closeModal" type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <!-- View Mode -->
@@ -419,7 +419,6 @@
     function toggleIssue{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const issueMode = document.getElementById('issueModal{{ $item->id }}');
-        const closeBtn = document.getElementById('btnClose{{ $item->id }}');
         
         if (viewMode.style.display === 'none') {
             // Switch to view mode
@@ -459,7 +458,6 @@
     function toggleEditMode{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const editMode = document.getElementById('editMode{{ $item->id }}');
-        const closeBtn = document.getElementById('btnClose{{ $item->id }}');
         
         if (viewMode.style.display === 'none') {
             // Switch to view mode

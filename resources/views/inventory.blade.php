@@ -28,7 +28,7 @@
                 <!-- Filter By Category on the left -->
                 <form action="{{ route('inventory') }}" method="GET" class="filter-form">
                     <div class="filter-category-group">
-                        <label for="category-filter">Filter by:</label>
+                        <label for="category-filter"><i class="fa-solid fa-filter"></i> Filter by:</label>
                         <select name="category" id="category-filter" class="form-select" onchange="this.form.submit()">
                             <option value="">All Categories</option>
                             <option value="Computer System" {{ request('category') == 'Computer System' ? 'selected' : '' }}>Computer System</option>
