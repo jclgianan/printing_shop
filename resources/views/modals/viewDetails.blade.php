@@ -419,7 +419,7 @@
     function toggleIssue{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const issueMode = document.getElementById('issueModal{{ $item->id }}');
-        
+
         if (viewMode.style.display === 'none') {
             // Switch to view mode
             viewMode.style.display = 'block';
@@ -458,7 +458,7 @@
     function toggleEditMode{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const editMode = document.getElementById('editMode{{ $item->id }}');
-        
+
         if (viewMode.style.display === 'none') {
             // Switch to view mode
             viewMode.style.display = 'block';
@@ -494,5 +494,4 @@
             dateIssuedField.style.display = 'none';
         }
     });
-    
 </script>
