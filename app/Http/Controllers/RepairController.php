@@ -69,7 +69,7 @@ class RepairController extends Controller
             'office_department' => 'required|string|max:255',
             'itemname' => 'required|string|max:255',
             'issue' => 'required|string|max:100',
-            'solution' => 'nullable|string|max:100',
+            'solution' => 'nullable|string',
             'note' => 'nullable|string|max:100',
         ]);
 

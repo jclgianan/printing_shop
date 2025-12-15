@@ -259,6 +259,21 @@
                                             } elseif ($type === 'delete_user') {
                                                 $iconClass = 'fa-user-slash';
                                                 $colorClass = 'activity-delete';
+                                            } elseif ($type === 'add_inventory' ) {
+                                                $iconClass = 'fa-boxes-packing';
+                                                $colorClass = 'add-inventory';
+                                            } elseif ($type === 'issue_inventory' ) {
+                                                $iconClass = 'fa-user-check';
+                                                $colorClass = 'issue-inventory';
+                                            } elseif ($type === 'return_inventory' ) {
+                                                $iconClass = 'fa-share';
+                                                $colorClass = 'return-inventory';
+                                            } elseif ($type === 'edit_inventory' ) {
+                                                $iconClass = 'fa-pen-to-square';
+                                                $colorClass = 'edit-inventory';
+                                            } elseif ($type === 'delete_inventory' ) {
+                                                $iconClass = 'fa-ban';
+                                                $colorClass = 'delete-inventory';
                                             } else {
                                                 $iconClass = 'fa-circle-info';
                                                 $colorClass = 'activity-default';
@@ -308,7 +323,7 @@
                     document.getElementById('repair-released').textContent = data.repair.released;
                     document.getElementById('repair-unrepairable').textContent = data.repair.unrepairable;
                     
-                    console.log('✅ Dashboard stats updated');
+                    console.log('Dashboard stats updated');
                 })
                 .catch(error => console.error('Error updating stats:', error));
         }
@@ -340,7 +355,7 @@
                         </li>
                     `).join('');
                     
-                    console.log('✅ Recent activities updated');
+                    console.log('Recent activities updated');
                 })
                 .catch(error => console.error('Error updating activities:', error));
         }

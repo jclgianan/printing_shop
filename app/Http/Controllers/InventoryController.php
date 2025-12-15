@@ -392,6 +392,15 @@ class InventoryController extends Controller
             'date_issued' => $request->date_issued,
         ]);
 
+        try {
+            ActivityLog::record(
+                'Issue Inventory Item',
+                "Inventory Item {$item->individual_id} was issued to {$item->issued_to}"
+            );
+        }catch (\Exception $e) {
+            Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
+        }
+
         return back()->with('success', 'Device issued successfully.');
     }
 
@@ -414,6 +423,15 @@ class InventoryController extends Controller
             'office' => null,
             'date_issued' => null,
         ]);
+
+        try {
+            ActivityLog::record(
+                'Return Inventory Item',
+                "Inventory Item {$item->individual_id} was returned"
+            );
+        }catch (\Exception $e) {
+            Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
+        }
 
         return back()->with('success', 'Device returned successfully.');
     }
