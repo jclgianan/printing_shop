@@ -9,8 +9,8 @@
                 </div>
             </div>
         </div>
-        
-        @if (session('success'))
+
+        {{-- @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
@@ -18,8 +18,8 @@
             <div class="alert alert-danger">
                 {{ session('error') }}
             </div>
-        @endif
-        
+        @endif --}}
+
         <div id="formMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
         <div class="content-placeholder-add-printing">
@@ -30,15 +30,19 @@
                 <div class="form-group">
                     <label for="printTicket_id">Ticket ID</label>
                     <div class="idgen-container">
-                        <input type="text" id="printTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly disabled>
+                        <input type="text" id="printTicket_id_display" class="form-control"
+                            placeholder="Click 'Generate'" readonly disabled>
                         <input type="hidden" name="printTicket_id" id="printTicket_id" disabled>
-                        <button type="button" onclick="generateprintTicketId()" class="btn btn-secondary btn-generate-id">Generate <i class="fa-solid fa-gear"></i></button>
+                        <button type="button" onclick="generateprintTicketId()"
+                            class="btn btn-secondary btn-generate-id">Generate <i class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="receiving_date">Receiving Date</label>
-                    <input type="date" name="receiving_date" id="receiving_date" class="form-control @error('receiving_date') is-invalid @enderror" value="{{ old('receiving_date') }}" required>
+                    <input type="date" name="receiving_date" id="receiving_date"
+                        class="form-control @error('receiving_date') is-invalid @enderror"
+                        value="{{ old('receiving_date') }}" required>
                     @error('receiving_date')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -46,7 +50,8 @@
 
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                    <input type="text" name="name" id="name"
+                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -54,7 +59,9 @@
 
                 <div class="form-group">
                     <label for="office_department">Office/Department</label>
-                    <input type="text" name="office_department" id="office_department" class="form-control @error('office_department') is-invalid @enderror" value="{{ old('office_department') }}" required>
+                    <input type="text" name="office_department" id="office_department"
+                        class="form-control @error('office_department') is-invalid @enderror"
+                        value="{{ old('office_department') }}" required>
                     @error('office_department')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -62,7 +69,9 @@
 
                 <div class="form-group">
                     <label for="itemname">Name of Item</label>
-                    <input type="text" name="itemname" id="itemname" class="form-control @error('itemname') is-invalid @enderror" value="{{ old('itemname') }}" required>
+                    <input type="text" name="itemname" id="itemname"
+                        class="form-control @error('itemname') is-invalid @enderror" value="{{ old('itemname') }}"
+                        required>
                     @error('itemname')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -70,7 +79,8 @@
 
                 <div class="form-group">
                     <label for="size">Size</label>
-                    <input type="text" name="size" id="size" class="form-control @error('size') is-invalid @enderror" value="{{ old('size') }}" required>
+                    <input type="text" name="size" id="size"
+                        class="form-control @error('size') is-invalid @enderror" value="{{ old('size') }}" required>
                     @error('size')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -78,7 +88,9 @@
 
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="number" name="quantity" id="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity') }}" min="1" required>
+                    <input type="number" name="quantity" id="quantity"
+                        class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity') }}"
+                        min="1" required>
                     @error('quantity')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -86,7 +98,8 @@
 
                 <div class="form-group">
                     <label for="deadline">Deadline</label>
-                    <input type="date" name="deadline" id="deadline" class="form-control @error('deadline') is-invalid @enderror" value="{{ old('deadline') }}">
+                    <input type="date" name="deadline" id="deadline"
+                        class="form-control @error('deadline') is-invalid @enderror" value="{{ old('deadline') }}">
                     @error('deadline')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -94,7 +107,8 @@
 
                 <div class="form-group">
                     <label for="file_link">File</label>
-                    <input type="text" name="file_link" id="file_link" class="form-control @error('file_link') is-invalid @enderror" value="{{ old('file_link') }}">
+                    <input type="text" name="file_link" id="file_link"
+                        class="form-control @error('file_link') is-invalid @enderror" value="{{ old('file_link') }}">
                     @error('file_link')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -150,20 +164,22 @@
                 data: formData,
                 success: function(response) {
                     if (response.success && response.ticket) {
-                        messageBox
-                            .removeClass('alert-error')
-                            .addClass('alert-box alert-success')
-                            .text(response.success)
-                            .fadeIn();
-
-                        form[0].reset();
-                        submitBtn.prop('disabled', false).text('Submit Ticket');
-
-                        setTimeout(() => {
-                            messageBox.fadeOut();
+                        Swal.fire({
+                            title: 'Ticket updated successfully.',
+                            icon: 'success',
+                            customClass: {
+                                container: "pop-up-success-container",
+                                popup: "pop-up-success",
+                                title: "pop-up-success-title",
+                                htmlContainer: "pop-up-success-text",
+                                confirmButton: "btn-normal",
+                                icon: "pop-up-icon",
+                            },
+                            timer: 3000,
+                            showConfirmButton: true
+                        }).then(() => {
                             window.location.reload();
-                            document.getElementById('addPrintingModal').style.display = 'none';
-                        }, 1500);
+                        });
                     }
                 },
                 error: function(xhr) {
@@ -178,5 +194,4 @@
             });
         });
     });
-
 </script>

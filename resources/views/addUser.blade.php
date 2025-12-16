@@ -23,7 +23,30 @@
             </div>
 
             @if (session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
+                <script>
+                    window.onload = () => {
+
+                        const successMessage = `{{ session('success') }}`;
+
+
+                        Swal.fire({
+                            title: successMessage || 'User added successfully.',
+                            icon: 'success',
+                            customClass: {
+                                container: "pop-up-success-container",
+                                popup: "pop-up-success",
+                                title: "pop-up-success-title",
+                                htmlContainer: "pop-up-success-text",
+                                confirmButton: "btn-success",
+                                icon: "pop-up-icon",
+                            },
+                            timer: 3000,
+                            showConfirmButton: true
+                        }).then((result) => {
+                            window.location.reload();
+                        });
+                    };
+                </script>
             @endif
             <div class="process-log">
                 <table class="user-accounts-table">

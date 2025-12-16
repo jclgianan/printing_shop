@@ -10,7 +10,7 @@
             </div>
         </div>
 
-        @if (session('success'))
+        {{-- @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
@@ -18,7 +18,7 @@
             <div class="alert alert-danger">
                 {{ session('error') }}
             </div>
-        @endif
+        @endif --}}
 
         <div id="formMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
@@ -241,20 +241,23 @@
             data: formData,
             success: function(response) {
                 if (response.success && response.ticket) {
-                    messageBox
-                        .removeClass('alert-error')
-                        .addClass('alert-box alert-success')
-                        .text(response.success)
-                        .fadeIn();
-
-                    form[0].reset();
-                    submitBtn.prop('disabled', false).text('Submit Ticket');
-
-                    setTimeout(() => {
-                        messageBox.fadeOut();
+                    Swal.fire({
+                        title: 'Ticket updated successfully.',
+                        icon: 'success',
+                        customClass: {
+                            container: "pop-up-success-container",
+                            popup: "pop-up-success",
+                            title: "pop-up-success-title",
+                            htmlContainer: "pop-up-success-text",
+                            confirmButton: "btn-normal",
+                            icon: "pop-up-icon",
+                        },
+                        timer: 3000,
+                        showConfirmButton: true
+                    }).then(() => {
                         window.location.reload();
-                        document.getElementById('addRepairModal').style.display = 'none';
-                    }, 1500);
+                    });
+
                 }
             },
             error: function(xhr) {

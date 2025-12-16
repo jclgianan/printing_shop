@@ -18,9 +18,30 @@
                     </button>
                 </div>
                 @if (session('success'))
-                    <div id="flash-success" class="alert alert-success">
-                        {{ session('success') }}
-                    </div>
+                    <script>
+                        window.onload = () => {
+
+                            const successMessage = `{{ session('success') }}`;
+
+
+                            Swal.fire({
+                                title: successMessage || 'Device added successfully.',
+                                icon: 'success',
+                                customClass: {
+                                    container: "pop-up-success-container",
+                                    popup: "pop-up-success",
+                                    title: "pop-up-success-title",
+                                    htmlContainer: "pop-up-success-text",
+                                    confirmButton: "btn-success",
+                                    icon: "pop-up-icon",
+                                },
+                                timer: 3000,
+                                showConfirmButton: true
+                            }).then((result) => {
+                                window.location.reload();
+                            });
+                        };
+                    </script>
                 @endif
 
                 <div class="inv-row">
@@ -169,6 +190,5 @@
         document.getElementById('addUnitModal').addEventListener('shown.bs.modal', function() {
             document.getElementById('addQuantity').dispatchEvent(new Event('input'));
         });
-        
     </script>
 @endpush

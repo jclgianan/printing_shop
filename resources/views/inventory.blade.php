@@ -18,9 +18,67 @@
                     </div>
                 </div>
 
-                @if (session('success'))
-                    <div id="flash-success" class="alert alert-success">
-                        {{ session('success') }}
+
+
+                <div class="category-filter">
+                    <!-- Filter By Category on the left -->
+                    <form action="{{ route('inventory') }}" method="GET" class="filter-form">
+                        <div class="filter-category-group">
+                            <label for="category-filter">Filter by:</label>
+                            <select name="category" id="category-filter" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Categories</option>
+                                <option value="Computer System"
+                                    {{ request('category') == 'Computer System' ? 'selected' : '' }}>Computer System
+                                </option>
+                                <option value="Components" {{ request('category') == 'Components' ? 'selected' : '' }}>
+                                    Components</option>
+                                <option value="Peripherals" {{ request('category') == 'Peripherals' ? 'selected' : '' }}>
+                                    Peripherals</option>
+                                <option value="Networking" {{ request('category') == 'Networking' ? 'selected' : '' }}>
+                                    Networking</option>
+                                <option value="Cables & Adapters"
+                                    {{ request('category') == 'Cables & Adapters' ? 'selected' : '' }}>Cables & Adapters
+                                </option>
+                                <option value="Others" {{ request('category') == 'Others' ? 'selected' : '' }}>Others
+                                </option>
+                            </select>
+                        </div>
+                    </form>
+                    <!-- Search Bar on the right -->
+                    <form action="{{ route('inventory') }}" method="GET" class="search-form">
+                        <div class="search-group">
+                            <input type="text" name="search" class="search-input" placeholder="Search"
+                                aria-label="Search">
+                            <button class="btn btn-primary" type="submit"><i
+                                    class="fa-solid fa-magnifying-glass"></i></button>
+                        </div>
+                    </form>
+                </div>
+            @endif
+            
+            <div class="category-filter">
+                <!-- Filter By Category on the left -->
+                <form action="{{ route('inventory') }}" method="GET" class="filter-form">
+                    <div class="filter-category-group">
+                        <label for="category-filter"><i class="fa-solid fa-filter"></i> Filter by:</label>
+                        <select name="category" id="category-filter" class="form-select" onchange="this.form.submit()">
+                            <option value="">All Categories</option>
+                            <option value="Computer System" {{ request('category') == 'Computer System' ? 'selected' : '' }}>Computer System</option>
+                            <option value="Components" {{ request('category') == 'Components' ? 'selected' : '' }}>Components</option>
+                            <option value="Peripherals" {{ request('category') == 'Peripherals' ? 'selected' : '' }}>Peripherals</option>
+                            <option value="Networking" {{ request('category') == 'Networking' ? 'selected' : '' }}>Networking</option>
+                            <option value="Cables & Adapters" {{ request('category') == 'Cables & Adapters' ? 'selected' : '' }}>Cables & Adapters</option>
+                            <option value="Others" {{ request('category') == 'Others' ? 'selected' : '' }}>Others</option>
+                        </select>
+                    </div>
+                </form>
+                <!-- Search Bar on the right -->
+                <form action="{{ route('inventory') }}" method="GET" class="search-form">
+                    <div class="search-group">
+                        <input type="text" name="search" class="search-input" placeholder="Search"
+                            aria-label="Search">
+                        <button class="btn btn-primary" type="submit"><i
+                                class="fa-solid fa-magnifying-glass"></i></button>
                     </div>
                 @endif
 
@@ -112,4 +170,31 @@
 
         </div>
     </div>
+
+    @if (session('success'))
+        <script>
+            window.onload = () => {
+
+                const successMessage = `{{ session('success') }}`;
+
+
+                Swal.fire({
+                    title: successMessage || 'Device added successfully.',
+                    icon: 'success',
+                    customClass: {
+                        container: "pop-up-success-container",
+                        popup: "pop-up-success",
+                        title: "pop-up-success-title",
+                        htmlContainer: "pop-up-success-text",
+                        confirmButton: "btn-success",
+                        icon: "pop-up-icon",
+                    },
+                    timer: 3000,
+                    showConfirmButton: true
+                }).then((result) => {
+                    window.location.reload();
+                });
+            };
+        </script>
+    @endif
 @endsection
