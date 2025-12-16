@@ -202,6 +202,29 @@
                             </div>
                         </div>
 
+                        <!-- Quick Actions -->
+                        <div class="dashboard-actions">
+                            <div class="activities-header">
+                                <h3>Quick Actions</h3>
+                            </div>
+
+                            <div class="quick-buttons">
+                                <div class="quick-print">
+                                    <h5><i class="fa-solid fa-print"></i> Add Print Ticket</h5>
+                                    <a class="open-print-modal">
+                                        <i class="fa-solid fa-circle-plus"></i>
+                                    </a>
+                                </div>
+
+                                <div class="quick-repair">
+                                    <h5><i class="fa-solid fa-screwdriver-wrench"></i> Add Repair Ticket</h5>
+                                    <a class="open-repair-modal">
+                                        <i class="fa-solid fa-circle-plus"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Recent Activities -->
                         <div class="dashboard-activities">
                             <div class="activities-header">
@@ -311,6 +334,9 @@
                         </div>
                     </div>
                 </div>
+                @include('modals.addPrinting')
+                @include('modals.addRepair')
+
             </main>
         </div>
     </div>
@@ -394,5 +420,33 @@
         }, 300000);
 
         console.log('Dashboard auto-refresh initialized');
+
+        // For Add print and repair modal pop up
+        document.addEventListener('DOMContentLoaded', () => {
+
+            function setupModal(openSelector, modalId, closeId) {
+                const openBtns = document.querySelectorAll(openSelector);
+                const modal = document.getElementById(modalId);
+                const closeBtn = modal?.querySelector(closeId);
+
+                if (!modal) return;
+
+                openBtns.forEach(btn => {
+                    btn.addEventListener('click', () => modal.classList.add('active'));
+                });
+
+                closeBtn?.addEventListener('click', () => modal.classList.remove('active'));
+
+                window.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.classList.remove('active');
+                });
+            }
+
+            // Print modal
+            setupModal('.open-print-modal', 'addPrintingModal', '#closeModal');
+
+            // Repair modal
+            setupModal('.open-repair-modal', 'addRepairModal', '#closeRepairModal');
+        });
     </script>
 @endsection
