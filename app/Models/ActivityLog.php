@@ -38,18 +38,28 @@ class ActivityLog extends Model
         // Check password in BOTH action and description
         if (str_contains($action, 'password') || str_contains($description, 'password')) {
             return 'password_changed';
-        } elseif (str_contains($action, 'delete')) {
-            return 'delete_user';
         } elseif (str_contains($action, 'status')) {
             return 'update_status';
         } elseif (str_contains($action, 'update') && (str_contains($action, 'ticket') || str_contains($action, 'print') || str_contains($action, 'repair'))) {
             return 'update_ticket';
+        } elseif (str_contains($action, 'add') && str_contains($action, 'inventory') || str_contains($description, 'added')) {
+            return 'add_inventory'; 
+        } elseif (str_contains($action, 'issue') && str_contains($action, 'inventory') || str_contains($description, 'issued')) {
+            return 'issue_inventory'; 
+        } elseif (str_contains($action, 'return') && str_contains($action, 'inventory') || str_contains($description, 'returned')) {
+            return 'return_inventory'; 
+        } elseif (str_contains($action, 'edit') && str_contains($action, 'inventory') || str_contains($description, 'edited')) {
+            return 'edit_inventory'; 
+        } elseif (str_contains($action, 'delete') && str_contains($action, 'inventory') || str_contains($description, 'deleted')) {
+            return 'delete_inventory'; 
         } elseif (str_contains($action, 'add') || str_contains($action, 'create')) {
             return 'create_ticket';
         } elseif (str_contains($action, 'update') && str_contains($action, 'user')) {
             return 'update_user';
         } elseif (str_contains($action, 'repair')) {
             return 'repair';
+        } elseif (str_contains($action, 'delete')) {
+            return 'delete_user';
         }
         
         return 'default';

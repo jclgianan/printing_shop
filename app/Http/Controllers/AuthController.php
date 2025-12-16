@@ -114,6 +114,16 @@ class AuthController extends Controller
             return 'fa-lock';
         } elseif ($type === 'delete_user') {
             return 'fa-user-slash';
+        } elseif ($type === 'add_inventory') {
+            return 'fa-boxes-packing';
+        } elseif ($type === 'issue_inventory') {
+            return 'fa-user-check';
+        } elseif ($type === 'return_inventory') {
+            return 'fa-share';
+        } elseif ($type === 'edit_inventory') {
+            return 'fa-pen-to-square';
+        } elseif ($type === 'delete_inventory') {
+            return 'fa-ban';
         }
         return 'fa-circle-info';
     }
@@ -141,6 +151,16 @@ class AuthController extends Controller
             return 'activity-password';
         } elseif ($type === 'delete_user') {
             return 'activity-delete';
+        } elseif ($type === 'add_inventory') {
+            return 'add-inventory';
+        } elseif ($type === 'issue_inventory') {
+            return 'issue-inventory';
+        } elseif ($type === 'return_inventory') {
+            return 'return-inventory';
+        } elseif ($type === 'edit_inventory') {
+            return 'edit-inventory';
+        } elseif ($type === 'delete_inventory') {
+            return 'delete-inventory';
         }
         return 'activity-default';
     }

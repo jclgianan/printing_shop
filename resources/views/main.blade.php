@@ -19,7 +19,8 @@
 
                                 <div class="card-grid">
                                     <div class="card pen">
-                                        <a href="{{ route('status-filter', ['filter' => 'pending']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-filter', ['filter' => 'pending']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards pending">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -35,7 +36,8 @@
                                     </div>
 
                                     <div class="card inp">
-                                        <a href="{{ route('status-filter', ['filter' => 'in_progress']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-filter', ['filter' => 'in_progress']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards in_progress">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -51,7 +53,8 @@
                                     </div>
 
                                     <div class="card prt">
-                                        <a href="{{ route('status-filter', ['filter' => 'printed']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-filter', ['filter' => 'printed']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards printed">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -67,7 +70,8 @@
                                     </div>
 
                                     <div class="card rel">
-                                        <a href="{{ route('status-filter', ['filter' => 'released']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-filter', ['filter' => 'released']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards released">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -83,7 +87,8 @@
                                     </div>
 
                                     <div class="card cld">
-                                        <a href="{{ route('status-filter', ['filter' => 'cancelled']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-filter', ['filter' => 'cancelled']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards cancelled">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -110,7 +115,8 @@
 
                                 <div class="card-grid">
                                     <div class="card pen">
-                                        <a href="{{ route('status-repair-filter', ['filter' => 'pending']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-repair-filter', ['filter' => 'pending']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards pending">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -126,7 +132,8 @@
                                     </div>
 
                                     <div class="card inp">
-                                        <a href="{{ route('status-repair-filter', ['filter' => 'in_progress']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-repair-filter', ['filter' => 'in_progress']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards in_progress">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -142,7 +149,8 @@
                                     </div>
 
                                     <div class="card rpr">
-                                        <a href="{{ route('status-repair-filter', ['filter' => 'repaired']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-repair-filter', ['filter' => 'repaired']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards repaired">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -158,7 +166,8 @@
                                     </div>
 
                                     <div class="card rel">
-                                        <a href="{{ route('status-repair-filter', ['filter' => 'released']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-repair-filter', ['filter' => 'released']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards released">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -174,7 +183,8 @@
                                     </div>
 
                                     <div class="card unr">
-                                        <a href="{{ route('status-repair-filter', ['filter' => 'unrepairable']) }}" class="text-decoration-none">
+                                        <a href="{{ route('status-repair-filter', ['filter' => 'unrepairable']) }}"
+                                            class="text-decoration-none">
                                             <div class="in-cards unrepaired">
                                                 <div class="card-content">
                                                     <div class="text-left">
@@ -198,11 +208,12 @@
                                 <h3>Recent Activities</h3>
                                 <button class="activities-menu-btn">
                                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                        <path
+                                            d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                                     </svg>
                                 </button>
                             </div>
-                            
+
                             <ul class="activities-list" id="activities-list">
                                 @if ($recentActivities->isEmpty())
                                     <p class="no-activities">No recent activities available.</p>
@@ -211,7 +222,7 @@
                                         @php
                                             $type = $activity->type;
                                             $status = $activity->status;
-                                            
+
                                             if ($type === 'update_status') {
                                                 switch ($status) {
                                                     case 'pending':
@@ -248,8 +259,8 @@
                                                 $iconClass = 'fa-file-lines';
                                                 $colorClass = 'activity-ticket';
                                             } elseif ($type === 'update_ticket') {
-                                                $iconClass = 'fa-pen-to-square'; 
-                                                $colorClass = 'activity-ticket';  
+                                                $iconClass = 'fa-pen-to-square';
+                                                $colorClass = 'activity-ticket';
                                             } elseif ($type === 'update_user') {
                                                 $iconClass = 'fa-user';
                                                 $colorClass = 'activity-user';
@@ -259,12 +270,27 @@
                                             } elseif ($type === 'delete_user') {
                                                 $iconClass = 'fa-user-slash';
                                                 $colorClass = 'activity-delete';
+                                            } elseif ($type === 'add_inventory') {
+                                                $iconClass = 'fa-boxes-packing';
+                                                $colorClass = 'add-inventory';
+                                            } elseif ($type === 'issue_inventory') {
+                                                $iconClass = 'fa-user-check';
+                                                $colorClass = 'issue-inventory';
+                                            } elseif ($type === 'return_inventory') {
+                                                $iconClass = 'fa-share';
+                                                $colorClass = 'return-inventory';
+                                            } elseif ($type === 'edit_inventory') {
+                                                $iconClass = 'fa-pen-to-square';
+                                                $colorClass = 'edit-inventory';
+                                            } elseif ($type === 'delete_inventory') {
+                                                $iconClass = 'fa-ban';
+                                                $colorClass = 'delete-inventory';
                                             } else {
                                                 $iconClass = 'fa-circle-info';
                                                 $colorClass = 'activity-default';
                                             }
                                         @endphp
-                                        
+
                                         <li class="activity-item">
                                             <div class="activity-icon-wrapper {{ $colorClass }}">
                                                 <i class="fa-solid {{ $iconClass }}"></i>
@@ -272,9 +298,11 @@
                                             <div class="activity-details">
                                                 <p class="activity-description">
                                                     <strong>{{ $activity->user_name }}</strong>
-                                                    <span class="activity-text-subtle">{{ $activity->short_description }}</span>
+                                                    <span
+                                                        class="activity-text-subtle">{{ $activity->short_description }}</span>
                                                 </p>
-                                                <span class="activity-timestamp">{{ $activity->created_at->diffForHumans() }}</span>
+                                                <span
+                                                    class="activity-timestamp">{{ $activity->created_at->diffForHumans() }}</span>
                                             </div>
                                         </li>
                                     @endforeach
@@ -300,15 +328,15 @@
                     document.getElementById('printing-printed').textContent = data.printing.printed;
                     document.getElementById('printing-released').textContent = data.printing.released;
                     document.getElementById('printing-cancelled').textContent = data.printing.cancelled;
-                    
+
                     // Update repair stats
                     document.getElementById('repair-pending').textContent = data.repair.pending;
                     document.getElementById('repair-in-progress').textContent = data.repair.in_progress;
                     document.getElementById('repair-repaired').textContent = data.repair.repaired;
                     document.getElementById('repair-released').textContent = data.repair.released;
                     document.getElementById('repair-unrepairable').textContent = data.repair.unrepairable;
-                    
-                    console.log('✅ Dashboard stats updated');
+
+                    console.log('Dashboard stats updated');
                 })
                 .catch(error => console.error('Error updating stats:', error));
         }
@@ -319,12 +347,12 @@
                 .then(response => response.json())
                 .then(data => {
                     const activitiesList = document.getElementById('activities-list');
-                    
+
                     if (data.activities.length === 0) {
                         activitiesList.innerHTML = '<p class="no-activities">No recent activities available.</p>';
                         return;
                     }
-                    
+
                     activitiesList.innerHTML = data.activities.map(activity => `
                         <li class="activity-item">
                             <div class="activity-icon-wrapper ${activity.color_class}">
@@ -339,8 +367,8 @@
                             </div>
                         </li>
                     `).join('');
-                    
-                    console.log('✅ Recent activities updated');
+
+                    console.log('Recent activities updated');
                 })
                 .catch(error => console.error('Error updating activities:', error));
         }
