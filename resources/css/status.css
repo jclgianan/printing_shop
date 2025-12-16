@@ -140,6 +140,21 @@
     width: auto;
 }
 
+.btn-success {
+    background-color: var(--bg-button);
+    border: none;
+    padding: 8px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+    font-family: "Rubik", sans-serif;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+    min-width: 50px;
+}
+
 .btn-normal {
     background-color: var(--bg-button);
     border: none;

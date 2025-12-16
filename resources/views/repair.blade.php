@@ -308,17 +308,22 @@
                 data: $.param(formData),
                 success: function(response) {
                     if (response.success) {
-                        messageBox
-                            .removeClass('alert-error')
-                            .addClass('alert-box alert-success')
-                            .text(response.success)
-                            .fadeIn();
-
-                        submitBtn.prop('disabled', false).text('Update Ticket');
-
-                        setTimeout(() => {
+                        Swal.fire({
+                            title: 'Ticket updated successfully.',
+                            icon: 'success',
+                            customClass: {
+                                container: "pop-up-success-container",
+                                popup: "pop-up-success",
+                                title: "pop-up-success-title",
+                                htmlContainer: "pop-up-success-text",
+                                confirmButton: "btn-normal",
+                                icon: "pop-up-icon",
+                            },
+                            timer: 3000,
+                            showConfirmButton: true
+                        }).then(() => {
                             window.location.reload();
-                        }, 800);
+                        });
                     }
                 },
                 error: function(xhr) {
