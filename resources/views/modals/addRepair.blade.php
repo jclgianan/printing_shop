@@ -1,7 +1,7 @@
 <!-- resources/views/modals/addPrinting.blade.php -->
 <div id="addRepairModal" class="modal-overlay">
     <div class="modal-box">
-        <span id="closeModal" class="modal-close"><i class="fa-regular fa-circle-xmark"></i></span>
+        <span id="closeRepairModal" class="modal-close"><i class="fa-regular fa-circle-xmark"></i></span>
         <div class="content-placeholder header-row-modal">
             <div class="header-top">
                 <div class="header-text">
@@ -21,7 +21,7 @@
         @endif
 
         <div id="formMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
-        
+
         <div class="content-placeholder-add-repair">
             <form id="repairForm" class="process-form">
                 @csrf
@@ -45,24 +45,31 @@
                 <div class="form-group" id="generateIdBox" style="display: none;">
                     <label>Device ID</label>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="repairDevice_id_display" class="form-control" placeholder="Click 'Generate'" readonly>
+                        <input type="text" id="repairDevice_id_display" class="form-control"
+                            placeholder="Click 'Generate'" readonly>
                         <input type="hidden" name="repairDevice_id" id="repairDevice_id">
-                        <button type="button" onclick="generaterepairDeviceId()" class="btn btn-secondary btn-generate-device-id">Generate <i class="fa-solid fa-gear"></i></button>
+                        <button type="button" onclick="generaterepairDeviceId()"
+                            class="btn btn-secondary btn-generate-device-id">Generate <i
+                                class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Ticket ID</label>
                     <div class="idgen-container">
-                        <input type="text" id="repairTicket_id_display" class="form-control" placeholder="Click 'Generate'" readonly disabled>
+                        <input type="text" id="repairTicket_id_display" class="form-control"
+                            placeholder="Click 'Generate'" readonly disabled>
                         <input type="hidden" name="repairTicket_id" id="repairTicket_id" disabled>
-                        <button type="button" onclick="generaterepairTicketId()" class="btn btn-secondary btn-generate-id">Generate <i class="fa-solid fa-gear"></i></button>
+                        <button type="button" onclick="generaterepairTicketId()"
+                            class="btn btn-secondary btn-generate-id">Generate <i class="fa-solid fa-gear"></i></button>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="receiving_date">Receiving Date</label>
-                    <input type="date" name="receiving_date" id="receiving_date" class="form-control @error('receiving_date') is-invalid @enderror" value="{{ old('receiving_date') }}" required>
+                    <input type="date" name="receiving_date" id="receiving_date"
+                        class="form-control @error('receiving_date') is-invalid @enderror"
+                        value="{{ old('receiving_date') }}" required>
                     @error('receiving_date')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -70,7 +77,8 @@
 
                 <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" name="name" id="name" autocomplete="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                    <input type="text" name="name" id="name" autocomplete="name"
+                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -78,7 +86,9 @@
 
                 <div class="form-group">
                     <label for="office_department">Office/Department</label>
-                    <input type="text" name="office_department" id="office_department" class="form-control @error('office_department') is-invalid @enderror" value="{{ old('office_department') }}" required>
+                    <input type="text" name="office_department" id="office_department"
+                        class="form-control @error('office_department') is-invalid @enderror"
+                        value="{{ old('office_department') }}" required>
                     @error('office_department')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -86,7 +96,9 @@
 
                 <div class="form-group">
                     <label for="itemname">Name of Item</label>
-                    <input type="text" name="itemname" id="itemname" class="form-control @error('itemname') is-invalid @enderror" value="{{ old('itemname') }}" required>
+                    <input type="text" name="itemname" id="itemname"
+                        class="form-control @error('itemname') is-invalid @enderror" value="{{ old('itemname') }}"
+                        required>
                     @error('itemname')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -94,7 +106,9 @@
 
                 <div class="form-group">
                     <label for="issue">Issue</label>
-                    <input type="text" name="issue" id="issue" class="form-control @error('size') is-invalid @enderror" value="{{ old('size') }}" required>
+                    <input type="text" name="issue" id="issue"
+                        class="form-control @error('size') is-invalid @enderror" value="{{ old('size') }}"
+                        required>
                     @error('issue')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -102,14 +116,16 @@
 
                 <div class="form-group">
                     <label for="note">Note</label>
-                    <input type="text" name="note" id="note" class="form-control @error('note') is-invalid @enderror" value="{{ old('note') }}">
+                    <input type="text" name="note" id="note"
+                        class="form-control @error('note') is-invalid @enderror" value="{{ old('note') }}">
                     @error('note')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
 
                 <br>
-                <button type="submit" class="submit-btn">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
+                <button type="submit" class="submit-btn">Submit Ticket <i
+                        class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>
@@ -146,7 +162,7 @@
 
     // Show/hide input fields based on user selection
     document.querySelectorAll('input[name="has_id"]').forEach(radio => {
-        radio.addEventListener('change', function () {
+        radio.addEventListener('change', function() {
             const existingIdBox = document.getElementById('existingIdBox');
             const generateIdBox = document.getElementById('generateIdBox');
 
@@ -199,11 +215,11 @@
                 button.textContent = 'Generate';
             });
     }
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-});
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
     $('#repairForm').on('submit', function(e) {
         e.preventDefault();
@@ -243,7 +259,7 @@ $.ajaxSetup({
             },
             error: function(xhr) {
                 let message = 'Failed to submit. Please try again.';
-                if(xhr.responseJSON && xhr.responseJSON.details){
+                if (xhr.responseJSON && xhr.responseJSON.details) {
                     message += ' (' + xhr.responseJSON.details + ')';
                 }
                 messageBox
@@ -256,7 +272,4 @@ $.ajaxSetup({
             }
         });
     });
-
-
 </script>
-

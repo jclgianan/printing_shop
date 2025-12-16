@@ -84,9 +84,20 @@
                                         <td>{{ $ticket->office_department }}</td>
                                         <td>{{ $ticket->itemname }}</td>
                                         <td>{{ $ticket->issue }}</td>
-                                        <td>{{ $ticket->solution }}</td>
+                                        <td>
+                                            @if ($ticket->solution)
+                                                {{ $ticket->solution }}
+                                            @else
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
+                                            @endif
+                                        </td>
                                         <td>{{ $ticket->note }}</td>
-                                        <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->format('m/d/y H:i') : '-' }}
+                                        <td>
+                                            @if ($ticket->status === 'released')
+                                                {{ \Carbon\Carbon::parse($ticket->release_date)->format('m/d/y H:i') }}
+                                            @else
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
+                                            @endif
                                         </td>
                                         <td>
                                             <span

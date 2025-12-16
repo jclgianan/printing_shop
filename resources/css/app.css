@@ -1429,8 +1429,15 @@ h1 {
 }
 
 .dashboard-container {
-    display: flex;
+    display: grid;
     flex-grow: 1;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+        "dashboard dashboard dashboard dashboard-actions"
+        "dashboard dashboard dashboard dashboard-activities"
+        "dashboard dashboard dashboard dashboard-activities";
+    gap: 1rem;
     /* border: 1px solid black; */
 }
 .recent-activities {
@@ -1444,8 +1451,9 @@ h1 {
 }
 
 .dashboard {
-    height: auto;
-    width: 80%;
+    /* height: auto;
+    width: 80%; */
+    grid-area: dashboard;
     background-color: var(--dirtywhite_bg);
     margin: 1px;
 
@@ -1603,14 +1611,89 @@ h1 {
     }
 }
 
+/* ====== Quick Actions in Dashboard styles ====== */
+
+.dashboard-actions {
+    grid-area: dashboard-actions;
+    background-color: var(--dirtywhite_bg);
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 0.75rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.activities-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0 0 0.5rem 0.25rem;
+}
+
+/* Buttons container */
+.quick-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Individual quick action */
+.quick-print,
+.quick-repair {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.9rem;
+    border-radius: 14px;
+    border: 1px solid #e5e7eb;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+/* Text */
+.quick-print h5,
+.quick-repair h5 {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #374151;
+    margin: 0;
+}
+
+/* Icon button */
+.quick-print a,
+.quick-repair a {
+    color: #6b7280;
+    font-size: 2rem;
+    transition: color 0.2s ease, transform 0.15s ease;
+    opacity: 0.7;
+}
+
+/* Hover effects (subtle) */
+.quick-print:hover,
+.quick-repair:hover {
+    background-color: #f9fafb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.quick-print:hover a,
+.quick-repair:hover a {
+    color: #2563eb;
+    transform: scale(1.05);
+}
+
 /* ====== Recent Activities in Dashboard styles ====== */
 .dashboard-activities {
     background-color: var(--dirtywhite_bg);
     border: 1px solid #e5e7eb;
     overflow: hidden;
     border-radius: 20px;
-    height: auto;
-    width: 30%;
+    /* height: auto;
+    width: 30%; */
+    grid-area: dashboard-activities;
     margin-left: 5px;
     padding: 0.2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -1625,7 +1708,7 @@ h1 {
 
 .activities-header h3 {
     margin: 0;
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     font-size: 1.4rem;
     font-weight: 600;
     color: var(--bg-ui);
@@ -1747,28 +1830,28 @@ h1 {
 }
 
 .add-inventory {
-    background-color: #ecfdf5; 
-    color: #047857;           
+    background-color: #ecfdf5;
+    color: #047857;
     border-color: #a7f3d0;
 }
 .issue-inventory {
-    background-color: #eff6ff; 
-    color: #1d4ed8;           
+    background-color: #eff6ff;
+    color: #1d4ed8;
     border-color: #bfdbfe;
 }
 .return-inventory {
     background-color: #fffbeb;
-    color: #b45309;          
+    color: #b45309;
     border-color: #fde68a;
 }
 .edit-inventory {
     background-color: #f5f3ff;
-    color: #6d28d9;      
+    color: #6d28d9;
     border-color: #ddd6fe;
 }
 
 .delete-inventory {
-    background-color: #fef2f2; 
+    background-color: #fef2f2;
     color: #b91c1c;
     border-color: #fecaca;
 }
@@ -1815,17 +1898,16 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom:  .6rem;
-    margin-top: .6rem;
+    margin-bottom: 0.6rem;
+    margin-top: 0.6rem;
 
     border: 1px solid #e0e0e0;
     padding: 1rem 1.5rem;
     border-radius: 10px;
     box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, 0.1);
 
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     border: 1px solid rgba(88, 88, 88, 0.151);
-
 }
 
 .inv-header-left {
@@ -1844,9 +1926,8 @@ h1 {
     color: #fff;
     font-size: 1rem;
     font-weight: 500;
-    font-family: 'Rubik', sans-serif;
-    margin-top: .6rem;
-
+    font-family: "Rubik", sans-serif;
+    margin-top: 0.6rem;
 }
 
 .inv-back-link:hover {
@@ -1857,8 +1938,7 @@ h1 {
     font-size: 2rem;
     font-weight: 700;
     margin: 0;
-    font-family: 'Rubik', sans-serif;
-
+    font-family: "Rubik", sans-serif;
 }
 
 .inv-device-id {
@@ -1926,7 +2006,7 @@ h1 {
     display: flex;
     gap: 20px;
     flex-wrap: wrap;
-    margin-bottom: .6rem;
+    margin-bottom: 0.6rem;
 }
 
 .inv-card {
@@ -1939,12 +2019,11 @@ h1 {
     min-width: 150px;
     width: 100%;
     border: 1px solid rgba(88, 88, 88, 0.13);
-
 }
 
-.inv-card h3, p {
-    font-family: 'Rubik';
-
+.inv-card h3,
+p {
+    font-family: "Rubik";
 }
 
 .inv-card h3 {
@@ -2001,13 +2080,14 @@ h1 {
 }
 
 /* Status Badges */
-.inv-badge, .badge {
+.inv-badge,
+.badge {
     padding: 5px 8px;
     border-radius: 4px;
     color: #fff;
     font-size: 0.85rem;
     font-weight: 500;
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     border: 1px solid rgba(88, 88, 88, 0.13);
 }
 
@@ -2073,16 +2153,14 @@ h1 {
     padding: 10px;
     border-radius: 8px;
     margin-bottom: 15px;
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     border: 1px solid rgba(88, 88, 88, 0.151);
-
 }
 
-.modal-show  {
+.modal-show {
     display: flex;
     justify-content: center;
     align-items: center;
-
 }
 
 .modal-header {
@@ -2092,14 +2170,14 @@ h1 {
 
 .modal-title {
     margin: 0;
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
     font-size: 1.5rem;
     font-weight: 500;
 }
 
 .modal-body {
     padding: 20px;
-    font-family: 'Rubik', sans-serif;
+    font-family: "Rubik", sans-serif;
 }
 
 .modal-body .row strong {
@@ -2236,13 +2314,14 @@ h1 {
 
 .card-body textarea {
     font-family: "Roboto";
-    font-size: .8rem;
+    font-size: 0.8rem;
     font-weight: 400;
     max-height: 80px;
     resize: vertical;
 }
 
-.card-body small, ::placeholder {
+.card-body small,
+::placeholder {
     font-family: "Roboto";
     font-style: italic;
     font-size: 0.8rem;
@@ -2293,7 +2372,7 @@ h1 {
     outline: none;
 }
 
-.ad-btn-container{
+.ad-btn-container {
     display: flex;
     justify-content: space-between;
     gap: 10px;
@@ -2314,7 +2393,7 @@ h1 {
     z-index: 1000;
 }
 
-.pop-up-confirm{
+.pop-up-confirm {
     position: absolute;
     top: 30%;
     display: flex;
@@ -2322,13 +2401,13 @@ h1 {
     gap: 7px;
     border-radius: 20px;
     background-color: var(--dirtywhite_bg);
-
 }
-.pop-up-confirm-title{
+.pop-up-confirm-title {
     font-size: 1.5rem;
     font-weight: 600;
 }
-.pop-up-confirm-text, .pop-up-confirm-title {
+.pop-up-confirm-text,
+.pop-up-confirm-title {
     padding: 0;
 
     font-family: "Rubik", sans-serif;
@@ -2336,5 +2415,6 @@ h1 {
 }
 
 .pop-up-icon {
-    scale: .8;
-    color: red;}
+    scale: 0.8;
+    color: red;
+}

@@ -15,8 +15,8 @@
                             <h2 class="section-heading"><i class="fa-solid fa-print"></i> Printing Tickets</h2>
                         </div>
                         <!-- New Entry Button on the right -->
-                        <a id="openModal" class="receiving_newEntry"><i class="fa-solid fa-file-circle-plus"></i> Create
-                            Ticket</a>
+                        <a id="openModal" class="receiving_newEntry"><i class="fa-solid fa-file-circle-plus"></i>
+                            Create Ticket</a>
                     </div>
                 </div>
 
@@ -83,17 +83,26 @@
                                         <td class="mono">{{ $ticket->size }}</td>
                                         <td class="mono">{{ $ticket->quantity }}</td>
                                         <td class="mono">
-                                            {{ $ticket->deadline ? \Carbon\Carbon::parse($ticket->deadline)->timezone('Asia/Manila')->format('m/d/y') : '-' }}
+                                            @if ($ticket->deadline)
+                                                {{ \Carbon\Carbon::parse($ticket->deadline)->timezone('Asia/Manila')->format('m/d/y') }}
+                                            @else
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
+                                            @endif
                                         </td>
                                         <td class="file-icon">
                                             @if ($ticket->file_link)
                                                 <a href="{{ $ticket->file_link }}" target="_blank">
                                                     <i class="fa-regular fa-file"></i></a>
                                             @else
-                                                -
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
                                             @endif
                                         </td>
-                                        <td>{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y, H:i') : '-' }}
+                                        <td>
+                                            @if ($ticket->release_date)
+                                                {{ \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y, H:i') }}
+                                            @else
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
+                                            @endif
                                         </td>
 
                                         <td>
