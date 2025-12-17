@@ -104,7 +104,7 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <hr>
                             <!-- Repair Section -->
                             <div class="dashboard-status">
                                 <div class="dashboard-header-top">
@@ -202,10 +202,18 @@
                             </div>
                         </div>
 
+                        <!-- Inventory Graph -->
+                        <div class="inventory-graph">
+                            <div class="activities-header">
+                                <h3><i class="fa-solid fa-boxes-packing"></i> Inventory Graph</h3>
+                            </div>
+                            <div id="apex-column-chart"></div>
+                        </div>
+
                         <!-- Quick Actions -->
                         <div class="dashboard-actions">
                             <div class="activities-header">
-                                <h3>Quick Actions</h3>
+                                <h3><i class="fa-solid fa-bolt-lightning"></i> Quick Actions</h3>
                             </div>
 
                             <div class="quick-buttons">
@@ -228,7 +236,7 @@
                         <!-- Recent Activities -->
                         <div class="dashboard-activities">
                             <div class="activities-header">
-                                <h3>Recent Activities</h3>
+                                <h3><i class="fa-solid fa-clock-rotate-left"></i> Recent Activities</h3>
                                 <button class="activities-menu-btn">
                                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                         <path
@@ -448,5 +456,109 @@
             // Repair modal
             setupModal('.open-repair-modal', 'addRepairModal', '#closeRepairModal');
         });
+
+        // ========= Inventory gtraph CSS =========
+        async function loadInventoryChart() {
+            const res = await fetch('/dashboard/inventory-chart');
+            const data = await res.json();
+
+            if (!data || !data.length) {
+                document.querySelector('#apex-column-chart').innerHTML =
+                    '<div style="padding: 40px; text-align: center; color: #6c757d;"><i class="fa-solid fa-chart-simple" style="font-size: 48px; opacity: 0.3;"></i><p style="margin-top: 16px;">No inventory data available</p></div>';
+                return;
+            }
+
+            const categories = data.map(i => i.category);
+            const available = data.map(i => i.available);
+            const issued = data.map(i => i.issued);
+            const unusable = data.map(i => i.unusable);
+
+            var options = {
+                chart: {
+                    height: '75%',
+                    type: 'bar',
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '80%',
+                        endingShape: 'rounded'
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 5,
+                    colors: ['transparent']
+                },
+                colors: ['#10b981', '#3b82f6', '#ef4444'],
+                series: [{
+                        name: 'Available',
+                        data: available
+                    },
+                    {
+                        name: 'Issued',
+                        data: issued
+                    },
+                    {
+                        name: 'Unusable',
+                        data: unusable
+                    }
+                ],
+                xaxis: {
+                    categories: categories,
+                },
+                yaxis: {
+                    title: {
+                        text: 'Units',
+                        padding: {
+                            left: 5
+                        }
+                    }
+                },
+                fill: {
+                    opacity: 1
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            return val + " unit" + (val !== 1 ? 's' : '')
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom',
+                    horizontalAlign: 'center',
+                    fontSize: '15px',
+                    offsetY: 0
+                },
+                grid: {
+                    padding: {
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0
+                    }
+                }
+            };
+
+            var chart = new ApexCharts(
+                document.querySelector('#apex-column-chart'),
+                options
+            );
+
+            chart.render();
+        }
+
+        // Initial load
+        loadInventoryChart();
+
+        // Auto-refresh every 10 seconds
+        setInterval(loadInventoryChart, 30000);
     </script>
 @endsection

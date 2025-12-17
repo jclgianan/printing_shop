@@ -613,7 +613,7 @@ input::placeholder {
     transition: none;
     display: flex;
     flex-direction: column;
-    min-height: 93vh;
+    min-height: 0;
     margin-right: 5px;
     padding: 0.5rem;
     position: absolute;
@@ -1412,8 +1412,7 @@ h1 {
     display: flex;
     flex-direction: column;
     background-color: var(--whitebg);
-
-    /* border: 1px solid gray; */
+    overflow: hidden; /* Prevent page scroll */
 }
 
 .dashboard-container-main h1 {
@@ -1422,7 +1421,7 @@ h1 {
 
     font-family: "Rubik";
     color: var(--bg-ui);
-
+    flex-shrink: 0;
     margin: 10px 0px 10px 20px;
     /* margin: 0 auto; */
     /* border: 1px solid black; */
@@ -1430,15 +1429,18 @@ h1 {
 
 .dashboard-container {
     display: grid;
-    flex-grow: 1;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto auto auto;
+    height: calc(100vh - 120px);
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(4, auto);
+    grid-template-rows: min-content min-content 1fr 1fr;
     grid-template-areas:
         "dashboard dashboard dashboard dashboard-actions"
         "dashboard dashboard dashboard dashboard-activities"
-        "dashboard dashboard dashboard dashboard-activities";
+        "inventory-graph inventory-graph inventory-graph dashboard-activities"
+        "inventory-graph inventory-graph inventory-graph dashboard-activities";
     gap: 1rem;
-    /* border: 1px solid black; */
+    padding: 0 20px 20px 20px;
+    overflow: hidden;
 }
 .recent-activities {
     height: auto;
@@ -1451,23 +1453,17 @@ h1 {
 }
 
 .dashboard {
-    /* height: auto;
-    width: 80%; */
     grid-area: dashboard;
     background-color: var(--dirtywhite_bg);
     margin: 1px;
-
     padding: 0.2rem;
-    border-radius: 12px;
+    padding-bottom: 15px;
+    border-radius: 10px;
     box-shadow: 0 0px 5px rgba(0, 0, 0, 0.2);
-    /* display: flex; */
-
-    /* border: 1px solid black; */
-}
-
-.dashboard-status {
-    padding-bottom: 30px;
-    border-bottom: 1px solid #8888;
+    align-items: center;
+    margin-bottom: 0;
+    max-height: 320px;
+    min-height: 0; /* Important for grid */
 }
 
 .dashboard-header-text h2 {
@@ -1476,10 +1472,10 @@ h1 {
     color: var(--bg-ui);
     font-family: "Rubik";
     margin: 10px 10px;
-    text-align: center;
+    text-align: left;
 }
 .in-cards {
-    padding: 35px 2px;
+    padding: 30px 2px;
 }
 
 .in-cards h4 {
@@ -1507,7 +1503,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 15px;
 }
 
 .text-left p,
@@ -1526,24 +1522,25 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    padding: 22px 28px;
-    gap: 10px;
-    min-height: 110px;
-    padding: 15px;
-    border-radius: 12px;
+    /* padding: 15px 15px; */
+    /* gap: 5px; */
+    /* min-height: 110px; */
+    padding: 5px;
+    /* border-radius: 12px; */
 }
 
 .card {
     flex: 0 0 calc(33.333% - 20px);
     text-align: center;
     justify-content: center;
-    border-radius: 20px;
+    border-radius: 10px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
     display: flex;
     max-height: 90px;
     transition: transform 0.3s ease, z-index 0.3s ease;
     cursor: pointer;
     max-width: 190px;
+    max-height: 70px;
 }
 
 .pending,
@@ -1610,6 +1607,30 @@ h1 {
         height: auto;
     }
 }
+/* ====== Inventory Graph in Dashboard styles ====== */
+.inventory-graph {
+    grid-area: inventory-graph;
+    background-color: var(--dirtywhite_bg);
+    padding: 0.2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* min-height: 0; Important for grid */
+}
+.inventory-graph .activities-header {
+    margin-bottom: 10px;
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.inventory-graph #apex-column-chart {
+    flex: 1; /* Take remaining space */
+    min-height: 0; /* Allow flex to work properly */
+    width: 100%;
+    overflow: hidden;
+    padding: 2rem;
+}
 
 /* ====== Quick Actions in Dashboard styles ====== */
 
@@ -1617,11 +1638,12 @@ h1 {
     grid-area: dashboard-actions;
     background-color: var(--dirtywhite_bg);
     border: 1px solid #e5e7eb;
-    border-radius: 20px;
+    border-radius: 10px;
     padding: 0.75rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     display: flex;
     flex-direction: column;
+    /* min-height: 0; */
 }
 
 /* Header */
@@ -1646,7 +1668,7 @@ h1 {
     align-items: center;
     justify-content: space-between;
     padding: 0.6rem 0.9rem;
-    border-radius: 14px;
+    border-radius: 10px;
     border: 1px solid #e5e7eb;
     background-color: #ffffff;
     cursor: pointer;
@@ -1690,19 +1712,21 @@ h1 {
     background-color: var(--dirtywhite_bg);
     border: 1px solid #e5e7eb;
     overflow: hidden;
-    border-radius: 20px;
-    /* height: auto;
-    width: 30%; */
+    border-radius: 10px;
     grid-area: dashboard-activities;
     margin-left: 5px;
     padding: 0.2rem;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 .activities-header {
     padding: 16px;
     border-bottom: 1px solid #e5e7eb;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     justify-content: space-between;
 }
 
@@ -1740,6 +1764,18 @@ h1 {
     list-style: none;
     padding: 0;
     margin: 0;
+    overflow-y: auto; /* Scrollable */
+    flex: 1; /* Take remaining space */
+    min-height: 0; /* Important for flex overflow */
+}
+
+.activities-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.activities-list::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: 3px;
 }
 
 .activity-item {
@@ -2415,8 +2451,9 @@ p {
 }
 
 .pop-up-icon {
-    scale: .8;
-    color: red;}
+    scale: 0.8;
+    color: red;
+}
 
 .pop-up-success-container {
     display: flex;
@@ -2432,10 +2469,10 @@ p {
 }
 
 .pop-up-success {
-    scale: .8;
+    scale: 0.8;
     border-radius: 20px;
 }
 
-.pop-up-success-title{
+.pop-up-success-title {
     font-weight: 600;
 }

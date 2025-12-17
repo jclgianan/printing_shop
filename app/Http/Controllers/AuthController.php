@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\Process;
 use App\Models\ActivityLog;
 use App\Models\PrintTicket;
+use App\Models\InventoryItem;
 use App\Events\ActivityUpdated;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
@@ -41,9 +42,16 @@ class AuthController extends Controller
 
         return view('main', compact(
             'recentActivities',
-            'pending', 'in_progress', 'printed', 'released', 'cancelled',
-            'repair_pending', 'repair_in_progress', 'repair_repaired',
-            'repair_released', 'repair_unrepairable'
+            'pending',
+            'in_progress',
+            'printed',
+            'released',
+            'cancelled',
+            'repair_pending',
+            'repair_in_progress',
+            'repair_repaired',
+            'repair_released',
+            'repair_unrepairable'
         ));
     }
 
@@ -71,10 +79,10 @@ class AuthController extends Controller
     // API endpoint for recent activities
     public function getRecentActivities()
     {
-        $activities = ActivityLog::orderBy('created_at', 'desc')->limit(5)->get();
-        
+        $activities = ActivityLog::orderBy('created_at', 'desc')->limit(10)->get();
+
         return response()->json([
-            'activities' => $activities->map(function($activity) {
+            'activities' => $activities->map(function ($activity) {
                 return [
                     'id' => $activity->id,
                     'user_name' => $activity->user_name,
@@ -94,15 +102,22 @@ class AuthController extends Controller
     {
         if ($type === 'update_status') {
             switch ($status) {
-                case 'pending': return 'fa-clock';
+                case 'pending':
+                    return 'fa-clock';
                 case 'ongoing':
-                case 'in_progress': return 'fa-spinner';
-                case 'printed': return 'fa-print';
-                case 'repaired': return 'fa-screwdriver-wrench';
-                case 'released': return 'fa-circle-check';
+                case 'in_progress':
+                    return 'fa-spinner';
+                case 'printed':
+                    return 'fa-print';
+                case 'repaired':
+                    return 'fa-screwdriver-wrench';
+                case 'released':
+                    return 'fa-circle-check';
                 case 'cancelled':
-                case 'unrepairable': return 'fa-circle-xmark';
-                default: return 'fa-circle-info';
+                case 'unrepairable':
+                    return 'fa-circle-xmark';
+                default:
+                    return 'fa-circle-info';
             }
         } elseif ($type === 'create_ticket' || $type === 'repair') {
             return 'fa-file-lines';
@@ -133,15 +148,21 @@ class AuthController extends Controller
     {
         if ($type === 'update_status') {
             switch ($status) {
-                case 'pending': return 'status-pending';
+                case 'pending':
+                    return 'status-pending';
                 case 'ongoing':
-                case 'in_progress': return 'status-ongoing';
+                case 'in_progress':
+                    return 'status-ongoing';
                 case 'printed':
-                case 'repaired': return 'status-printed';
-                case 'released': return 'status-released';
+                case 'repaired':
+                    return 'status-printed';
+                case 'released':
+                    return 'status-released';
                 case 'cancelled':
-                case 'unrepairable': return 'status-cancelled';
-                default: return 'status-default';
+                case 'unrepairable':
+                    return 'status-cancelled';
+                default:
+                    return 'status-default';
             }
         } elseif ($type === 'create_ticket' || $type === 'repair' || $type === 'update_ticket') {
             return 'activity-ticket';
@@ -165,6 +186,34 @@ class AuthController extends Controller
         return 'activity-default';
     }
 
+    // Inventory graph 
+    public function inventoryChart()
+    {
+        $categories = [
+            'Computer System',
+            'Components',
+            'Peripherals',
+            'Networking',
+            'Cables & Adapters',
+            'Others'
+        ];
+
+        $data = [];
+
+        foreach ($categories as $category) {
+            $data[] = [
+                'category' => $category,
+                'available' => InventoryItem::where('category', $category)
+                    ->where('status', 'available')->count(),
+                'issued' => InventoryItem::where('category', $category)
+                    ->where('status', 'issued')->count(),
+                'unusable' => InventoryItem::where('category', $category)
+                    ->where('status', 'unusable')->count(),
+            ];
+        }
+
+        return response()->json($data);
+    }
 
     // Show login form
     public function login()
@@ -180,7 +229,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|string'
         ]);
-        
+
         $credentials = $request->only('email', 'password');
 
         // Attempt to log in
@@ -198,12 +247,12 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
         return redirect('/login')->with('success', 'You have been logged out successfully.');
     }
 
-    public function addNewUser() 
-    {   
+    public function addNewUser()
+    {
         $type = 'addUser';
 
         $users = User::all();
@@ -298,7 +347,7 @@ class AuthController extends Controller
         }
 
         //Activity Logs
-        if(!empty($changes)) {
+        if (!empty($changes)) {
 
             $description = implode("<br>", $changes);
 
@@ -312,7 +361,8 @@ class AuthController extends Controller
     }
 
     //Delete User
-    public function Destroy($id) {
+    public function Destroy($id)
+    {
         $user = User::findOrFail($id);
         $name = $user->name;
         $user->delete();
@@ -327,7 +377,8 @@ class AuthController extends Controller
     }
 
     //Activity Logs Page Controller
-    public function ActivityLogs(){
+    public function ActivityLogs()
+    {
         $logs = ActivityLog::orderBy('created_at', 'desc')->get();
 
         return view('activity.logs', compact('logs'));

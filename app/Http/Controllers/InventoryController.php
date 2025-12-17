@@ -27,14 +27,14 @@ class InventoryController extends Controller
             SUM(status = "issued") as issued,
             SUM(status = "unusable") as unusable
         ')
-        ->groupBy('device_id', 'device_name', 'category');
+            ->groupBy('device_id', 'device_name', 'category');
 
 
         // Search filter (fixed)
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('device_name', 'like', $search . '%')
-                ->orWhere('device_id', 'like', $search, '%');
+                    ->orWhere('device_id', 'like', $search, '%');
             });
         }
 
@@ -67,10 +67,10 @@ class InventoryController extends Controller
         $lastDevice = InventoryItem::whereRaw('device_id REGEXP "^[0-9]+$"')
             ->orderByRaw('CAST(device_id AS UNSIGNED) DESC')
             ->first();
-        
+
         $nextId = $lastDevice ? (intval($lastDevice->device_id) + 1) : 1;
         $deviceId = str_pad($nextId, 5, '0', STR_PAD_LEFT);
-        
+
         return response()->json([
             'device_id' => $deviceId
         ]);
@@ -101,12 +101,12 @@ class InventoryController extends Controller
         ]);
 
         $quantity = $validated['quantity'];
-        
+
         // Create multiple devices based on quantity
         for ($i = 1; $i <= $quantity; $i++) {
             // Generate Individual ID: e.g., 00001(01), 00001(02)
             $individualId = $validated['device_id'] . '(' . str_pad($i, 2, '0', STR_PAD_LEFT) . ')';
-            
+
             $device = InventoryItem::create([
                 'device_id' => $validated['device_id'],
                 'individual_id' => $individualId,
@@ -132,12 +132,12 @@ class InventoryController extends Controller
                 'Add Inventory Item',
                 "Inventory Item {$device->device_id} was added"
             );
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
-        $message = $quantity > 1 
-            ? "$quantity devices added successfully." 
+        $message = $quantity > 1
+            ? "$quantity devices added successfully."
             : "Device added successfully.";
 
         return redirect()->route('inventory')
@@ -179,7 +179,7 @@ class InventoryController extends Controller
     public function edit($id)
     {
         $item = InventoryItem::findOrFail($id);
-        
+
         return view('inventory.edit', compact('item'));
     }
 
@@ -189,7 +189,7 @@ class InventoryController extends Controller
     public function update(Request $request, $id)
     {
         $item = InventoryItem::findOrFail($id);
-        
+
         $validated = $request->validate([
             'serial_number' => 'nullable|string',
             'processor' => 'nullable|string',
@@ -226,7 +226,7 @@ class InventoryController extends Controller
                 'Edit Inventory Item',
                 "Inventory Item {$item->individual_id} was edited"
             );
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
@@ -241,10 +241,10 @@ class InventoryController extends Controller
     {
         $item = InventoryItem::findOrFail($id);
         $deviceId = $item->device_id;
-        
+
         // Check if this is the last item with this device name
         $remainingCount = InventoryItem::where('device_id', $deviceId)->count();
-        
+
         $item->delete();
 
         // If no more items with this device name, redirect to index
@@ -258,7 +258,7 @@ class InventoryController extends Controller
                 'Delete Inventory Item',
                 "Inventory Unit {$item->individual_id} was deleted"
             );
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
@@ -272,7 +272,7 @@ class InventoryController extends Controller
      */
     public function destroyDevice($deviceId)
     {
-       
+
         InventoryItem::where('device_id', $deviceId)->delete();
 
         try {
@@ -280,7 +280,7 @@ class InventoryController extends Controller
                 'Delete Inventory Item',
                 "Inventory Item {$deviceId} was deleted"
             );
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
@@ -305,13 +305,18 @@ class InventoryController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        // Always poor condition if status is unusable
+        if ($request->status === 'unusable') {
+            $request->merge(['condition' => 'poor']);
+        }
+
         // Get the existing device info
         $existingDevice = InventoryItem::where('device_id', $deviceId)->firstOrFail();
 
         // Get all existing individual numbers
         $existingNumbers = InventoryItem::where('device_id', $deviceId)
             ->pluck('individual_id')
-            ->map(function($id) {
+            ->map(function ($id) {
                 preg_match('/\((\d+)\)/', $id, $matches);
                 return isset($matches[1]) ? intval($matches[1]) : 0;
             })
@@ -354,20 +359,15 @@ class InventoryController extends Controller
             try {
                 ActivityLog::record(
                     'Add Inventory Item',
-                    "Inventory Unit {$item->individual_id} was added" 
+                    "Inventory Unit {$item->individual_id} was added"
                 );
-            }catch (\Exception $e) {
+            } catch (\Exception $e) {
                 Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
             }
         }
 
-        // Always poor condition if status is unusable
-        if ($request->status === 'unusable') {
-            $request->merge(['condition' => 'poor']);
-        }
-
-        $message = $quantity > 1 
-            ? "$quantity units added successfully." 
+        $message = $quantity > 1
+            ? "$quantity units added successfully."
             : "1 unit added successfully.";
 
         return redirect()->route('inventory.view', $deviceId)
@@ -397,7 +397,7 @@ class InventoryController extends Controller
                 'Issue Inventory Item',
                 "Inventory Item {$item->individual_id} was issued to {$item->issued_to}"
             );
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
@@ -429,11 +429,10 @@ class InventoryController extends Controller
                 'Return Inventory Item',
                 "Inventory Item {$item->individual_id} was returned"
             );
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
         return back()->with('success', 'Device returned successfully.');
     }
-
 }

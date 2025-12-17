@@ -171,7 +171,7 @@
                                             Available</option>
                                         <option value="issued" {{ old('status') == 'issued' ? 'selected' : '' }}>Issued
                                         </option>
-                                        <option value="damaged" {{ old('status') == 'unusable' ? 'selected' : '' }}>
+                                        <option value="unusable" {{ old('status') == 'unusable' ? 'selected' : '' }}>
                                             Unusable</option>
                                     </select>
                                     @error('status')
@@ -374,7 +374,9 @@
             count++;
             display.value = count;
 
-            display.dispatchEvent(new Event('input', { bubbles: true }));
+            display.dispatchEvent(new Event('input', {
+                bubbles: true
+            }));
         });
 
         minusBtn.addEventListener('click', () => {
@@ -382,7 +384,25 @@
                 count--;
                 display.value = count;
 
-                display.dispatchEvent(new Event('input', { bubbles: true }));
+                display.dispatchEvent(new Event('input', {
+                    bubbles: true
+                }));
+            }
+        });
+
+        // Auto-set condition to 'poor' if status is 'unusable'
+        const addStatus = document.getElementById('statusSelect');
+        const addCondition = document.getElementById('condition');
+
+        addStatus.addEventListener('change', function() {
+            if (this.value === 'unusable') {
+                addCondition.value = 'poor'; // auto set to poor
+                addCondition.style.backgroundColor = '#e9ecef';
+                conditionSelect.style.pointerEvents = 'none';
+            } else {
+                addCondition.disabled = false;
+                conditionSelect.style.backgroundColor = '';
+                conditionSelect.style.pointerEvents = '';
             }
         });
     </script>
