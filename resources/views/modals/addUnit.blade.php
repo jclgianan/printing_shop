@@ -21,27 +21,21 @@
                             </div>
                             <div class="col-md-6">
                                 <strong>Current Units:</strong> {{ $items->count() }}<br>
-                                @if($items->first()->processor)
+                                @if ($items->first()->processor)
                                     <strong>Processor:</strong> {{ $items->first()->processor }}<br>
                                 @endif
-                                @if($items->first()->ram)
+                                @if ($items->first()->ram)
                                     <strong>RAM:</strong> {{ $items->first()->ram }}
                                 @endif
                             </div>
                         </div>
-                    </div>                    
+                    </div>
 
                     <!-- Quantity -->
                     <div class="mb-3">
                         <label for="addQuantity" class="form-label">Quantity <span class="text-danger">*</span></label>
-                        <input type="number" 
-                            class="form-control" 
-                            id="addQuantity" 
-                            name="quantity" 
-                            value="1"
-                            min="1"
-                            max="50"
-                            required>
+                        <input type="number" class="form-control" id="addQuantity" name="quantity" value="1"
+                            min="1" max="50" required>
                         <small class="text-muted">Number of units to add</small>
                     </div>
 
@@ -68,7 +62,8 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="addCondition" class="form-label">Condition <span class="text-danger">*</span></label>
+                            <label for="addCondition" class="form-label">Condition <span
+                                    class="text-danger">*</span></label>
                             <select class="form-select" id="addCondition" name="condition" required>
                                 <option value="new" selected>New</option>
                                 <option value="good">Good</option>
@@ -85,12 +80,14 @@
                         <div class="row mb-3">
                             <div class="col-md-6">
                                 <label for="addIssuedTo" class="form-label">Issued To</label>
-                                <input type="text" class="form-control" id="addIssuedTo" name="issued_to" placeholder="Employee name">
+                                <input type="text" class="form-control" id="addIssuedTo" name="issued_to"
+                                    placeholder="Employee name">
                             </div>
 
                             <div class="col-md-6">
                                 <label for="addOffice" class="form-label">Office/Location</label>
-                                <input type="text" class="form-control" id="addOffice" name="office" placeholder="e.g., IT Department">
+                                <input type="text" class="form-control" id="addOffice" name="office"
+                                    placeholder="e.g., IT Department">
                             </div>
                         </div>
 
@@ -111,7 +108,8 @@
 
                     <div class="mb-3">
                         <label for="addNotes" class="form-label">Notes</label>
-                        <textarea class="form-control" id="addNotes" name="notes" rows="3" placeholder="Any additional notes for these units..."></textarea>
+                        <textarea class="form-control" id="addNotes" name="notes" rows="3"
+                            placeholder="Any additional notes for these units..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -132,10 +130,13 @@
 
         addStatus.addEventListener('change', function() {
             if (this.value === 'unusable') {
-                addCondition.value = 'poor';   // auto set to poor
-                addCondition.disabled = true;
+                addCondition.value = 'poor'; // auto set to poor
+                addCondition.style.backgroundColor = '#e9ecef';
+                conditionSelect.style.pointerEvents = 'none';
             } else {
-                addCondition.disabled = false; 
+                addCondition.disabled = false;
+                conditionSelect.style.backgroundColor = '';
+                conditionSelect.style.pointerEvents = '';
             }
         });
     </script>
