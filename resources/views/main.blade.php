@@ -207,7 +207,10 @@
                             <div class="activities-header">
                                 <h3><i class="fa-solid fa-boxes-packing"></i> Inventory Graph</h3>
                             </div>
-                            <div id="apex-column-chart"></div>
+                            <div>
+                                <div id="apex-column-chart"></div>
+                                <div id="apex-pie-chart"></div>
+                            </div>
                         </div>
 
                         <!-- Quick Actions -->
@@ -457,7 +460,12 @@
             setupModal('.open-repair-modal', 'addRepairModal', '#closeRepairModal');
         });
 
-        // ========= Inventory gtraph CSS =========
+        // ========= Inventory Graph CSS =========
+        // Store chart instances globally
+        let barChartInstance = null;
+        let pieChartInstance = null;
+
+        // Bar Chart Graph
         async function loadInventoryChart() {
             const res = await fetch('/dashboard/inventory-chart');
             const data = await res.json();
@@ -473,18 +481,26 @@
             const issued = data.map(i => i.issued);
             const unusable = data.map(i => i.unusable);
 
+            // Destroy previous chart instance if it exists
+            if (barChartInstance) {
+                barChartInstance.destroy();
+            }
+
             var options = {
                 chart: {
-                    height: '75%',
+                    height: '90%',
                     type: 'bar',
                     toolbar: {
                         show: false
+                    },
+                    animations: {
+                        enabled: true
                     }
                 },
                 plotOptions: {
                     bar: {
-                        horizontal: false,
-                        columnWidth: '80%',
+                        horizontal: true,
+                        columnWidth: '90%',
                         endingShape: 'rounded'
                     }
                 },
@@ -547,18 +563,117 @@
                 }
             };
 
-            var chart = new ApexCharts(
+            barChartInstance = new ApexCharts(
                 document.querySelector('#apex-column-chart'),
                 options
             );
 
-            chart.render();
+            barChartInstance.render();
+        }
+
+        // Pie Chart Graph
+        async function loadInventoryPieChart() {
+            const res = await fetch('/dashboard/inventory-chart');
+            const data = await res.json();
+
+            if (!data || !data.length) {
+                document.querySelector('#apex-pie-chart').innerHTML =
+                    '<div style="padding: 40px; text-align: center; color: #6c757d;"><i class="fa-solid fa-chart-pie" style="font-size: 48px; opacity: 0.3;"></i><p style="margin-top: 16px;">No inventory data available</p></div>';
+                return;
+            }
+
+            // Extract categories and calculate totals for each category
+            const categories = data.map(i => i.category);
+            const totals = data.map(i => i.available + i.issued + i.unusable);
+
+            // Calculate grand total for percentage calculation
+            const grandTotal = totals.reduce((sum, val) => sum + val, 0);
+
+            // Destroy previous chart instance if it exists
+            if (pieChartInstance) {
+                pieChartInstance.destroy();
+            }
+
+            var options = {
+                chart: {
+                    height: '95%',
+                    width: '100%',
+                    type: 'pie',
+                    toolbar: {
+                        show: false
+                    },
+                    animations: {
+                        enabled: true
+                    }
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function(val, opts) {
+                        return val.toFixed(1) + "%";
+                    },
+                    dropShadow: {
+                        enabled: false
+                    },
+                    style: {
+                        fontSize: '14px',
+                        fontWeight: 'bold',
+                        colors: ['#808080'],
+                    }
+                },
+                stroke: {
+                    show: true,
+                    width: 1,
+                    colors: ['#808080']
+                },
+                colors: ['#ffb3ba', '#bae1ff', '#baffc9', '#ffffba', '#ffdfba', '#e0bbff'],
+                labels: categories,
+                series: totals,
+                legend: {
+                    position: 'left',
+                    horizontalAlign: 'center',
+                    fontSize: '14px',
+                    offsetY: 10,
+                    formatter: function(seriesName, opts) {
+                        const value = opts.w.globals.series[opts.seriesIndex];
+                        return seriesName;
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function(val) {
+                            const percentage = ((val / grandTotal) * 100).toFixed(1);
+                            return val + " units (" + percentage + "%)";
+                        }
+                    }
+                },
+                responsive: [{
+                    breakpoint: 768,
+                    options: {
+                        chart: {
+                            height: 300
+                        },
+                        legend: {
+                            position: 'bottom',
+                            fontSize: '12px'
+                        }
+                    }
+                }]
+            };
+
+            pieChartInstance = new ApexCharts(
+                document.querySelector('#apex-pie-chart'),
+                options
+            );
+
+            pieChartInstance.render();
         }
 
         // Initial load
         loadInventoryChart();
+        loadInventoryPieChart();
 
-        // Auto-refresh every 10 seconds
-        setInterval(loadInventoryChart, 30000);
+        // Auto-refresh every 30 seconds
+        setInterval(loadInventoryChart, 7200000);
+        setInterval(loadInventoryPieChart, 7200000);
     </script>
 @endsection

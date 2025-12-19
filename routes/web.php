@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
     // API endpoints
     Route::get('/api/dashboard/stats', [AuthController::class, 'getDashboardStats'])->name('api.dashboard.stats');
     Route::get('/api/dashboard/activities', [AuthController::class, 'getRecentActivities'])->name('api.dashboard.activities');
-    Route::get('/dashboard/inventory-chart', [AuthController::class, 'inventoryChart']);
+    Route::get('/dashboard/inventory-chart', [AuthController::class, 'inventoryChart'])->name('dashboard.inventory-chart');;
 
 
     Route::get("/printing", [PrintingController::class, "printing"])->name("printing");

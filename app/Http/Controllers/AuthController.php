@@ -24,7 +24,7 @@ class AuthController extends Controller
     public function index()
     {
         // RECENT ACTIVITIES
-        $recentActivities = ActivityLog::latest()->take(5)->get();
+        $recentActivities = ActivityLog::latest()->take(10)->get();
 
         // PRINTING COUNTS
         $pending = PrintTicket::where('status', 'pending')->count();
