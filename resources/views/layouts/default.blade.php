@@ -21,6 +21,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="../assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 

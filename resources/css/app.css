@@ -1607,29 +1607,69 @@ h1 {
         height: auto;
     }
 }
+
 /* ====== Inventory Graph in Dashboard styles ====== */
 .inventory-graph {
     grid-area: inventory-graph;
-    background-color: var(--dirtywhite_bg);
+    background: var(--dirtywhite_bg);
     padding: 0.2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* min-height: 0; Important for grid */
-}
-.inventory-graph .activities-header {
-    margin-bottom: 10px;
-    flex-shrink: 0; /* Prevent header from shrinking */
+    border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.inventory-graph #apex-column-chart {
-    flex: 1; /* Take remaining space */
-    min-height: 0; /* Allow flex to work properly */
-    width: 100%;
+.inventory-graph .activities-header {
+    margin-bottom: 0;
+    flex-shrink: 0;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.inventory-graph .activities-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+}
+
+/* Charts wrapper for side-by-side layout */
+.inventory-graph {
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.inventory-graph > div:not(.activities-header) {
+    display: flex;
+    gap: 1rem;
+    min-height: 0;
+}
+
+/* Chart containers */
+.inventory-graph #apex-column-chart,
+.inventory-graph #apex-pie-chart {
+    flex: 1;
+    min-height: 0;
+    min-width: 0;
     overflow: hidden;
-    padding: 2rem;
+    align-items: center;
+    display: flex;
+    padding: 1rem;
+    height: 100%;
+    background: var(--white_bg);
+    border-radius: 8px;
+}
+
+/* Empty state styling */
+.inventory-graph #apex-column-chart > div[style*="text-align: center"],
+.inventory-graph #apex-pie-chart > div[style*="text-align: center"] {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 8px;
+    border: 2px dashed rgba(0, 0, 0, 0.1);
 }
 
 /* ====== Quick Actions in Dashboard styles ====== */
