@@ -10,6 +10,8 @@ use Illuminate\Support\Str;
 use App\Models\Process;
 use App\Models\ActivityLog;
 use App\Models\PrintTicket;
+use App\Models\InventoryItem;
+use App\Events\ActivityUpdated;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -21,7 +23,196 @@ class AuthController extends Controller
     // Show main page after login
     public function index()
     {
-        return view("main");
+        // RECENT ACTIVITIES
+        $recentActivities = ActivityLog::latest()->take(10)->get();
+
+        // PRINTING COUNTS
+        $pending = PrintTicket::where('status', 'pending')->count();
+        $in_progress = PrintTicket::where('status', 'in_progress')->count();
+        $printed = PrintTicket::where('status', 'printed')->count();
+        $released = PrintTicket::where('status', 'released')->count();
+        $cancelled = PrintTicket::where('status', 'cancelled')->count();
+
+        // REPAIR COUNTS
+        $repair_pending = RepairTicket::where('status', 'pending')->count();
+        $repair_in_progress = RepairTicket::where('status', 'in_progress')->count();
+        $repair_repaired = RepairTicket::where('status', 'repaired')->count();
+        $repair_released = RepairTicket::where('status', 'released')->count();
+        $repair_unrepairable = RepairTicket::where('status', 'unrepairable')->count();
+
+        return view('main', compact(
+            'recentActivities',
+            'pending',
+            'in_progress',
+            'printed',
+            'released',
+            'cancelled',
+            'repair_pending',
+            'repair_in_progress',
+            'repair_repaired',
+            'repair_released',
+            'repair_unrepairable'
+        ));
+    }
+
+    // API endpoint for dashboard stats
+    public function getDashboardStats()
+    {
+        return response()->json([
+            'printing' => [
+                'pending' => PrintTicket::where('status', 'pending')->count(),
+                'in_progress' => PrintTicket::where('status', 'in_progress')->count(),
+                'printed' => PrintTicket::where('status', 'printed')->count(),
+                'released' => PrintTicket::where('status', 'released')->count(),
+                'cancelled' => PrintTicket::where('status', 'cancelled')->count(),
+            ],
+            'repair' => [
+                'pending' => RepairTicket::where('status', 'pending')->count(),
+                'in_progress' => RepairTicket::where('status', 'in_progress')->count(),
+                'repaired' => RepairTicket::where('status', 'repaired')->count(),
+                'released' => RepairTicket::where('status', 'released')->count(),
+                'unrepairable' => RepairTicket::where('status', 'unrepairable')->count(),
+            ]
+        ]);
+    }
+
+    // API endpoint for recent activities
+    public function getRecentActivities()
+    {
+        $activities = ActivityLog::orderBy('created_at', 'desc')->limit(10)->get();
+
+        return response()->json([
+            'activities' => $activities->map(function ($activity) {
+                return [
+                    'id' => $activity->id,
+                    'user_name' => $activity->user_name,
+                    'short_description' => $activity->short_description,
+                    'type' => $activity->type,
+                    'status' => $activity->status,
+                    'created_at' => $activity->created_at->diffForHumans(),
+                    'icon_class' => $this->getIconClass($activity->type, $activity->status),
+                    'color_class' => $this->getColorClass($activity->type, $activity->status),
+                ];
+            })
+        ]);
+    }
+
+    // Helper method to get icon class
+    private function getIconClass($type, $status)
+    {
+        if ($type === 'update_status') {
+            switch ($status) {
+                case 'pending':
+                    return 'fa-clock';
+                case 'ongoing':
+                case 'in_progress':
+                    return 'fa-spinner';
+                case 'printed':
+                    return 'fa-print';
+                case 'repaired':
+                    return 'fa-screwdriver-wrench';
+                case 'released':
+                    return 'fa-circle-check';
+                case 'cancelled':
+                case 'unrepairable':
+                    return 'fa-circle-xmark';
+                default:
+                    return 'fa-circle-info';
+            }
+        } elseif ($type === 'create_ticket' || $type === 'repair') {
+            return 'fa-file-lines';
+        } elseif ($type === 'update_ticket') {
+            return 'fa-pen-to-square';
+        } elseif ($type === 'update_user') {
+            return 'fa-user';
+        } elseif ($type === 'password_changed') {
+            return 'fa-lock';
+        } elseif ($type === 'delete_user') {
+            return 'fa-user-slash';
+        } elseif ($type === 'add_inventory') {
+            return 'fa-boxes-packing';
+        } elseif ($type === 'issue_inventory') {
+            return 'fa-user-check';
+        } elseif ($type === 'return_inventory') {
+            return 'fa-share';
+        } elseif ($type === 'edit_inventory') {
+            return 'fa-pen-to-square';
+        } elseif ($type === 'delete_inventory') {
+            return 'fa-ban';
+        }
+        return 'fa-circle-info';
+    }
+
+    // Helper method to get color class
+    private function getColorClass($type, $status)
+    {
+        if ($type === 'update_status') {
+            switch ($status) {
+                case 'pending':
+                    return 'status-pending';
+                case 'ongoing':
+                case 'in_progress':
+                    return 'status-ongoing';
+                case 'printed':
+                case 'repaired':
+                    return 'status-printed';
+                case 'released':
+                    return 'status-released';
+                case 'cancelled':
+                case 'unrepairable':
+                    return 'status-cancelled';
+                default:
+                    return 'status-default';
+            }
+        } elseif ($type === 'create_ticket' || $type === 'repair' || $type === 'update_ticket') {
+            return 'activity-ticket';
+        } elseif ($type === 'update_user') {
+            return 'activity-user';
+        } elseif ($type === 'password_changed') {
+            return 'activity-password';
+        } elseif ($type === 'delete_user') {
+            return 'activity-delete';
+        } elseif ($type === 'add_inventory') {
+            return 'add-inventory';
+        } elseif ($type === 'issue_inventory') {
+            return 'issue-inventory';
+        } elseif ($type === 'return_inventory') {
+            return 'return-inventory';
+        } elseif ($type === 'edit_inventory') {
+            return 'edit-inventory';
+        } elseif ($type === 'delete_inventory') {
+            return 'delete-inventory';
+        }
+        return 'activity-default';
+    }
+
+    // Inventory graph 
+    public function inventoryChart()
+    {
+        $categories = [
+            'Computer System',
+            'Components',
+            'Peripherals',
+            'Networking',
+            'Cables & Adapters',
+            'Others'
+        ];
+
+        $data = [];
+
+        foreach ($categories as $category) {
+            $data[] = [
+                'category' => $category,
+                'available' => InventoryItem::where('category', $category)
+                    ->where('status', 'available')->count(),
+                'issued' => InventoryItem::where('category', $category)
+                    ->where('status', 'issued')->count(),
+                'unusable' => InventoryItem::where('category', $category)
+                    ->where('status', 'unusable')->count(),
+            ];
+        }
+
+        return response()->json($data);
     }
 
     // Show login form
@@ -38,7 +229,7 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|string'
         ]);
-        
+
         $credentials = $request->only('email', 'password');
 
         // Attempt to log in
@@ -51,31 +242,17 @@ class AuthController extends Controller
         return back()->with('error', 'Invalid credentials.')->withInput($request->only('email'));
     }
 
-    // Dashboard counting
-    public function mainDashboard()
+    public function logout(Request $request)
     {
-        // PRINTING COUNTS
-        $pending = PrintTicket::where('status', 'pending')->count();
-        $in_progress = PrintTicket::where('status', 'in_progress')->count();
-        $printed = PrintTicket::where('status', 'printed')->count();
-        $released = PrintTicket::where('status', 'released')->count();
-        $cancelled = PrintTicket::where('status', 'cancelled')->count();
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        // REPAIR COUNTS
-        $repair_pending     = RepairTicket::where('status', 'pending')->count();
-        $repair_in_progress     = RepairTicket::where('status', 'ongoing')->count();
-        $repair_repaired   = RepairTicket::where('status', 'repaired')->count();
-        $repair_released    = RepairTicket::where('status', 'released')->count();
-        $repair_unrepairable    = RepairTicket::where('status', 'unrepairable')->count();
-
-        return view('main', compact(
-            'pending', 'in_progress', 'printed', 'released', 'cancelled',
-            'repair_pending', 'repair_in_progress', 'repair_repaired', 'repair_released', 'repair_unrepairable'
-        ));
+        return redirect('/login')->with('success', 'You have been logged out successfully.');
     }
 
-    public function addNewUser() 
-    {   
+    public function addNewUser()
+    {
         $type = 'addUser';
 
         $users = User::all();
@@ -156,14 +333,21 @@ class AuthController extends Controller
         }
 
         if ($request->filled('password')) {
-            $changes[] = "Password changed";
+            $passwordChanged = true;
             $user->password = Hash::make($request->password);
         }
 
         $user->save();
 
+        if ($passwordChanged) {
+            ActivityLog::record(
+                'Password Changed',  // ← Now it's in the action!
+                "User {$user->name} changed their password"
+            );
+        }
+
         //Activity Logs
-        if(!empty($changes)) {
+        if (!empty($changes)) {
 
             $description = implode("<br>", $changes);
 
@@ -177,7 +361,8 @@ class AuthController extends Controller
     }
 
     //Delete User
-    public function Destroy($id) {
+    public function Destroy($id)
+    {
         $user = User::findOrFail($id);
         $name = $user->name;
         $user->delete();
@@ -192,10 +377,10 @@ class AuthController extends Controller
     }
 
     //Activity Logs Page Controller
-    public function ActivityLogs(){
+    public function ActivityLogs()
+    {
         $logs = ActivityLog::orderBy('created_at', 'desc')->get();
 
         return view('activity.logs', compact('logs'));
     }
-     
 }

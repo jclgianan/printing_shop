@@ -10,7 +10,6 @@
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=settings" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
-    <link href="/css/status.css" rel="stylesheet">
     {{-- Load app assets via Vite (dev server or build) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/status.css'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
@@ -19,7 +18,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
         rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="../assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
@@ -32,10 +34,34 @@
             @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->
         </main>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous">
     </script>
+
     @stack('scripts')
+
+    {{-- Auto-refresh dashboard when inactive --}}
+    {{-- @if (request()->is('main'))
+    <script>
+        let lastActivity = Date.now();
+        let refreshInterval = 30000; // 30 seconds
+
+        // Track user activity
+        document.addEventListener('mousemove', () => lastActivity = Date.now());
+        document.addEventListener('keypress', () => lastActivity = Date.now());
+        document.addEventListener('click', () => lastActivity = Date.now());
+        document.addEventListener('scroll', () => lastActivity = Date.now());
+
+        // Check every 30 seconds
+        setInterval(() => {
+            // Only reload if user hasn't been active for 10 seconds
+            if (Date.now() - lastActivity > 10000) {
+                location.reload();
+            }
+        }, refreshInterval);
+    </script>
+    @endif --}}
 
     <style>
         .material-symbols-outlined {

@@ -20,7 +20,9 @@ class RepairController extends Controller
     {
         $type = 'repair';
         // Fetch data from the database
-        $repairTickets = RepairTicket::orderBy('receiving_date', 'desc')->get();
+        $repairTickets = RepairTicket::orderBy('receiving_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         return view('repair', compact('repairTickets', 'type'));
     }
@@ -43,7 +45,9 @@ class RepairController extends Controller
         $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
-            ->get();
+            ->orderBy('receiving_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         return view('repair', compact('repairTickets'));
     }
@@ -51,7 +55,7 @@ class RepairController extends Controller
     // Repair Logs data view
     public function repairDashboard()
     {
-        $repairTickets = RepairTicket::orderBy('receiving_date')->get(); // Add filters as needed
+        $repairTickets = RepairTicket::orderBy('receiving_date')->paginate(10); // Add filters as needed
         return view('repair', compact('repairTickets'));
     }
 
@@ -65,7 +69,7 @@ class RepairController extends Controller
             'office_department' => 'required|string|max:255',
             'itemname' => 'required|string|max:255',
             'issue' => 'required|string|max:100',
-            'solution' => 'nullable|string|max:100',
+            'solution' => 'nullable|string',
             'note' => 'nullable|string|max:100',
         ]);
 
@@ -237,7 +241,9 @@ class RepairController extends Controller
             $query->where('status', 'like', '%' . $request->filter . '%');
         }
 
-        $repairTickets = $query->orderBy('receiving_date', 'desc')->get();
+        $repairTickets = $query->orderBy('receiving_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         return view('repair', compact('repairTickets', 'type'));
     }
@@ -289,7 +295,7 @@ class RepairController extends Controller
         }
     }
 
-     public function repairEdit($id)
+    public function repairEdit($id)
     {
         $ticket = RepairTicket::findOrFail($id);
         return response()->json($ticket);
@@ -306,7 +312,7 @@ class RepairController extends Controller
             'issue' => 'nullable|string|max:50',
             'solution' => 'nullable|string|max:50',
             'note' => 'nullable|string|max:100',
-            'release_date' => 'nullable|date',
+            'release_date' => 'nullable',
             'status' => 'nullable|in:pending,in_progress,repaired,released,unrepairable',
         ]);
 
@@ -318,17 +324,60 @@ class RepairController extends Controller
         }
         
         $changes = [];
-        // Update including repairDevice_id
-        foreach ($request->only(['name','office_department','itemname','issue','solution','note','release_date','status']) as $field => $value) {
+        
+        // Update fields except release_date (handle separately)
+        foreach ($request->only(['name', 'office_department', 'itemname', 'issue', 'solution', 'note', 'status']) as $field => $value) {
             if ($ticket->$field != $value) {
-                $changes[] = ucfirst($field) .": '{$ticket->$field}' → '{$value}'";
+                $changes[] = ucfirst($field) . ": '{$ticket->$field}' → '{$value}'";
                 $ticket->$field = $value;
             }
         }
+        
+        // Handle release_date separately to preserve time component
+        if ($request->has('release_date') && $request->release_date) {
+            $newReleaseDate = $request->release_date;
+            $oldReleaseDate = $ticket->release_date;
+            
+            // Check if the incoming date has time component
+            if (strpos($newReleaseDate, ':') !== false || strpos($newReleaseDate, 'T') !== false) {
+                // Full datetime provided (e.g., "2024-12-15 14:30:00" or "2024-12-15T14:30")
+                $formattedDate = str_replace('T', ' ', $newReleaseDate);
+                
+                // Ensure no seconds in the time
+                $carbonDate = \Carbon\Carbon::parse($formattedDate);
+                $formattedDate = $carbonDate->format('Y-m-d H:i:00');
+                
+                if ($oldReleaseDate != $formattedDate) {
+                    $changes[] = "Release Date: '{$oldReleaseDate}' → '{$formattedDate}'";
+                    $ticket->release_date = $formattedDate;
+                }
+            } else {
+                // Only date provided (e.g., "2024-12-15")
+                // Preserve existing time if available
+                if ($oldReleaseDate) {
+                    $existingTime = \Carbon\Carbon::parse($oldReleaseDate)->format('H:i:00');
+                    $newDateTime = $newReleaseDate . ' ' . $existingTime;
+                    
+                    // Only log change if the DATE part actually changed
+                    $oldDateOnly = \Carbon\Carbon::parse($oldReleaseDate)->format('Y-m-d');
+                    if ($oldDateOnly != $newReleaseDate) {
+                        $changes[] = "Release Date: '{$oldReleaseDate}' → '{$newDateTime}'";
+                    }
+                    
+                    $ticket->release_date = $newDateTime;
+                } else {
+                    // No existing time, use current time (no seconds)
+                    $newDateTime = $newReleaseDate . ' 00:00:00';
+                    $changes[] = "Release Date: 'null' → '{$newDateTime}'";
+                    $ticket->release_date = $newDateTime;
+                }
+            }
+        }
+        
         $ticket->repairDevice_id = $deviceId;
         $ticket->save();
 
-         // Record activity log
+        // Record activity log
         if (!empty($changes)) {
             try {
                 ActivityLog::record(
@@ -336,7 +385,7 @@ class RepairController extends Controller
                     "Repair Ticket {$ticket->repairTicket_id} updated:<br>" . implode('<br>', $changes)
                 );
             } catch (\Exception $e) {
-                Log::error('Failed to record activity log: ' . $e->getMessage());
+                \Illuminate\Support\Facades\Log::error('Failed to record activity log: ' . $e->getMessage());
             }
         }
 

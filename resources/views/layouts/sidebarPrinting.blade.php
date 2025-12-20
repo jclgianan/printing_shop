@@ -1,18 +1,20 @@
 <aside class="receiving_topbar">
-    <div class="shop_menu"><i class="fa-solid fa-list"></i></div>
-    <div class="topbar-logo-container">
-        <img src="{{ asset('images/SecretShop_Logo_2.png') }}" alt="Logo" class="topbar-logo">
+    <div class="header-left">
+        <div class="shop_menu"><i class="fa-solid fa-list"></i></div>
+            <img src="{{ asset('images/Secret_Shop_Logo.png') }}" alt="Logo" class="topbar-logo">
+        
     </div>
-    {{-- <nav class="receiving_nav-menu">
-        <ul>
-            <li><a href="{{ route('main') }}" class="receiving_nav-link">Home</a></li>
-            <li><a href="{{ route('printing') }}" class="receiving_nav-link {{ request()->routeIs('printing') ? 'active' : '' }}">Printing</a></li>
-            <li><a href="{{ route('repair') }}" class="receiving_nav-link {{ request()->routeIs('repair') ? 'active' : '' }}">Repair</a></li>
-            <li><a href="{{ route('add-new-user') }} " class="receiving_nav-link {{ request()->routeIs('add-new-user') ? 'active' : '' }}">Add Users</a></li>
-            <li><a href="{{ route('activity.logs') }}" class="receiving_nav-link" {{ request()->routeIs('activity.logs') ? 'active' : '' }} >Activity Logs</a></li>
-            <li><a href="#" class="receiving_nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">Settings</a></li>
-        </ul>
-    </nav> --}}
+    <div class="header-right">
+        <div class="user-info">
+            <div class="user-details">
+                <span class="user-name">{{ Auth::user()->name }}</span>
+                <span class="user-email">{{ Auth::user()->email }}</span>
+            </div>
+            <div class="user-avatar">
+                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+            </div>
+        </div>
+    </div>
 </aside>
 
 {{-- to open the sidebar --}}

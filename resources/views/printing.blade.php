@@ -15,8 +15,8 @@
                             <h2 class="section-heading"><i class="fa-solid fa-print"></i> Printing Tickets</h2>
                         </div>
                         <!-- New Entry Button on the right -->
-                        <a id="openModal" class="receiving_newEntry"><i class="fa-solid fa-file-circle-plus"></i> Create
-                            Ticket</a>
+                        <a id="openModal" class="receiving_newEntry"><i class="fa-solid fa-file-circle-plus"></i>
+                            Create Ticket</a>
                     </div>
                 </div>
 
@@ -59,7 +59,7 @@
                                     <th>Ticket ID</th>
                                     <th>Receiving Date</th>
                                     <th>Name</th>
-                                    <th>Office/Department</th>
+                                    <th>Office</th>
                                     <th>Name of Item</th>
                                     <th>Size</th>
                                     <th>Quantity</th>
@@ -83,21 +83,31 @@
                                         <td class="mono">{{ $ticket->size }}</td>
                                         <td class="mono">{{ $ticket->quantity }}</td>
                                         <td class="mono">
-                                            {{ $ticket->deadline ? \Carbon\Carbon::parse($ticket->deadline)->format('m/d/y') : '-' }}
+                                            @if ($ticket->deadline)
+                                                {{ \Carbon\Carbon::parse($ticket->deadline)->timezone('Asia/Manila')->format('m/d/y') }}
+                                            @else
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
+                                            @endif
                                         </td>
                                         <td class="file-icon">
                                             @if ($ticket->file_link)
-                                                <a href="{{ $ticket->file_link }}" target="_blank"><i
-                                                        class="fa-regular fa-file"></i></a>
+                                                <a href="{{ $ticket->file_link }}" target="_blank">
+                                                    <i class="fa-regular fa-file"></i></a>
                                             @else
-                                                -
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
                                             @endif
                                         </td>
-                                        <td>{{ $ticket->status === 'released' ? \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y H:i') : '-' }}
+                                        <td>
+                                            @if ($ticket->release_date)
+                                                {{ \Carbon\Carbon::parse($ticket->release_date)->timezone('Asia/Manila')->format('m/d/y, H:i') }}
+                                            @else
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
+                                            @endif
                                         </td>
 
                                         <td>
-                                            <span class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
+                                            <span
+                                                class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                         </td>
                                         <td>
                                             <button class="btn-edit" data-id="{{ $ticket->id }}"
@@ -106,9 +116,9 @@
                                                 data-office_department="{{ $ticket->office_department }}"
                                                 data-itemname="{{ $ticket->itemname }}" data-size="{{ $ticket->size }}"
                                                 data-quantity="{{ $ticket->quantity }}"
-                                                data-deadline="{{ $ticket->deadline }}"
+                                                data-deadline="{{ $ticket->deadline ? \Carbon\Carbon::parse($ticket->deadline)->format('Y-m-d') : '' }}"
                                                 data-file_link="{{ $ticket->file_link }}"
-                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d') : '' }}"
+                                                data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d\TH:i') : '' }}"
                                                 data-status="{{ $ticket->status }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
@@ -121,6 +131,9 @@
                         <p>No processes available yet. Create a new entry to begin.</p>
                     @endif
                 </div>
+                <div class="custom-pagination">
+                    {{ $printTickets->appends(request()->input())->links('pagination::bootstrap-5') }}
+                </div>
             </main>
         </div>
     </div>
@@ -132,8 +145,25 @@
 
 @push('scripts')
     <script>
-        function updateStatus(ticketId, newStatus) {
-            if (!confirm('Are you sure you want to change the status?')) {
+        async function updateStatus(ticketId, newStatus) {
+            const result = await Swal.fire({
+                title: 'Confirm Status Change',
+                text: 'Are you sure you want to change the status?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'No',
+                customClass: {
+                    container: "pop-up-container",
+                    popup: "pop-up-confirm",
+                    title: "pop-up-confirm-title",
+                    htmlContainer: "pop-up-confirm-text",
+                    confirmButton: "btn-normal",
+                    cancelButton: "btn-normal",
+                    icon: "pop-up-icon",
+                },
+            });
+            if (!result.isConfirmed) {
                 return;
             }
 
@@ -189,7 +219,18 @@
             $('#edit_quantity').val(ticket.quantity);
             $('#edit_deadline').val(ticket.deadline);
             $('#edit_file_link').val(ticket.file_link);
-            $('#edit_release_date').val(ticket.release_date);
+            // FIX: Only set the DATE part for the date input, but store original datetime
+            if (ticket.release_date) {
+                // Extract just the date portion for the input (YYYY-MM-DD)
+                let dateOnly = ticket.release_date.split(' ')[0].split('T')[0];
+                $('#edit_release_date').val(dateOnly);
+
+                // Store the FULL datetime in a hidden field or data attribute
+                $('#edit_release_date').data('original-datetime', ticket.release_date);
+            } else {
+                $('#edit_release_date').val('');
+                $('#edit_release_date').data('original-datetime', '');
+            }
 
             // Populate action buttons dynamically
             const actionContainer = $('#editActionBtn');
@@ -198,14 +239,14 @@
             if (ticket.status === 'pending') {
                 actionContainer.append(`
                 <button onclick="updateStatus(${ticket.id}, 'in_progress')" class="btn-status btn-progress">
-                    Start Progress <i class="fa-solid fa-circle-play"></i>
+                    Start Progress <i class="fa-regular fa-circle-play"></i>
                 </button>
             `);
             }
             if (ticket.status === 'in_progress') {
                 actionContainer.append(`
                 <button onclick="updateStatus(${ticket.id}, 'printed')" class="btn-status btn-complete">
-                    Mark Complete <i class="fa-solid fa-circle-check"></i>
+                    Mark Complete <i class="fa-regular fa-circle-check"></i>
                 </button>
             `);
             }
@@ -225,9 +266,11 @@
             }
 
             $('#editPrintingModal').addClass('active');
-            $('#closeEditModal').on('click', function() {
-                $('#editPrintingModal').removeClass('active');
-            });
+        });
+
+        //Close button
+        $('#closeEditModal').off('click').on('click', function() {
+            $('#editPrintingModal').removeClass('active');
         });
 
         // Close edit modal when clicking outside the modal box
@@ -237,50 +280,65 @@
             }
         });
 
-        //Edit Modal submission
+        // Edit Modal submission - UPDATED to preserve datetime
         $(document).on('submit', '#editPrintingForm', function(e) {
             e.preventDefault();
 
             const form = $(this);
-            const formData = form.serialize();
             const messageBox = $('#editFormMessage');
             const submitBtn = form.find('button[type="submit"]');
             const ticketId = $('#edit_ticket_id').val();
 
+            // Get the original datetime
+            const releaseDateInput = $('#edit_release_date');
+            const originalDateTime = releaseDateInput.data('original-datetime');
+            const newDate = releaseDateInput.val();
+
+            // Build form data
+            let formData = form.serializeArray();
+
+            // If release_date wasn't changed, use original datetime
+            if (originalDateTime && newDate) {
+                const originalDate = originalDateTime.split(' ')[0].split('T')[0];
+
+                if (newDate === originalDate) {
+                    // Date unchanged - use full original datetime
+                    formData = formData.filter(item => item.name !== 'release_date');
+                    formData.push({
+                        name: 'release_date',
+                        value: originalDateTime
+                    });
+                }
+                // If date was changed, the new date value from form will be used
+            }
+
             submitBtn.prop('disabled', true).text('Updating...');
 
-            // Dynamically build the update URL
             let updateUrl = "{{ route('print.update', ':id') }}";
             updateUrl = updateUrl.replace(':id', ticketId);
 
             $.ajax({
                 url: updateUrl,
                 method: "POST",
-                data: formData,
+                data: $.param(formData),
                 success: function(response) {
                     if (response.success) {
-                        messageBox
-                            .removeClass('alert-error')
-                            .addClass('alert-box alert-success')
-                            .text(response.success)
-                            .fadeIn();
-
-                        // Update the table row live without reloading
-                        const row = $(`button[data-id='${ticketId}']`).closest('tr');
-                        row.find('td:nth-child(3)').text(response.ticket.name);
-                        row.find('td:nth-child(4)').text(response.ticket.office_department);
-                        row.find('td:nth-child(5)').text(response.ticket.itemname);
-                        row.find('td:nth-child(6)').text(response.ticket.size);
-                        row.find('td:nth-child(7)').text(response.ticket.quantity);
-                        row.find('td:nth-child(8)').text(response.ticket.deadline);
-                        row.find('td:nth-child(9)').text(response.ticket.file_link);
-                        row.find('td:nth-child(10)').text(response.ticket.release_date);
-
-                        submitBtn.prop('disabled', false).text('Update Ticket');
-
-                        setTimeout(() => {
+                        Swal.fire({
+                            title: 'Ticket updated successfully.',
+                            icon: 'success',
+                            customClass: {
+                                container: "pop-up-success-container",
+                                popup: "pop-up-success",
+                                title: "pop-up-success-title",
+                                htmlContainer: "pop-up-success-text",
+                                confirmButton: "btn-normal",
+                                icon: "pop-up-icon",
+                            },
+                            timer: 3000,
+                            showConfirmButton: true
+                        }).then(() => {
                             window.location.reload();
-                        }, 800);
+                        });
                     }
                 },
                 error: function(xhr) {
