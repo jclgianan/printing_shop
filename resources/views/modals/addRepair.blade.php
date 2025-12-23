@@ -1,7 +1,7 @@
 <!-- resources/views/modals/addPrinting.blade.php -->
 <div id="addRepairModal" class="modal-overlay">
     <div class="modal-box">
-        <span id="closeRepairModal" class="modal-close"><i class="fa-regular fa-circle-xmark"></i></span>
+        <span id="closeModal" class="modal-close"><i class="fa-regular fa-circle-xmark"></i></span>
         <div class="content-placeholder header-row-modal">
             <div class="header-top">
                 <div class="header-text">
@@ -107,8 +107,7 @@
                 <div class="form-group">
                     <label for="issue">Issue</label>
                     <input type="text" name="issue" id="issue"
-                        class="form-control @error('size') is-invalid @enderror" value="{{ old('size') }}"
-                        required>
+                        class="form-control @error('size') is-invalid @enderror" value="{{ old('size') }}" required>
                     @error('issue')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

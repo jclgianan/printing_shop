@@ -419,6 +419,7 @@
     function toggleIssue{{ $item->id }}() {
         const viewMode = document.getElementById('viewMode{{ $item->id }}');
         const issueMode = document.getElementById('issueModal{{ $item->id }}');
+        const closeBtn = document.getElementById('closeModal');
 
         if (viewMode.style.display === 'none') {
             // Switch to view mode

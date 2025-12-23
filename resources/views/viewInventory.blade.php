@@ -46,20 +46,48 @@
 
                 <div class="inv-row">
                     <div class="inv-card total-units">
-                        <h3>{{ $items->count() }}</h3>
-                        <p>Total Units</p>
+                        <div class="card-units">
+                            <div class="units-left">
+                                <p>Total Units</p>
+                                <h4 id="printing-pending">{{ $items->count() }}</h4>
+                            </div>
+                            <div class="units-right">
+                                <i class="fa-solid fa-list-check"></i>
+                            </div>
+                        </div>
                     </div>
                     <div class="inv-card available-units">
-                        <h3>{{ $items->where('status', 'available')->count() }}</h3>
-                        <p>Available</p>
+                        <div class="card-units">
+                            <div class="units-left">
+                                <p>Available</p>
+                                <h4 id="printing-pending">{{ $items->where('status', 'available')->count() }}</h4>
+                            </div>
+                            <div class="units-right">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                            </div>
+                        </div>
                     </div>
                     <div class="inv-card issued-units">
-                        <h3>{{ $items->where('status', 'issued')->count() }}</h3>
-                        <p>Issued</p>
+                        <div class="card-units">
+                            <div class="units-left">
+                                <p>Issued</p>
+                                <h4 id="printing-pending">{{ $items->where('status', 'issued')->count() }}</h4>
+                            </div>
+                            <div class="units-right">
+                                <i class="fa-solid fa-user-check"></i>
+                            </div>
+                        </div>
                     </div>
                     <div class="inv-card unusable-units">
-                        <h3>{{ $items->where('status', 'unusable')->count() }}</h3>
-                        <p>Unusable</p>
+                        <div class="card-units">
+                            <div class="units-left">
+                                <p>Unusable</p>
+                                <h4 id="printing-pending">{{ $items->where('status', 'unusable')->count() }}</h4>
+                            </div>
+                            <div class="units-right">
+                                <i class="fa-solid fa-ban"></i>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="process-log">
@@ -106,17 +134,17 @@
                                     <td>{{ $item->date_issued ? $item->date_issued->format('M d, Y') : '—' }}</td>
                                     <td>
                                         <!-- View Units Modal Trigger -->
-                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal"
+                                        <button type="button" class="view-btn" data-bs-toggle="modal"
                                             data-bs-target="#viewModal{{ $item->id }}">
-                                            View
+                                            <i class="fa-solid fa-eye"></i>
                                         </button>
 
                                         <form action="{{ route('destroy', $item) }}" method="POST"
                                             style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger confirm-delete">
-                                                Delete
+                                            <button type="submit" class="delete-btn confirm-delete">
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>
                                     </td>

@@ -81,17 +81,16 @@
                                     <td>{{ $device->issued }}</td>
                                     <td>{{ $device->unusable }}</td>
                                     <td class="action-buttons">
-                                        <a href="{{ route('inventory.view', $device->device_id) }}"
-                                            class="btn btn-sm btn-info">
-                                            View
+                                        <a href="{{ route('inventory.view', $device->device_id) }}" class="view-btn">
+                                            <i class="fa-solid fa-eye"></i>
                                         </a>
 
                                         <form action="{{ route('destroy-device', $device->device_id) }}" method="POST"
                                             style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger confirm-delete">
-                                                Delete
+                                            <button type="submit" class="delete-btn confirm-delete">
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>
                                     </td>
