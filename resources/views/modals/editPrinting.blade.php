@@ -58,7 +58,7 @@
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>
                 <div class="formBtn">
-                    <button type="button" id="closeEditModal" class="editBtn">Closwe</button>
+                    <button type="button" id="closeEditModal" class="editBtn">Close</button>
                     <button type="submit" class="btn-normal">Save changes</button>
                 </div>
             </form>
