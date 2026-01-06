@@ -5,7 +5,7 @@
         <div class="content-placeholder header-row-modal">
             <div class="header-top">
                 <div class="header-text">
-                    <h2>Add Repair Ticket</h2>
+                    <h2>Add Repaier Ticket</h2>
                 </div>
             </div>
         </div>
