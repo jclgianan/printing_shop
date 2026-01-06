@@ -1,0 +1,80 @@
+# --- Version control ---
+.git/
+.gitignore
+.gitattributes
+
+# --- Node.js ---
+node_modules/
+npm-debug.log
+yarn-debug.log
+
+# --- IDE/editor files ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Build outputs ---
+build/
+dist/
+out/
+
+# --- Tests ---
+test/
+tests/
+
+# --- Debug and logs ---
+debug/
+*.log
+
+# --- Environment and secrets ---
+.env
+.env.*
+*.env
+*.pem
+*.key
+*.crt
+
+# --- Local/temporary files ---
+tmp/
+temp/
+*.tmp
+.local/
+local/
+
+# --- Documentation ---
+docs/
+README*
+*.md
+
+# --- Docker files ---
+Dockerfile*
+docker-compose*
+
+# --- Project-specific (PHP/Laravel) ---
+/vendor/
+/storage/app/
+/storage/framework/
+/storage/logs/
+
+# --- Miscellaneous ---
+*.bak
+*.old
+
+# --- Exclude files that should remain ---
+!public/
+!public/index.php
+!public/css/
+!public/images/
+!public/robots.txt
+!public/.htaccess
+!resources/
+!resources/views/
+!resources/css/
+!resources/js/
+!app/
+!config/
+!database/
+!routes/
+!artisan
+!bootstrap/

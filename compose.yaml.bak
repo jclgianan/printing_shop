@@ -1,0 +1,18 @@
+services:
+  php-app:
+    build:
+      context: .
+    container_name: php-app
+    restart: unless-stopped
+    init: true
+    # env_file: ./.env  # Uncomment if .env file exists
+    working_dir: /var/www/app
+    expose:
+      - "9000"  # PHP-FPM default port
+    networks:
+      - appnet
+    # If you use a web server (nginx/apache), add it as a separate service
+
+networks:
+  appnet:
+    driver: bridge

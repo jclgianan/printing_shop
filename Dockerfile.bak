@@ -1,0 +1,45 @@
+# syntax=docker/dockerfile:1
+
+# --- Build stage ---
+FROM composer:2.7 AS vendor
+WORKDIR /app
+# Copy only composer files first for better caching
+COPY --link composer.json composer.lock ./
+RUN composer install --no-dev --prefer-dist --no-interaction --no-scripts --no-progress
+
+# --- Final stage ---
+FROM php:8.4-fpm AS final
+
+# Install system dependencies
+RUN apk add --no-cache \
+    icu-dev \
+    libzip-dev \
+    zlib-dev \
+    oniguruma-dev \
+    curl \
+    bash \
+    shadow \
+    && docker-php-ext-install intl pdo pdo_mysql zip mbstring
+
+# Create non-root user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+WORKDIR /var/www/app
+
+# Copy application code (excluding secrets, git, etc.)
+COPY --link . .
+# Remove files that should never be in the image (in case .dockerignore is incomplete)
+RUN rm -rf .git .gitignore .gitattributes .env .env.example *.lock
+
+# Copy vendor from build stage
+COPY --link --from=vendor /app/vendor ./vendor
+
+# Set permissions for storage and bootstrap/cache
+RUN chown -R appuser:appgroup storage bootstrap/cache && \
+    chmod -R 775 storage bootstrap/cache
+
+USER appuser
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
