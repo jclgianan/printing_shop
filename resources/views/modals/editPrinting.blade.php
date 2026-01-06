@@ -7,7 +7,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="editFormMessage" style="display:none; margin-top:10px; padding:10px; border-radius:5px;"></div>
 
         <div class="container-modal">
@@ -24,20 +24,21 @@
 
                 <div class="form-group">
                     <label for="edit_office_department">Office / Department</label>
-                    <input type="text" id="edit_office_department" name="office_department" class="form-control" required>
+                    <input type="text" id="edit_office_department" name="office_department" class="form-control"
+                        required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit_itemname">Item Name</label>
                     <input type="text" id="edit_itemname" name="itemname" class="form-control" required>
                 </div>
-                
+
                 <div class="form-group">
                     <label for="edit_size">Size</label>
                     <input type="text" id="edit_size" name="size" class="form-control">
                 </div>
-                
-                <div class="form-group">  
+
+                <div class="form-group">
                     <label for="edit_quantity">Quantity</label>
                     <input type="number" id="edit_quantity" name="quantity" class="form-control">
                 </div>
@@ -57,11 +58,11 @@
                     <input type="date" id="edit_release_date" name="release_date" class="form-control">
                 </div>
                 <div class="formBtn">
-                    <button id="closeEditModal" class="editBtn">Close</button>
+                    <button type="button" id="closeEditModal" class="editBtn">Close</button>
                     <button type="submit" class="btn-normal">Save changes</button>
                 </div>
             </form>
-           
+
         </div>
     </div>
 </div>
