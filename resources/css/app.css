@@ -345,11 +345,31 @@ html {
 
 /* navbar */
 
+.logo-container {
+    display: flex;
+    align-items: center;
+    width: auto;
+
+    margin-left: 23px;
+}
+
+.clock-container {
+    font-family: "Roboto";
+    font-size: 13px;
+
+    margin-left: 13px;
+}
+
+.clock {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
 .topbar-logo {
-    width: 300px;
-    height: auto;
-    filter: invert(100%);
-    transform: scale(0.7);
+    width: auto;
+    z-index: 999990;
+    height: 70px;
 }
 
 .receiving_topbar {
@@ -371,7 +391,6 @@ html {
 .header-left {
     display: flex;
     align-items: center;
-    gap: 0;
 }
 
 .header-right {
