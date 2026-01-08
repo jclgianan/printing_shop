@@ -24,7 +24,9 @@
                         <div class="filter-category-group">
                             <label for="category-filter"><i class="fa-solid fa-filter"></i> Filter by:</label>
                             <select name="category" id="category-filter" class="form-select" onchange="this.form.submit()">
-                                <option value="All Categories">All Categories</option>
+                                <option value="" {{ request('category') == '' ? 'selected' : '' }}>
+                                    All Categories
+                                </option>
                                 <option value="Computer System"
                                     {{ request('category') == 'Computer System' ? 'selected' : '' }}> Computer System
                                 </option>
@@ -59,33 +61,49 @@
                     <table class="process-table">
                         <thead>
                             <tr class="table-header">
-                                <th style="width: 60px;">ID</th>
-                                <th>Device Name</th>
+                                <th>Inventory Id</th>
                                 <th>Category</th>
-                                <th>Total Units</th>
-                                <th>Available</th>
-                                <th>Issued</th>
-                                <th>Unusable</th>
+                                <th>Device Name</th>
+                                <th>Status</th>
+                                <th>Condition</th>
                                 <th style="width: 200px;">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach ($devices as $device)
+                            @foreach ($inventoryItems as $items)
                                 <tr>
-                                    <td>{{ $device->device_id }}</td>
-                                    <td>{{ $device->device_name }}</td>
-                                    <td>{{ $device->category }}</td>
-                                    <td>{{ $device->total_units }}</td>
-                                    <td>{{ $device->available }}</td>
-                                    <td>{{ $device->issued }}</td>
-                                    <td>{{ $device->unusable }}</td>
+                                    <td>{{ $items->inventory_id }}</td>
+                                    <td>{{ $items->category }}</td>
+                                    <td>{{ $items->device_name }}</td>
+                                    <td>
+                                        @if ($items->status === 'available')
+                                            <span class="inv-badge inv-status-available">Available</span>
+                                        @elseif($items->status === 'issued')
+                                            <span class="inv-badge inv-status-issued">Issued</span>
+                                        @elseif($items->status === 'unusable')
+                                            <span class="inv-badge inv-status-unusable">Unusable</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($items->condition === 'new')
+                                            <span class="inv-badge inv-new">New</span>
+                                        @elseif($items->condition === 'good')
+                                            <span class="inv-badge inv-good">Good</span>
+                                        @elseif($items->condition === 'fair')
+                                            <span class="inv-badge inv-fair">Fair</span>
+                                        @elseif($items->condition === 'poor')
+                                            <span class="inv-badge inv-poor">Poor</span>
+                                        @endif
+                                    </td>
                                     <td class="action-buttons">
-                                        <a href="{{ route('inventory.view', $device->device_id) }}" class="view-btn">
+                                        <!-- View Units Modal Trigger -->
+                                        <button type="button" class="view-btn" data-bs-toggle="modal"
+                                            data-bs-target="#viewModal{{ $items->id }}">
                                             <i class="fa-solid fa-eye"></i>
-                                        </a>
+                                        </button>
 
-                                        <form action="{{ route('destroy-device', $device->device_id) }}" method="POST"
+                                        <form action="{{ route('destroy-device', $items->inventory_id) }}" method="POST"
                                             style="display:inline-block;">
                                             @csrf
                                             @method('DELETE')
@@ -95,12 +113,13 @@
                                         </form>
                                     </td>
                                 </tr>
+                                @include('modals.viewDetails', ['item' => $items])
                             @endforeach
                         </tbody>
                     </table>
                 </div>
                 <div class="custom-pagination">
-                    {{ $devices->appends(request()->input())->links('pagination::bootstrap-5') }}
+                    {{ $inventoryItems->appends(request()->input())->links('pagination::bootstrap-5') }}
                 </div>
             </main>
         </div>

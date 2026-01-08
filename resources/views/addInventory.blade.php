@@ -32,19 +32,20 @@
                             <h5 class="mb-3">Device Identification</h5>
                             <div class="row mb-3">
                                 <div class="col-md-4">
-                                    <label for="device_id" class="form-label">Device ID <span
+                                    <label for="inventory_id" class="form-label">Inventory ID <span
                                             class="text-danger">*</span></label>
                                     <div class="input-group">
-                                        <input type="text" class="form-control @error('device_id') is-invalid @enderror"
-                                            id="device_id" name="device_id" value="{{ old('device_id') }}"
+                                        <input type="text"
+                                            class="form-control @error('inventory_id') is-invalid @enderror"
+                                            id="inventory_id" name="inventory_id" value="{{ old('inventory_id') }}"
                                             placeholder="Auto-generated" readonly required>
                                         <button type="button" class="btn btn-secondary btn-generate-id"
-                                            id="generateDeviceId">
+                                            id="generateInventoryId">
                                             <i class="bi bi-arrow-repeat"></i> Generate
                                         </button>
                                     </div>
-                                    <small class="text-muted">Click Generate to create a unique Device ID</small>
-                                    @error('device_id')
+                                    <small class="text-muted">Click Generate to create a unique Inventory ID</small>
+                                    @error('inventory_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -67,14 +68,14 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-4">
+                                {{-- <div class="col-md-4">
                                     <label class="form-label">Individual IDs Preview</label>
                                     <div class="form-control bg-light" style="min-height: 38px;" id="individualIdPreview"
                                         aria-placeholder="123">
                                         <small class="text-muted">Generate Device ID first</small>
                                     </div>
                                     <small class="text-muted">Auto-generated based on quantity</small>
-                                </div>
+                                </div> --}}
                             </div>
 
                             <div class="row mb-3">
@@ -264,49 +265,66 @@
 
     <script>
         // Generate Device ID
-        document.getElementById('generateDeviceId').addEventListener('click', async function() {
+        document.getElementById('generateInventoryId').addEventListener('click', async function() {
             try {
-                // Fetch the next available Device ID from server
+                const categorySelect = document.getElementById('category');
+                const inventoryInput = document.getElementById('inventory_id');
                 const button = document.querySelector('.btn-generate-id');
-                const response = await fetch('{{ route('generate-device-id') }}');
+
+                if (!categorySelect || !categorySelect.value) {
+                    alert('Please select a category first.');
+                    return;
+                }
+
+                const response = await fetch(
+                    '{{ route('generate-inventory-id') }}?category=' + encodeURIComponent(categorySelect
+                        .value)
+                );
+
                 const data = await response.json();
 
-                if (data.device_id) {
-                    document.getElementById('device_id').value = data.device_id;
-                    updateIndividualIdPreview();
+                if (data.inventory_id) {
+                    inventoryInput.value = data.inventory_id;
+
+                    // Optional: update preview if you have one
+                    if (typeof updateIndividualIdPreview === 'function') {
+                        updateIndividualIdPreview();
+                    }
+
                     button.remove();
                 }
             } catch (error) {
-                console.error('Error generating Device ID:', error);
+                console.error('Error generating Inventory ID:', error);
+                alert('Failed to generate Inventory ID.');
             }
         });
 
         // Update Individual ID Preview when quantity changes
-        document.getElementById('quantity').addEventListener('input', updateIndividualIdPreview);
+        // document.getElementById('quantity').addEventListener('input', updateIndividualIdPreview);
 
-        function updateIndividualIdPreview() {
-            const deviceId = document.getElementById('device_id').value;
-            const quantity = parseInt(document.getElementById('quantity').value) || 1;
-            const previewDiv = document.getElementById('individualIdPreview');
-            if (!deviceId) {
-                previewDiv.innerHTML = '<small class="text-muted">Generate Device ID first</small>';
-                return;
-            }
+        // function updateIndividualIdPreview() {
+        //     const deviceId = document.getElementById('device_id').value;
+        //     const quantity = parseInt(document.getElementById('quantity').value) || 1;
+        //     const previewDiv = document.getElementById('individualIdPreview');
+        //     if (!deviceId) {
+        //         previewDiv.innerHTML = '<small class="text-muted">Generate Device ID first</small>';
+        //         return;
+        //     }
 
-            let previewText = '';
-            const maxPreview = 5; // Show max 5 examples
+        //     let previewText = '';
+        //     const maxPreview = 5; // Show max 5 examples
 
-            for (let i = 1; i <= Math.min(quantity, maxPreview); i++) {
-                const individualId = `${deviceId}(${String(i).padStart(2, '0')})`;
-                previewText += `<span class="badge bg-secondary me-1 mb-1">${individualId}</span>`;
-            }
+        //     for (let i = 1; i <= Math.min(quantity, maxPreview); i++) {
+        //         const individualId = `${deviceId}(${String(i).padStart(2, '0')})`;
+        //         previewText += `<span class="badge bg-secondary me-1 mb-1">${individualId}</span>`;
+        //     }
 
-            if (quantity > maxPreview) {
-                previewText += `<span class="text-muted">... and ${quantity - maxPreview} more</span>`;
-            }
+        //     if (quantity > maxPreview) {
+        //         previewText += `<span class="text-muted">... and ${quantity - maxPreview} more</span>`;
+        //     }
 
-            previewDiv.innerHTML = previewText;
-        }
+        //     previewDiv.innerHTML = previewText;
+        // }
 
         // Show/hide issued_to and date_issued fields based on status
         document.getElementById('statusSelect').addEventListener('change', function() {
