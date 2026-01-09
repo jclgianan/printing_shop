@@ -1,4 +1,3 @@
-<!-- resources/views/prinitng.blade.php -->
 @extends('layouts.default') {{-- Assuming this is your main layout --}}
 
 @section('title', 'Printing')
@@ -110,7 +109,7 @@
                                                 class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
                                         </td>
                                         <td>
-                                            <button class="btn-edit" data-id="{{ $ticket->id }}"
+                                            <button data-tooltip="Edit" class="btn-edit" data-id="{{ $ticket->id }}"
                                                 data-receiving_date="{{ $ticket->receiving_date }}"
                                                 data-name="{{ $ticket->name }}"
                                                 data-office_department="{{ $ticket->office_department }}"

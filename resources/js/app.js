@@ -139,3 +139,42 @@ document.addEventListener("click", function (event) {
         });
     }
 });
+
+//clock
+
+document.addEventListener("DOMContentLoaded", () => {
+    const clockElement = document.getElementById("clock");
+    const dateElement = document.getElementById("date");
+
+    if (!clockElement) return;
+
+    function updateClock() {
+        const now = new Date();
+
+        const phTime = now.toLocaleTimeString("en-US", {
+            timeZone: "Asia/Manila",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true,
+        });
+        clockElement.textContent = phTime;
+
+        // --- Date Logic ---
+        if (dateElement) {
+            const options = {
+                weekday: "short",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            };
+            dateElement.textContent = now.toLocaleDateString(
+                undefined,
+                options
+            );
+        }
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+});

@@ -1,32 +1,36 @@
-## Running the Project with Docker
 
-This project provides a Docker setup for running the PHP application using PHP-FPM (version 8.2, Alpine-based). All required PHP extensions and Composer dependencies are installed during the build process.
+# *Printing Shop*
 
-### Requirements
-- Docker and Docker Compose installed on your system
-- (Optional) `.env` file for environment variables. You can use `.env.example` as a template.
+A laravel system that tracks and records for Tarpaulin Printing tickets, Repair Services tickets, and Inventory Management.
 
-### Build and Run Instructions
-1. **Build and start the containers:**
-   ```bash
-   docker compose up --build
-   ```
-   This will build the `php-app` service using the provided `Dockerfile` and start it.
+## Features
 
-2. **Environment Variables:**
-   - The container can use environment variables from a `.env` file in the project root. Uncomment the `env_file` line in `docker-compose.yml` if you wish to use it.
-   - Review `.env.example` for required variables and copy it to `.env` if needed.
+- Ticket System
+- Unique ID for each device for easier history tracking
+- Print job scheduling
+- Inventory management
 
-3. **Permissions:**
-   - The container sets correct permissions for `storage` and `bootstrap/cache` directories automatically.
 
-### Exposed Ports
-- **php-app:**
-  - Port `9000` is exposed for PHP-FPM. You can connect a web server (e.g., nginx or apache) to this port if needed.
+### Installation
 
-### Notes
-- The application runs as a non-root user (`appuser`) for improved security.
-- All PHP dependencies are installed with Composer during the build stage.
-- If you need to add a web server, update `docker-compose.yml` accordingly and expose the HTTP port.
+```cmd
+git clone https://github.com/jclgianan/printing_shop
+cd printing_shop
+composer install
+npm install
+```
 
-For any additional configuration, refer to the `.env.example` file and adjust as needed for your environment.
+### Usage
+
+```bash
+npm run dev #development
+npm run build #production
+```
+
+## Contributing
+
+Contributions are welcome. Please submit pull requests with clear descriptions.
+
+## Contact
+
+For questions or support, please contact the development team.

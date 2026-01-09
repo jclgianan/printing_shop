@@ -5,7 +5,8 @@
         <div class="layout-wrapper-main">
             <main class="receiving-main-panel">
                 <div class="dashboard-container-main">
-                    <h1>Dashboard</h1>
+                    {{-- <h1>Dashboard</h1> --}}
+                    <br>
                     <div class="dashboard-container">
                         <!-- Dashboard Stats -->
                         <div class="dashboard" id="dashboard-stats">
