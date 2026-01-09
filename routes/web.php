@@ -74,12 +74,8 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/update/{id}', [InventoryController::class, 'update'])->name('inventory.update');
     Route::post('/inventory/issue/{id}', [InventoryController::class, 'issue'])->name('inventory.issue');
     Route::post('/inventory/return/{id}', [InventoryController::class, 'return'])->name('inventory.return');
-    // Delete specific inventory item
-    Route::delete('/destroy/{id}', [InventoryController::class, 'destroy'])->name('destroy');
     // Delete all items with a specific device name (optional)
-    Route::delete('/destroy-device}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
-    // Alias for compatibility with your blade file
-    Route::delete('/devices/{id}', [InventoryController::class, 'destroy'])->name('devices.destroy');
+    Route::delete('/destroy-device/{inventoryId}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
     // Generate Device ID for new inventory item
     Route::get('/generate-device-id', [InventoryController::class, 'generateInventoryId'])->name('generate-inventory-id');
     Route::post('/inventory/units/{deviceId}/add', [InventoryController::class, 'addUnits'])->name('inventory.add-units');

@@ -46,6 +46,7 @@ class RepairController extends Controller
         $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
+            ->orWhere('name', 'like', '%' . $query . '%')
             ->orderBy('receiving_date', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(10);

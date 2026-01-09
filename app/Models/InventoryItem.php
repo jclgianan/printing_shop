@@ -4,10 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\RepairTicket;
+
 
 class InventoryItem extends Model
 {
     use HasFactory;
+
+    protected $table = 'inventory_items';
+
+    protected $primaryKey = 'inventory_id'; // already exists
+    public $incrementing = false;           // <--- tell Eloquent it's not auto-increment
+    protected $keyType = 'string';          // <--- tell Eloquent it's a string
+
 
     protected $fillable = [
         'inventory_id',
@@ -100,5 +109,12 @@ class InventoryItem extends Model
     public function scopeInventoryId($query, $inventoryId)
     {
         return $query->where('inventory_id', $inventoryId);
+    }
+
+    // FOR Relationship of Repair Tickets and Inventorty Items
+    // One inventory item can have many repair tickets
+    public function repairTickets()
+    {
+        return $this->hasMany(RepairTicket::class, 'inventory_id', 'inventory_id');
     }
 }

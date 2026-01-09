@@ -18,9 +18,9 @@ class InventoryController extends Controller
         $search = $request->input('search');
         $category = $request->input('category');
 
-        $query = InventoryItem::query()
-            ->orderBy('inventory_id', 'desc');
-
+        $query = InventoryItem::with(['repairTickets' => function ($q) {
+            $q->orderBy('receiving_date', 'desc');
+        }])->orderBy('inventory_id', 'desc');
 
         // Search filter
         if ($search) {
@@ -72,26 +72,22 @@ class InventoryController extends Controller
         $category = $request->category;
         $prefix = $prefixMap[$category] ?? 'OTH';
 
-        // Current date (YYYYMMDD)
-        $date = now()->format('Ymd');
-
         // Find last inventory_id for SAME category & SAME date
-        $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-{$date}-%")
+        $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-%")
             ->orderBy('inventory_id', 'desc')
             ->first();
 
-        // Extract last 4-digit sequence
+        // Extract last 5-digit sequence
         if ($lastItem) {
-            $lastNumber = intval(substr($lastItem->inventory_id, -4));
+            $lastNumber = intval(substr($lastItem->inventory_id, -5));
             $nextNumber = $lastNumber + 1;
         } else {
             $nextNumber = 1;
         }
 
         $inventoryId = sprintf(
-            '%s-%s-%04d',
+            '%s-%05d',
             $prefix,
-            $date,
             $nextNumber
         );
 
@@ -132,21 +128,20 @@ class InventoryController extends Controller
         DB::transaction(function () use ($validated, $prefix, $date) {
 
             // Get LAST USED number safely
-            $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-{$date}-%")
+            $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-%")
                 ->lockForUpdate()
                 ->orderBy('inventory_id', 'desc')
                 ->first();
 
             $startNumber = $lastItem
-                ? intval(substr($lastItem->inventory_id, -4)) + 1
+                ? intval(substr($lastItem->inventory_id, -5)) + 1
                 : 1;
 
             for ($i = 0; $i < $validated['quantity']; $i++) {
 
                 $inventoryId = sprintf(
-                    '%s-%s-%04d',
+                    '%s-%05d',
                     $prefix,
-                    $date,
                     $startNumber + $i
                 );
 
@@ -171,10 +166,9 @@ class InventoryController extends Controller
         });
         $quantity = $validated['quantity'];
         $baseInventoryId = sprintf(
-            '%s-%s-%04d',
+            '%s-%05d',
             $prefix,
-            $date,
-            intval(substr($validated['inventory_id'], -4))  // Starting number
+            intval(substr($validated['inventory_id'], -5))  // Starting number
         );
 
         try {
@@ -245,14 +239,14 @@ class InventoryController extends Controller
         try {
             ActivityLog::record(
                 'Edit Inventory Item',
-                "Inventory Item {$item->individual_id} was edited"
+                "Inventory Item {$item->inventory_id} was edited"
             );
         } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
         return redirect()->back()
-            ->with('success', "Unit {$item->individual_id} successfully updated.");
+            ->with('success', "Unit {$item->inventory_id} successfully updated.");
     }
 
     /**
