@@ -77,7 +77,7 @@ Route::middleware(['auth'])->group(function () {
     // Delete specific inventory item
     Route::delete('/destroy/{id}', [InventoryController::class, 'destroy'])->name('destroy');
     // Delete all items with a specific device name (optional)
-    Route::delete('/destroy-device/{deviceName}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
+    Route::delete('/destroy-device}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
     // Alias for compatibility with your blade file
     Route::delete('/devices/{id}', [InventoryController::class, 'destroy'])->name('devices.destroy');
     // Generate Device ID for new inventory item

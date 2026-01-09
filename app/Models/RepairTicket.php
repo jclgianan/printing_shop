@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\InventoryItem;
 
 class RepairTicket extends Model
 {
@@ -13,7 +14,7 @@ class RepairTicket extends Model
 
     protected $fillable = [
         'process_id',
-        'repairDevice_id',
+        'inventory_id',
         'repairTicket_id',
         'receiving_date',
         'name',
@@ -33,14 +34,19 @@ class RepairTicket extends Model
 
     public function getFormattedStatusAttribute()
     {
-        return match($this->status) {
+        return match ($this->status) {
             'pending' => 'Pending',
             'in_progress' => 'Ongoing',
             'repaired' => 'Repaired',
-            'released'      => 'Released', 
+            'released'      => 'Released',
             'unrepairable' => 'Unrepairable',
             default => ucfirst($this->status),
         };
+    }
+
+    public function inventory()
+    {
+        return $this->belongsTo(InventoryItem::class, 'inventory_id', 'inventory_id');
     }
 
     public function process()

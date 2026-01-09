@@ -27,22 +27,13 @@
                 @csrf
                 <input type="hidden" name="type">
 
-                <div class="radio-group-container">
-                    <label>Do you have an existing Device ID?</label>
-                    <div class="radio-group">
-                        <input id="radio-yes" type="radio" name="has_id" value="yes">
-                        <label for="radio-yes">Yes</label>
-                        <input id="radio-no" type="radio" name="has_id" value="no">
-                        <label for="radio-no">No</label>
-                    </div>
+                <div class="form-group">
+                    <label for="inventory_id">Inventory ID</label>
+                    <input type="text" name="inventory_id" id="inventory_id" class="form-control"
+                        placeholder="Enter Inventory Device ID">
                 </div>
 
-                <div class="form-group" id="existingIdBox" style="display: none;">
-                    <label for="repairTicket_id_manual">Enter Existing Device ID</label>
-                    <input type="text" id="repairTicket_id_manual" class="form-control" placeholder="Enter ID">
-                </div>
-
-                <div class="form-group" id="generateIdBox" style="display: none;">
+                {{-- <div class="form-group" id="generateIdBox" style="display: none;">
                     <label>Device ID</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="text" id="repairDevice_id_display" class="form-control"
@@ -52,7 +43,7 @@
                             class="btn btn-secondary btn-generate-device-id">Generate <i
                                 class="fa-solid fa-gear"></i></button>
                     </div>
-                </div>
+                </div> --}}
 
                 <div class="form-group">
                     <label>Ticket ID</label>
@@ -123,8 +114,7 @@
                 </div>
 
                 <br>
-                <button type="submit" class="submit-btn">Submit Ticket <i
-                        class="fa-solid fa-paper-plane"></i></button>
+                <button type="submit" class="submit-btn">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>
@@ -133,62 +123,6 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    // Function for Device ID selection and generation
-    function generaterepairDeviceId() {
-        const button = document.querySelector('.btn-generate-device-id');
-        button.disabled = true;
-        button.textContent = 'Generating...';
-
-        fetch("{{ route('generate.repairDevice.id') }}")
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) throw new Error(data.error);
-                document.getElementById('repairDevice_id_display').value = data.repairDevice_id;
-                document.getElementById('repairDevice_id').value = data.repairDevice_id;
-                button.remove();
-
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to generate ID. Please try again.');
-                button.disabled = false;
-                button.textContent = 'Generate';
-            });
-    }
-
-    // Show/hide input fields based on user selection
-    document.querySelectorAll('input[name="has_id"]').forEach(radio => {
-        radio.addEventListener('change', function() {
-            const existingIdBox = document.getElementById('existingIdBox');
-            const generateIdBox = document.getElementById('generateIdBox');
-
-            if (this.value === "yes") {
-                existingIdBox.style.display = "flex";
-                generateIdBox.style.display = "none";
-
-                // Sync hidden input with manual Device ID
-                const manualInput = document.getElementById('repairTicket_id_manual');
-                document.getElementById('repairDevice_id').value = manualInput.value;
-
-                // Update hidden input whenever user types
-                manualInput.addEventListener('input', function() {
-                    document.getElementById('repairDevice_id').value = this.value;
-                });
-
-            } else { // No selected
-                existingIdBox.style.display = "none";
-                generateIdBox.style.display = "none";
-
-                // Automatically generate Device ID
-                generaterepairDeviceId();
-            }
-        });
-    });
-
-
     // Function for Repair Ticket Generation and Selection
 
     function generaterepairTicketId() {
@@ -225,7 +159,7 @@
 
         // Ensure hidden input is synced with manual input if "Yes" is selected
         if ($('input[name="has_id"]:checked').val() === 'yes') {
-            $('#repairDevice_id').val($('#repairTicket_id_manual').val());
+            $('#inventory_id').val($('#inventory_id').val());
         }
 
         const form = $(this);

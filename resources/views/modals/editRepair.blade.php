@@ -19,21 +19,23 @@
             <form id="editRepairForm" class="process-form">
                 @csrf
                 <div class="form-group">
-                    <label for="edit_device_id">Device ID</label>
-                    <input type="text" name="repairDevice_id" id="edit_device_id" class="form-control" 
-                        value="{{ $ticket->repairDevice_id ?? '' }}">
+                    <label for="edit_device_id">Inventory ID</label>
+                    <input type="text" name="inventory_id" id="edit_device_id" class="form-control"
+                        value="{{ $ticket->inventory_id ?? '' }}">
                 </div>
 
                 <input type="hidden" name="ticket_id" id="edit_ticket_id">
 
                 <div class="form-group">
                     <label for="edit_name">Name</label>
-                    <input type="text" name="name" id="edit_name" class="form-control" autocomplete="name" required>
+                    <input type="text" name="name" id="edit_name" class="form-control" autocomplete="name"
+                        required>
                 </div>
 
                 <div class="form-group">
                     <label for="edit_office_department">Office/Department</label>
-                    <input type="text" name="office_department" id="edit_office_department" class="form-control" required>
+                    <input type="text" name="office_department" id="edit_office_department" class="form-control"
+                        required>
                 </div>
 
                 <div class="form-group">
@@ -70,6 +72,3 @@
         </div>
     </div>
 </div>
-
-
-

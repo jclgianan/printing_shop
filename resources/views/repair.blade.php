@@ -58,7 +58,7 @@
 
                                 <thead>
                                     <tr class="table-header">
-                                        <th>Device ID</th>
+                                        <th>Inventory ID</th>
                                         <th>Ticket ID</th>
                                         <th id="sortColumn" style="cursor:pointer;">Receiving Date<span
                                                 id="sortArrow"></span></th>
@@ -77,7 +77,7 @@
                             <tbody>
                                 @foreach ($repairTickets as $ticket)
                                     <tr>
-                                        <td>{{ $ticket->repairDevice_id }}</td>
+                                        <td>{{ $ticket->inventory_id }}</td>
                                         <td>{{ $ticket->repairTicket_id }}</td>
                                         <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('m/d/y') }}</td>
                                         <td>{{ $ticket->name }}</td>
@@ -105,7 +105,7 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="btn-edit" data-device_id="{{ $ticket->repairDevice_id }}"
+                                                <button class="btn-edit" data-device_id="{{ $ticket->inventory_id }}"
                                                     data-id="{{ $ticket->id }}"
                                                     data-receiving_date="{{ $ticket->receiving_date }}"
                                                     data-name="{{ $ticket->name }}"
@@ -191,7 +191,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const openBtn = document.getElementById('openModal');
-            const closeBtn = document.getElementById('closeModal');
+            const closeBtn = document.getElementById('closeRepairModal');
             const modal = document.getElementById('addRepairModal');
 
             if (openBtn && closeBtn && modal) {
