@@ -3,12 +3,12 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{{ $item->individual_id }}</h5>
+                <h5 class="modal-title">{{ $item->inventory_id }}</h5>
                 <button id="closeModal" type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <!-- View Mode -->
-            <div id="viewMode{{ $item->id }}">
+            <div id="viewMode{{ $item->individual_id }}">
                 <div class="modal-body">
                     <div class="info-box">
                         <div class="row">
@@ -139,6 +139,18 @@
 
                             <h6 class="mb-2">Notes</h6>
                             <p class="mb-0">{{ $item->notes }}</p>
+                        </div>
+                    @endif
+
+                    @if ($item->repairTickets && $item->repairTickets->isNotEmpty())
+                        <div class="info-box">
+                            <h6 class="mb-2">History</h6>
+                            <ul class="mb-0" style="padding-left: 1rem;">
+                                @foreach ($item->repairTickets as $ticket)
+                                    <li>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('M d, Y') }} -
+                                        {{ $ticket->issue }}</li>
+                                @endforeach
+                            </ul>
                         </div>
                     @endif
                 </div>
@@ -324,6 +336,7 @@
                         <div class="mb-3">
                             <textarea class="form-control" name="notes" rows="3" placeholder="Any additional notes...">{{ $item->notes }}</textarea>
                         </div>
+
                     </div>
 
                     <div class="modal-footer">

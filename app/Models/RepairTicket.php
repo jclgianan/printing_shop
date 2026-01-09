@@ -12,6 +12,10 @@ class RepairTicket extends Model
 
     protected $table = 'repair_tickets';
 
+    protected $primaryKey = 'repairTicket_id';
+    public $incrementing = false;   // string key
+    protected $keyType = 'string';  // key type is string
+
     protected $fillable = [
         'process_id',
         'inventory_id',
@@ -38,17 +42,19 @@ class RepairTicket extends Model
             'pending' => 'Pending',
             'in_progress' => 'Ongoing',
             'repaired' => 'Repaired',
-            'released'      => 'Released',
+            'released' => 'Released',
             'unrepairable' => 'Unrepairable',
             default => ucfirst($this->status),
         };
     }
 
+    // Relationship to InventoryItem
     public function inventory()
     {
         return $this->belongsTo(InventoryItem::class, 'inventory_id', 'inventory_id');
     }
 
+    // Relationship to Process (optional)
     public function process()
     {
         return $this->belongsTo(Process::class);
