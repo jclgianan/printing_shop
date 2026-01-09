@@ -2,10 +2,14 @@
 
     <nav class="shop_nav-menu">
         <ul>
-            <li><a href="{{ route('main') }}" class="shop_nav-link {{ request()->routeIs('main') ? 'active' : '' }}">
+            <li>
+                <a data-pos="left" href="{{ route('main') }}"
+                    class="shop_nav-link {{ request()->routeIs('main') ? 'active' : '' }}">
                     <span class="menu_icon"><i class="fa-solid fa-house"></i></span>
                     <span class="menu_text">Dashboard</span>
-                </a></li>
+                </a>
+
+            </li>
             <li><a href="{{ route('printing') }}"
                     class="shop_nav-link {{ request()->routeIs('printing*', 'status-filter', 'receiving*') ? 'active' : '' }}">
                     <span class="menu_icon"><i class="fa-solid fa-print"></i></span>

@@ -1,11 +1,12 @@
 <aside class="receiving_topbar">
     <div class="header-left">
-        <div class="shop_menu"><i class="fa-solid fa-list"></i></div>
+        <div class="shop_menu" data-tooltip="Menu"><i class="fa-solid fa-list"></i></div>
 
         <div class="logo-container">
             <img src="{{ asset('images/LOGO.png') }}" alt="Logo" class="topbar-logo">
             <div class="clock-container">
-                <div id="clock" class="clock">00:00:00</div>
+                <div id="clock" class="clock" data-tooltip="Philippine Standard Time" data-pos="top">00:00:00
+                </div>
                 <div id="date" class="date">January 1, 2000</div>
             </div>
         </div>

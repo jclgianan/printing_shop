@@ -1,4 +1,3 @@
-<!-- resources/views/receiving.blade.php -->
 @extends('layouts.default') {{-- Assuming this is your main layout --}}
 
 @section('title', 'Repair')

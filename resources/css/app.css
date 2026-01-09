@@ -152,7 +152,6 @@ html {
     display: flex;
     justify-content: center;
     align-items: center;
-    filter: invert(100%);
 }
 .logo-image {
     width: 8rem;
@@ -355,7 +354,7 @@ html {
 
 .clock-container {
     font-family: "Roboto";
-    font-size: 13px;
+    font-size: 14px;
 
     margin-left: 13px;
 }
@@ -386,7 +385,7 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 999;
+    z-index: 999999999;
 }
 .header-left {
     display: flex;
@@ -496,19 +495,19 @@ input::placeholder {
     left: 0;
     overflow: hidden;
     transition: width 0.3s ease;
-    z-index: 999; /* above main content */
+    z-index: 999999; /* above main content */
     padding-top: 1rem;
 }
 
 .shop_sidebar.open {
     width: 260px; /* expanded width */
-    z-index: 9992;
+    z-index: 999999;
 }
 .shop_menu {
     font-size: 25px;
     font-weight: 100;
     cursor: pointer;
-    z-index: 9992;
+    z-index: 999999;
     align-items: center;
 }
 
@@ -558,14 +557,10 @@ input::placeholder {
     opacity: 1;
 }
 .shop_nav-link {
-    /* display: flex; */
-    /* align-items: center;
-    justify-content: center; */
     padding: 0.75rem 1rem;
     border-radius: 10px;
     text-decoration: none;
-    color: #dbeafe; /* light blue-gray */
-    /* margin-bottom: 0.5rem; */
+    color: #dbeafe;
     transition: background 0.5s;
     font-size: 1.2rem;
     display: block;
@@ -2584,4 +2579,39 @@ p {
 
 .pop-up-success-title {
     font-weight: 600;
+}
+
+[data-tooltip] {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+}
+
+[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 110%;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+
+    background-color: var(--dirtywhite_bg);
+    color: rgb(22, 22, 22);
+    padding: 3px 6px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.253);
+    font-size: 0.8rem;
+    font-weight: 400;
+    white-space: nowrap;
+
+    opacity: 0;
+    visibility: hidden;
+    transition: all 150ms ease-in-out;
+    z-index: 9999991;
+}
+
+[data-tooltip]:hover::before,
+[data-tooltip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) scale(1);
 }
