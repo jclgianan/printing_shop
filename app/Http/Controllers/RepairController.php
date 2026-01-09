@@ -11,6 +11,7 @@ use App\Models\Process;
 use App\Models\ActivityLog;
 use App\Models\RepairTicket;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use PHPUnit\TextUI\XmlConfiguration\Group;
 
 class RepairController extends Controller
@@ -62,67 +63,42 @@ class RepairController extends Controller
     // Storing the input of the repair form
     public function repairTicketStore(Request $request)
     {
-        // Validate inputs
-        $request->validate([
-            'receiving_date' => 'required|date',
-            'name' => 'required|string|max:255',
-            'office_department' => 'required|string|max:255',
-            'itemname' => 'required|string|max:255',
-            'issue' => 'required|string|max:100',
-            'solution' => 'nullable|string',
-            'note' => 'nullable|string|max:100',
-        ]);
-
         try {
-            // If the client generated an ID (via the Generate button), use it if it's unique.
-            $providedId = $request->input('repairTicket_id');
-
-            if ($providedId && !RepairTicket::where('repairTicket_id', $providedId)->exists()) {
-                $randomId = $providedId;
-            } else {
-                // Generate a unique server-side ID
-                do {
-                    $randomId = 'RPR-' . date('Ymd') . '-' . strtoupper(Str::random(4));
-                } while (RepairTicket::where('repairTicket_id', $randomId)->exists());
-            }
-
-            $hasId = $request->input('has_id'); // 'yes' or 'no'
-            $deviceId = $request->input('repairDevice_id');
-
-            if (!$hasId) {
+            // Validate inputs
+            $request->validate([
+                'receiving_date' => 'required|date',
+                'name' => 'required|string|max:255',
+                'office_department' => 'required|string|max:255',
+                'itemname' => 'required|string|max:255',
+                'issue' => 'required|string|max:100',
+                'solution' => 'nullable|string',
+                'note' => 'nullable|string|max:100',
+                'inventory_id' => 'required|exists:inventory_items,inventory_id',
+            ]);
+        } catch (ValidationException $e) {
+            // Return the first validation error like the original code
+            if ($request->ajax()) {
                 return response()->json([
-                    'error' => 'Please select whether you have an existing Device ID.'
+                    'error' => $e->validator->errors()->first()
                 ], 422);
             }
 
-            if ($hasId === 'yes') {
-                if (!$deviceId || !RepairTicket::where('repairDevice_id', $deviceId)->exists()) {
-                    return response()->json([
-                        'error' => 'The device ID you entered does not exist.'
-                    ], 422);
-                }
-                $finalDeviceId = $deviceId;
-            } elseif ($hasId === 'no') {
-                if (!$deviceId) {
-                    return response()->json([
-                        'error' => 'Please click "Generate" to create a Device ID.'
-                    ], 422);
-                }
-                $finalDeviceId = $deviceId;
-            }
+            // If not AJAX, redirect back with input & errors
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->withInput();
+        }
 
-            else {
-                // No device input → generate a unique ID
-                do {
-                    $finalDeviceId = random_int(100000, 999999);
-                } while (RepairTicket::where('repairDevice_id', $finalDeviceId)->exists());
-            }
+        try {
+            // Generate Repair Ticket ID
+            do {
+                $repairTicketId = 'RPR-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+            } while (RepairTicket::where('repairTicket_id', $repairTicketId)->exists());
 
-            // Create the print ticket record (process_id is optional)
-            // Do NOT set release_date here; it will be set when status becomes 'released'.
+            // Create the ticket
             $ticket = RepairTicket::create([
-                'repairDevice_id' => $finalDeviceId,
-                'repairTicket_id' => $randomId,
+                'repairTicket_id' => $repairTicketId,
+                'inventory_id' => $request->inventory_id,
                 'receiving_date' => $request->receiving_date,
                 'name' => $request->name,
                 'office_department' => $request->office_department,
@@ -133,79 +109,46 @@ class RepairController extends Controller
                 'status' => 'pending',
             ]);
 
-            $user = auth()->user();
-
+            // Log activity
             try {
                 ActivityLog::record(
                     'Add Repair Ticket',
                     "Repair Ticket {$ticket->repairTicket_id} was created"
                 );
             } catch (\Exception $e) {
-                Log::error('Failed to log Repair Ticket activity: ' . $e->getMessage());
-                // don't throw, let ticket submission succeed
+                Log::error('Failed to log activity: ' . $e->getMessage());
             }
 
-
-             // If AJAX, return JSON
+            // Return success JSON
             if ($request->ajax()) {
-                $ticket = RepairTicket::latest()->first();
                 return response()->json([
-                    'success' => 'Repair Ticket saved successfully!',
+                    'success' => true,
                     'ticket' => $ticket
                 ]);
             }
 
-
-            // Redirect with success message
-            return redirect(route("repair.form"))->with('success', 'Repair Ticket saved successfully!');
+            return redirect()->back()->with('success', 'Repair Ticket created successfully!');
         } catch (\Exception $e) {
-            // Log exception details to help debug why saving failed
-            Log::error('Failed to save Repair Ticket: ' . $e->getMessage());
-            Log::error($e->getTraceAsString());
+            Log::error('Repair Ticket save failed: ' . $e->getMessage());
+
+            $message = 'Failed to save Repair Ticket.';
+            if (config('app.debug')) {
+                $message .= ' ' . $e->getMessage();
+            }
 
             if ($request->ajax()) {
                 return response()->json([
-                    'error' => 'Failed to save Repair Ticket.',
-                    'details' => config('app.debug') ? $e->getMessage() : null,
+                    'error' => $message
                 ], 500);
             }
 
-            // Redirect with error message
-            return redirect()->route('repair.form')->with('error', 'Failed to save Repair Ticket. Please try again.');
-        }
-    }
-
-    // Genrating the unique repair Device ID
-    public function generateRepairDeviceId()
-    {   
-        try {
-            // Log the start of the process
-            Log::info('Generating Device ID...');
-
-            do {
-                // Create ticket ID with today's date and random characters (PRT prefix)
-                $device_id = random_int(100000, 999999);
-
-                // Log the generated ID
-                Log::info("Generated ID: $device_id");
-
-                // Check if this ID already exists in the database
-            } while (RepairTicket::where('repairDevice_id', $device_id)->exists());
-
-            // Return the generated ID as a response
-            return response()->json(['repairDevice_id' => $device_id]);
-        } catch (\Exception $e) {
-            // Log the exception if something goes wrong
-            Log::error("Error generating Repair Ticket ID: " . $e->getMessage());
-            
-            // Return an error response
-            return response()->json(['error' => 'Error generating Ticket ID.'], 500);
+            return redirect()->back()->with('error', $message);
         }
     }
 
     // Genrating the unique repair ticket ID
     public function generateRepairTicketId()
-    {   
+    {
         try {
             // Log the start of the process
             Log::info('Generating Ticket ID...');
@@ -225,7 +168,7 @@ class RepairController extends Controller
         } catch (\Exception $e) {
             // Log the exception if something goes wrong
             Log::error("Error generating Repair Ticket ID: " . $e->getMessage());
-            
+
             // Return an error response
             return response()->json(['error' => 'Error generating Ticket ID.'], 500);
         }
@@ -258,7 +201,7 @@ class RepairController extends Controller
         try {
             $ticket = RepairTicket::findOrFail($id);
             $oldStatus = $ticket->formatted_status;
-            
+
             // Update the status
             $ticket->status = $request->status;
             if ($request->status === 'released' && !$ticket->release_date) {
@@ -277,15 +220,15 @@ class RepairController extends Controller
             } catch (\Exception $e) {
                 Log::error('Failed to record activity log: ' . $e->getMessage());
             }
- 
+
 
             return response()->json([
                 'success' => true,
                 'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
                 'new_status' => $ticket->formatted_status,
-                'release_date' => $ticket->release_date 
-                                ? $ticket->release_date->format('Y-m-d H:i')
-                                : null
+                'release_date' => $ticket->release_date
+                    ? $ticket->release_date->format('Y-m-d H:i')
+                    : null
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -314,39 +257,33 @@ class RepairController extends Controller
             'note' => 'nullable|string|max:100',
             'release_date' => 'nullable',
             'status' => 'nullable|in:pending,in_progress,repaired,released,unrepairable',
+            'inventory_id' => ['nullable', 'exists:inventory_items,inventory_id'],
         ]);
 
-        $deviceId = $request->input('repairDevice_id');
-        if (!$deviceId) {
-            do {
-                $deviceId = random_int(100000, 999999);
-            } while (RepairTicket::where('repairDevice_id', $deviceId)->exists());
-        }
-        
         $changes = [];
-        
+
         // Update fields except release_date (handle separately)
-        foreach ($request->only(['name', 'office_department', 'itemname', 'issue', 'solution', 'note', 'status']) as $field => $value) {
+        foreach ($request->only(['name', 'office_department', 'itemname', 'issue', 'solution', 'note', 'status', 'inventory_id']) as $field => $value) {
             if ($ticket->$field != $value) {
                 $changes[] = ucfirst($field) . ": '{$ticket->$field}' → '{$value}'";
                 $ticket->$field = $value;
             }
         }
-        
+
         // Handle release_date separately to preserve time component
         if ($request->has('release_date') && $request->release_date) {
             $newReleaseDate = $request->release_date;
             $oldReleaseDate = $ticket->release_date;
-            
+
             // Check if the incoming date has time component
             if (strpos($newReleaseDate, ':') !== false || strpos($newReleaseDate, 'T') !== false) {
                 // Full datetime provided (e.g., "2024-12-15 14:30:00" or "2024-12-15T14:30")
                 $formattedDate = str_replace('T', ' ', $newReleaseDate);
-                
+
                 // Ensure no seconds in the time
                 $carbonDate = \Carbon\Carbon::parse($formattedDate);
                 $formattedDate = $carbonDate->format('Y-m-d H:i:00');
-                
+
                 if ($oldReleaseDate != $formattedDate) {
                     $changes[] = "Release Date: '{$oldReleaseDate}' → '{$formattedDate}'";
                     $ticket->release_date = $formattedDate;
@@ -357,13 +294,13 @@ class RepairController extends Controller
                 if ($oldReleaseDate) {
                     $existingTime = \Carbon\Carbon::parse($oldReleaseDate)->format('H:i:00');
                     $newDateTime = $newReleaseDate . ' ' . $existingTime;
-                    
+
                     // Only log change if the DATE part actually changed
                     $oldDateOnly = \Carbon\Carbon::parse($oldReleaseDate)->format('Y-m-d');
                     if ($oldDateOnly != $newReleaseDate) {
                         $changes[] = "Release Date: '{$oldReleaseDate}' → '{$newDateTime}'";
                     }
-                    
+
                     $ticket->release_date = $newDateTime;
                 } else {
                     // No existing time, use current time (no seconds)
@@ -373,8 +310,7 @@ class RepairController extends Controller
                 }
             }
         }
-        
-        $ticket->repairDevice_id = $deviceId;
+
         $ticket->save();
 
         // Record activity log
@@ -391,8 +327,4 @@ class RepairController extends Controller
 
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }
-
-    
-
-
 }

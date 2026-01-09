@@ -10,8 +10,7 @@ class InventoryItem extends Model
     use HasFactory;
 
     protected $fillable = [
-        'device_id',
-        'individual_id',
+        'inventory_id',
         'device_name',
         'category',
         'serial_number',
@@ -91,15 +90,15 @@ class InventoryItem extends Model
                 SUM(CASE WHEN status = "issued" THEN 1 ELSE 0 END) as issued,
                 SUM(CASE WHEN status = "unusable" THEN 1 ELSE 0 END) as unusable
             ')
-            ->groupBy('device_id', 'device_name', 'category')
+            ->groupBy('inventory_id', 'device_name', 'category')
             ->get();
     }
 
     /**
-     * Scope for filtering by device_id
+     * Scope for filtering by inventory_id
      */
-    public function scopeDeviceId($query, $deviceId)
+    public function scopeInventoryId($query, $inventoryId)
     {
-        return $query->where('device_id', $deviceId);
+        return $query->where('inventory_id', $inventoryId);
     }
 }

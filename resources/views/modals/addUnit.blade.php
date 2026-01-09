@@ -35,7 +35,7 @@
                     <div class="mb-3">
                         <label for="addQuantity" class="form-label">Quantity <span class="text-danger">*</span></label>
                         <input type="number" class="form-control" id="addQuantity" name="quantity" value="1"
-                            min="1" max="50" required>
+                            min="1" max="100" required>
                         <small class="text-muted">Number of units to add</small>
                     </div>
 
