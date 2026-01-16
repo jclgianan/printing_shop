@@ -10,16 +10,34 @@
                 </a>
 
             </li>
-            <li><a href="{{ route('printing') }}"
-                    class="shop_nav-link {{ request()->routeIs('printing*', 'status-filter', 'receiving*') ? 'active' : '' }}">
-                    <span class="menu_icon"><i class="fa-solid fa-print"></i></span>
-                    <span class="menu_text">Printing</span>
-                </a></li>
-            <li><a href="{{ route('repair') }}"
-                    class="shop_nav-link {{ request()->routeIs('repair*', 'status-repair-filter') ? 'active' : '' }}">
-                    <span class="menu_icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
-                    <span class="menu_text">Repair</span>
-                </a></li>
+            <li class="has-submenu">
+                <button class="shop_nav-link submenu-toggle" type="button">
+                    <span class="menu_icon"><i class="fa-solid fa-ticket"></i></span>
+                    <span class="menu_text">Tickets</span>
+                    <span class="submenu-arrow">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </span>
+                </button>
+
+                <ul class="submenu">
+                    <li>
+                        <a href="{{ route('printing') }}"
+                            class="shop_nav-link {{ request()->routeIs('printing*') ? 'active' : '' }}">
+                            <span class="menu_icon"><i class="fa-solid fa-print"></i></span>
+                            <span class="menu_text">Printing</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('repair') }}"
+                            class="shop_nav-link {{ request()->routeIs('repair*') ? 'active' : '' }}">
+                            <span class="menu_icon"><i class="fa-solid fa-screwdriver-wrench"></i></span>
+                            <span class="menu_text">Repair</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <li><a href="{{ route('inventory') }}"
                     class="shop_nav-link {{ request()->routeIs('inventory*') ? 'active' : '' }}">
                     <span class="menu_icon"><i class="fa-solid fa-boxes-packing"></i></span>
@@ -61,4 +79,13 @@
         }
         return true; // Allow form submission
     }
+
+    // Submenu toggle functionality
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".submenu-toggle").forEach(toggle => {
+            toggle.addEventListener("click", () => {
+                toggle.closest(".has-submenu").classList.toggle("open");
+            });
+        });
+    });
 </script>
