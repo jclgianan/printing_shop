@@ -1,5 +1,5 @@
 <!-- Details Modal -->
-<div class="modal fade" id="viewModal{{ $item->id }}" tabindex="-1" data-bs-backdrop="static">
+<div class="modal fade" id="viewModal{{ $item->inventory_id }}" tabindex="-1" data-bs-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,7 +8,7 @@
             </div>
 
             <!-- View Mode -->
-            <div id="viewMode{{ $item->individual_id }}">
+            <div id="viewMode{{ $item->inventory_id }}">
                 <div class="modal-body">
                     <div class="info-box">
                         <div class="row">
@@ -156,24 +156,25 @@
                 </div>
                 <div class="modal-footer">
                     @if ($item->status === 'available')
-                        <button type="button" class="btn btn-normal" onclick="toggleIssue{{ $item->id }}()">
+                        <button type="button" class="btn btn-normal" onclick="toggleIssue{{ $item->inventory_id }}()">
                             Issue
                         </button>
                     @endif
                     @if ($item->status === 'issued')
-                        <button type="button" class="btn btn-normal" onclick="toggleReturn{{ $item->id }}()">
+                        <button type="button" class="btn btn-normal"
+                            onclick="toggleReturn{{ $item->inventory_id }}()">
                             Return
                         </button>
                     @endif
-                    <button type="button" class="btn btn-normal" onclick="toggleEditMode{{ $item->id }}()">
+                    <button type="button" class="btn btn-normal" onclick="toggleEditMode{{ $item->inventory_id }}()">
                         <i class="bi bi-pencil"></i> Edit
                     </button>
                 </div>
             </div>
 
             <!-- Edit Mode -->
-            <div id="editMode{{ $item->id }}" style="display: none;">
-                <form action="{{ route('inventory.update', $item->id) }}" method="POST">
+            <div id="editMode{{ $item->inventory_id }}" style="display: none;">
+                <form action="{{ route('inventory.update', $item->inventory_id) }}" method="POST">
                     @csrf
                     @method('PUT')
 
@@ -188,8 +189,9 @@
                         {{-- Serial Number --}}
                         <h6 class="mb-3">Device Information</h6>
                         <div class="col-md-6">
-                            <label for="editSerialNumber{{ $item->id }}" class="form-label">Serial Number</label>
-                            <input type="text" class="form-control" id="editSerialNumber{{ $item->id }}"
+                            <label for="editSerialNumber{{ $item->inventory_id }}" class="form-label">Serial
+                                Number</label>
+                            <input type="text" class="form-control" id="editSerialNumber{{ $item->inventory_id }}"
                                 name="serial_number" value="{{ $item->serial_number }}"
                                 placeholder="e.g., SN1234567890">
                         </div>
@@ -199,39 +201,43 @@
                             <h6 class="mb-3">Specifications</h6>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="editProcessor{{ $item->id }}" class="form-label">Processor</label>
-                                    <input type="text" class="form-control" id="editProcessor{{ $item->id }}"
-                                        name="processor" value="{{ $item->processor }}"
-                                        placeholder="e.g., Intel Core i7-11800H">
+                                    <label for="editProcessor{{ $item->inventory_id }}"
+                                        class="form-label">Processor</label>
+                                    <input type="text" class="form-control"
+                                        id="editProcessor{{ $item->inventory_id }}" name="processor"
+                                        value="{{ $item->processor }}" placeholder="e.g., Intel Core i7-11800H">
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="editRam{{ $item->id }}" class="form-label">RAM</label>
-                                    <input type="text" class="form-control" id="editRam{{ $item->id }}"
+                                    <label for="editRam{{ $item->inventory_id }}" class="form-label">RAM</label>
+                                    <input type="text" class="form-control" id="editRam{{ $item->inventory_id }}"
                                         name="ram" value="{{ $item->ram }}" placeholder="e.g., 16GB DDR4">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="editStorage{{ $item->id }}" class="form-label">Storage</label>
-                                    <input type="text" class="form-control" id="editStorage{{ $item->id }}"
-                                        name="storage" value="{{ $item->storage }}" placeholder="e.g., 512GB SSD">
+                                    <label for="editStorage{{ $item->inventory_id }}"
+                                        class="form-label">Storage</label>
+                                    <input type="text" class="form-control"
+                                        id="editStorage{{ $item->inventory_id }}" name="storage"
+                                        value="{{ $item->storage }}" placeholder="e.g., 512GB SSD">
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="editGraphicsCard{{ $item->id }}" class="form-label">Graphics
+                                    <label for="editGraphicsCard{{ $item->inventory_id }}"
+                                        class="form-label">Graphics
                                         Card</label>
                                     <input type="text" class="form-control"
-                                        id="editGraphicsCard{{ $item->id }}" name="graphics_card"
+                                        id="editGraphicsCard{{ $item->inventory_id }}" name="graphics_card"
                                         value="{{ $item->graphics_card }}" placeholder="e.g., NVIDIA RTX 3060">
                                 </div>
                             </div>
 
                             <div class="mb-3">
-                                <label for="editOtherSpecs{{ $item->id }}" class="form-label">Other
+                                <label for="editOtherSpecs{{ $item->inventory_id }}" class="form-label">Other
                                     Specifications</label>
-                                <textarea class="form-control" id="editOtherSpecs{{ $item->id }}" name="other_specs" rows="2"
+                                <textarea class="form-control" id="editOtherSpecs{{ $item->inventory_id }}" name="other_specs" rows="2"
                                     placeholder="Any additional specifications...">{{ $item->other_specs }}</textarea>
                             </div>
                         @endif
@@ -242,10 +248,10 @@
                             <h6 class="mb-3">Status & Condition</h6>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="editStatus{{ $item->id }}" class="form-label">Status <span
+                                    <label for="editStatus{{ $item->inventory_id }}" class="form-label">Status <span
                                             class="text-danger">*</span></label>
-                                    <select class="form-select" id="editStatus{{ $item->id }}" name="status"
-                                        required>
+                                    <select class="form-select" id="editStatus{{ $item->inventory_id }}"
+                                        name="status" required>
                                         <option value="available"
                                             {{ $item->status === 'available' ? 'selected' : '' }}>Available</option>
                                         @if (empty($item->status) || $item->status === 'issued')
@@ -258,9 +264,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="editCondition{{ $item->id }}" class="form-label">Condition <span
-                                            class="text-danger">*</span></label>
-                                    <select class="form-select" id="editCondition{{ $item->id }}"
+                                    <label for="editCondition{{ $item->inventory_id }}" class="form-label">Condition
+                                        <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="editCondition{{ $item->inventory_id }}"
                                         name="condition" required>
                                         <option value="new" {{ $item->condition === 'new' ? 'selected' : '' }}>New
                                         </option>
@@ -276,23 +282,25 @@
                         @endif
 
                         <!-- Assignment Information (Editable, conditional) -->
-                        <div id="editAssignmentSection{{ $item->id }}"
+                        <div id="editAssignmentSection{{ $item->inventory_id }}"
                             style="display: {{ $item->status === 'issued' ? 'block' : 'none' }};">
                             <hr>
                             <h6 class="mb-3">Assignment Information</h6>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <label for="editIssuedTo{{ $item->id }}" class="form-label">Issued To</label>
-                                    <input type="text" class="form-control" id="editIssuedTo{{ $item->id }}"
-                                        name="issued_to" value="{{ $item->issued_to }}" placeholder="Employee name">
+                                    <label for="editIssuedTo{{ $item->inventory_id }}" class="form-label">Issued
+                                        To</label>
+                                    <input type="text" class="form-control"
+                                        id="editIssuedTo{{ $item->inventory_id }}" name="issued_to"
+                                        value="{{ $item->issued_to }}" placeholder="Employee name">
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label for="editOffice{{ $item->id }}"
+                                    <label for="editOffice{{ $item->inventory_id }}"
                                         class="form-label">Office/Location</label>
-                                    <input type="text" class="form-control" id="editOffice{{ $item->id }}"
-                                        name="office" value="{{ $item->office }}"
-                                        placeholder="e.g., IT Department">
+                                    <input type="text" class="form-control"
+                                        id="editOffice{{ $item->inventory_id }}" name="office"
+                                        value="{{ $item->office }}" placeholder="e.g., IT Department">
                                 </div>
                             </div>
                         </div>
@@ -303,27 +311,28 @@
                         <h6 class="mb-3">Dates</h6>
                         <div class="row mb-3">
                             <div class="col-md-4">
-                                <label for="editDateAcquired{{ $item->id }}" class="form-label">Date
+                                <label for="editDateAcquired{{ $item->inventory_id }}" class="form-label">Date
                                     Acquired</label>
-                                <input type="date" class="form-control" id="editDateAcquired{{ $item->id }}"
-                                    name="date_acquired"
+                                <input type="date" class="form-control"
+                                    id="editDateAcquired{{ $item->inventory_id }}" name="date_acquired"
                                     value="{{ $item->date_acquired ? $item->date_acquired->format('Y-m-d') : '' }}">
                             </div>
 
-                            <div class="col-md-4" id="editDateIssuedField{{ $item->id }}"
+                            <div class="col-md-4" id="editDateIssuedField{{ $item->inventory_id }}"
                                 style="display: {{ $item->status === 'issued' ? 'block' : 'none' }};">
-                                <label for="editDateIssued{{ $item->id }}" class="form-label">Date Issued</label>
-                                <input type="date" class="form-control" id="editDateIssued{{ $item->id }}"
-                                    name="date_issued"
+                                <label for="editDateIssued{{ $item->inventory_id }}" class="form-label">Date
+                                    Issued</label>
+                                <input type="date" class="form-control"
+                                    id="editDateIssued{{ $item->inventory_id }}" name="date_issued"
                                     value="{{ $item->date_issued ? $item->date_issued->format('Y-m-d') : '' }}">
                             </div>
 
                             @if ($item->warranty_expiration)
                                 <div class="col-md-4">
-                                    <label for="editWarrantyExp{{ $item->id }}" class="form-label">Warranty
+                                    <label for="editWarrantyExp{{ $item->inventory_id }}" class="form-label">Warranty
                                         Expires</label>
                                     <input type="date" class="form-control"
-                                        id="editWarrantyExp{{ $item->id }}" name="warranty_expiration"
+                                        id="editWarrantyExp{{ $item->inventory_id }}" name="warranty_expiration"
                                         value="{{ $item->warranty_expiration->format('Y-m-d') }}">
                                 </div>
                             @endif
@@ -341,7 +350,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            onclick="toggleEditMode{{ $item->id }}()">
+                            onclick="toggleEditMode{{ $item->inventory_id }}()">
                             <i class="bi bi-x-circle"></i> Cancel
                         </button>
                         <button type="submit" class="btn btn-normal">
@@ -352,8 +361,9 @@
             </div>
 
             <!-- Issue Modal -->
-            <div id="issueModal{{ $item->id }}" style="display: none;">
-                <form class="modal-content" action="{{ route('inventory.issue', $item->id) }}" method="POST">
+            <div id="issueModal{{ $item->inventory_id }}" style="display: none;">
+                <form class="modal-content" action="{{ route('inventory.issue', $item->inventory_id) }}"
+                    method="POST">
                     @csrf
 
                     <div class="modal-body">
@@ -376,7 +386,8 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" onclick="toggleIssue{{ $item->id }}()">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="toggleIssue{{ $item->inventory_id }}()">
                             <i class="bi bi-x-circle"></i> Cancel
                         </button>
                         <button class="btn btn-normal">Issue Device</button>
@@ -385,17 +396,18 @@
             </div>
 
             <!-- Return Modal -->
-            <div id="returnModal{{ $item->id }}" style="display: none;">
-                <form class="modal-content" action="{{ route('inventory.return', $item->id) }}" method="POST">
+            <div id="returnModal{{ $item->inventory_id }}" style="display: none;">
+                <form class="modal-content" action="{{ route('inventory.return', $item->inventory_id) }}"
+                    method="POST">
                     @csrf
 
                     <div class="modal-body">
                         <p><strong>Device:</strong> {{ $item->device_name }}</p>
 
                         <div class="mb-3">
-                            <label for="editCondition{{ $item->id }}" class="form-label">Condition <span
+                            <label for="editCondition{{ $item->inventory_id }}" class="form-label">Condition <span
                                     class="text-danger">*</span></label>
-                            <select class="form-select" id="editCondition{{ $item->id }}" name="condition"
+                            <select class="form-select" id="editCondition{{ $item->inventory_id }}" name="condition"
                                 required>
                                 <option value="new" {{ $item->condition === 'new' ? 'selected' : '' }}>New</option>
                                 <option value="good" {{ $item->condition === 'good' ? 'selected' : '' }}>Good
@@ -415,7 +427,7 @@
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
-                            onclick="toggleReturn{{ $item->id }}()">
+                            onclick="toggleReturn{{ $item->inventory_id }}()">
                             <i class="bi bi-x-circle"></i> Cancel
                         </button>
                         <button class="btn btn-normal">Return Device</button>
@@ -429,9 +441,9 @@
 
 <script>
     // Issue Modal Toggle
-    function toggleIssue{{ $item->id }}() {
-        const viewMode = document.getElementById('viewMode{{ $item->id }}');
-        const issueMode = document.getElementById('issueModal{{ $item->id }}');
+    function toggleIssue{{ $item->inventory_id }}() {
+        const viewMode = document.getElementById('viewMode{{ $item->inventory_id }}');
+        const issueMode = document.getElementById('issueModal{{ $item->inventory_id }}');
         const closeBtn = document.getElementById('closeModal');
 
         if (viewMode.style.display === 'none') {
@@ -450,10 +462,10 @@
     }
 
     // Return Modal Toggle
-    function toggleReturn{{ $item->id }}() {
-        const viewMode = document.getElementById('viewMode{{ $item->id }}');
-        const returnMode = document.getElementById('returnModal{{ $item->id }}');
-        const closeBtn = document.getElementById('btnClose{{ $item->id }}');
+    function toggleReturn{{ $item->inventory_id }}() {
+        const viewMode = document.getElementById('viewMode{{ $item->inventory_id }}');
+        const returnMode = document.getElementById('returnModal{{ $item->inventory_id }}');
+        // const closeBtn = document.getElementById('btnClose{{ $item->inventory_id }}');
 
         if (viewMode.style.display === 'none') {
             // Switch to view mode
@@ -469,9 +481,9 @@
     }
 
     //  Edit Mode Toggle
-    function toggleEditMode{{ $item->id }}() {
-        const viewMode = document.getElementById('viewMode{{ $item->id }}');
-        const editMode = document.getElementById('editMode{{ $item->id }}');
+    function toggleEditMode{{ $item->inventory_id }}() {
+        const viewMode = document.getElementById('viewMode{{ $item->inventory_id }}');
+        const editMode = document.getElementById('editMode{{ $item->inventory_id }}');
 
         if (viewMode.style.display === 'none') {
             // Switch to view mode
@@ -487,8 +499,8 @@
     }
 
     //always poor condition if unusable
-    document.getElementById('editStatus{{ $item->id }}').addEventListener('change', function() {
-        const conditionSelect = document.getElementById('editCondition{{ $item->id }}');
+    document.getElementById('editStatus{{ $item->inventory_id }}').addEventListener('change', function() {
+        const conditionSelect = document.getElementById('editCondition{{ $item->inventory_id }}');
 
         if (this.value === 'unusable') {
             conditionSelect.value = 'poor'; // auto set to poor
@@ -496,9 +508,9 @@
     });
 
     // Show/hide assignment fields based on status in edit mode
-    document.getElementById('editStatus{{ $item->id }}').addEventListener('change', function() {
-        const assignmentSection = document.getElementById('editAssignmentSection{{ $item->id }}');
-        const dateIssuedField = document.getElementById('editDateIssuedField{{ $item->id }}');
+    document.getElementById('editStatus{{ $item->inventory_id }}').addEventListener('change', function() {
+        const assignmentSection = document.getElementById('editAssignmentSection{{ $item->inventory_id }}');
+        const dateIssuedField = document.getElementById('editDateIssuedField{{ $item->inventory_id }}');
 
         if (this.value === 'issued') {
             assignmentSection.style.display = 'block';
