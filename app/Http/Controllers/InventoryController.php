@@ -192,9 +192,9 @@ class InventoryController extends Controller
     /**
      * Show the form for editing a specific inventory item
      */
-    public function edit($id)
+    public function edit($inventoryId)
     {
-        $item = InventoryItem::findOrFail($id);
+        $item = InventoryItem::findOrFail($inventoryId);
 
         return view('inventory.edit', compact('item'));
     }
@@ -202,9 +202,9 @@ class InventoryController extends Controller
     /**
      * Update the specified inventory item
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $inventoryId)
     {
-        $item = InventoryItem::findOrFail($id);
+        $item = InventoryItem::findOrFail($inventoryId);
 
         $validated = $request->validate([
             'serial_number' => 'nullable|string',
@@ -271,9 +271,9 @@ class InventoryController extends Controller
             ->with('success', "Device Item {$inventoryId} has been deleted successfully.");
     }
 
-    public function issue(Request $request, $id)
+    public function issue(Request $request, $inventoryId)
     {
-        $item = InventoryItem::findOrFail($id);
+        $item = InventoryItem::findOrFail($inventoryId);
 
         $request->validate([
             'issued_to' => 'required|string',
@@ -291,7 +291,7 @@ class InventoryController extends Controller
         try {
             ActivityLog::record(
                 'Issue Inventory Item',
-                "Inventory Item {$item->individual_id} was issued to {$item->issued_to}"
+                "Inventory Item {$item->inventory_id} was issued to {$item->issued_to}"
             );
         } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
@@ -300,9 +300,9 @@ class InventoryController extends Controller
         return back()->with('success', 'Device issued successfully.');
     }
 
-    public function return(Request $request, $id)
+    public function return(Request $request, $inventoryId)
     {
-        $item = InventoryItem::findOrFail($id);
+        $item = InventoryItem::findOrFail($inventoryId);
 
         $request->validate([
             'condition' => 'required|in:new,good,fair,poor',
@@ -323,7 +323,7 @@ class InventoryController extends Controller
         try {
             ActivityLog::record(
                 'Return Inventory Item',
-                "Inventory Item {$item->individual_id} was returned"
+                "Inventory Item {$item->inventory_id} was returned"
             );
         } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
