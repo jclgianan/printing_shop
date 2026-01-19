@@ -497,13 +497,13 @@ input::placeholder {
     left: 0;
     overflow: hidden;
     transition: width 0.3s ease;
-    z-index: 1000; /* above main content */
+    z-index: 999; /* above main content */
     padding-top: 1rem;
 }
 
 .shop_sidebar.hide {
     width: 70px;
-    z-index: 999999;
+    z-index: 999;
     transition: width 0.3s ease;
 }
 .shop_menu {
