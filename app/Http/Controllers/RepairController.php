@@ -44,6 +44,7 @@ class RepairController extends Controller
         $query  = $request->input('query');
 
         $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')
+            ->orWhere('inventory_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
@@ -51,7 +52,7 @@ class RepairController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('repair', compact('repairTickets'));
+        return view('repair', compact('repairTickets', 'type'));
     }
 
     // Repair Logs data view

@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PrintingController;
 use App\Http\Controllers\RepairController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ProcessController;
 
 /*
@@ -18,9 +19,6 @@ use App\Http\Controllers\ProcessController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-// Public routes
-Route::redirect('/', '/login');
 
 // Authentication routes
 Route::get("/login", [AuthController::class, "login"])
@@ -43,6 +41,7 @@ Route::middleware(['auth', 'role:admin'])
 
 Route::middleware(['auth', 'role:admin,editor'])
     ->group(function () {
+        // Main pages
         Route::get('/main', [AuthController::class, 'index'])->name('main');
         Route::get('/add-new-user', [AuthController::class, 'addNewUser'])->name('add-new-user');
         Route::get('/users', [AuthController::class, 'listUsers'])->name('users.list');
@@ -51,7 +50,6 @@ Route::middleware(['auth', 'role:admin,editor'])
 // Protected routes - all require authentication
 Route::middleware(['auth'])->group(function () {
     // Main pages
-    Route::get("/main", [AuthController::class, "index"])->name("main");
     //Refreshing of Data
     // API endpoints
     Route::get('/api/dashboard/stats', [AuthController::class, 'getDashboardStats'])->name('api.dashboard.stats');
@@ -70,12 +68,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inventory/create', [InventoryController::class, 'create'])->name('inventory.create');
     Route::post('/store', [InventoryController::class, 'store'])->name('inventory.store');
     // Edit specific inventory item
-    Route::get('/edit/{id}', [InventoryController::class, 'edit'])->name('edit');
-    Route::put('/update/{id}', [InventoryController::class, 'update'])->name('inventory.update');
-    Route::post('/inventory/issue/{id}', [InventoryController::class, 'issue'])->name('inventory.issue');
-    Route::post('/inventory/return/{id}', [InventoryController::class, 'return'])->name('inventory.return');
+    Route::get('/edit/{item', [InventoryController::class, 'edit'])->name('edit');
+    Route::put('/update/{item}', [InventoryController::class, 'update'])->name('inventory.update');
+    Route::post('/inventory/issue/{item}', [InventoryController::class, 'issue'])->name('inventory.issue');
+    Route::post('/inventory/return/{item}', [InventoryController::class, 'return'])->name('inventory.return');
     // Delete all items with a specific device name (optional)
-    Route::delete('/destroy-device/{inventoryId}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
+    Route::delete('/destroy-device/{item}', [InventoryController::class, 'destroyDevice'])->name('destroy-device');
     // Generate Device ID for new inventory item
     Route::get('/generate-device-id', [InventoryController::class, 'generateInventoryId'])->name('generate-inventory-id');
     Route::post('/inventory/units/{deviceId}/add', [InventoryController::class, 'addUnits'])->name('inventory.add-units');
@@ -108,4 +106,20 @@ Route::middleware(['auth'])->group(function () {
     // Print ticket status management
     Route::post('/print-tickets/{id}/status', [PrintingController::class, 'updateStatus'])->name('print-tickets.update-status');
     Route::post('/repair-tickets/{id}/status', [RepairController::class, 'updateRepairStatus'])->name('repair-tickets.update-status');
+});
+
+// Guest routes
+Route::redirect('/', '/login');
+
+Route::prefix('guest')->name('guest.')->group(function () {
+    // Main guest page
+    Route::get('/page', [GuestController::class, 'guestPage'])->name('page');
+
+    // Request ticket routes
+    Route::get('/request-ticket', [GuestController::class, 'showRequestForm'])->name('requestForm');
+    Route::post('/request-ticket', [GuestController::class, 'submitRequest'])->name('submitRequest');
+
+    // Track ticket routes
+    Route::get('/track-ticket', [GuestController::class, 'showTrackTicketForm'])->name('trackTicketForm');
+    Route::get('/track-ticket/search', [GuestController::class, 'trackTicket'])->name('trackTicket');
 });
