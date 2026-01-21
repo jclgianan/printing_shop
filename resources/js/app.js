@@ -160,7 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         clockElement.textContent = phTime;
 
-        // --- Date Logic ---
         if (dateElement) {
             const options = {
                 weekday: "short",
@@ -220,5 +219,37 @@ document.addEventListener("DOMContentLoaded", () => {
                 .filter((id) => id);
             sessionStorage.setItem("openSubmenus", JSON.stringify(openMenus));
         });
+    });
+    //dark mode
+    const btn = document.getElementById("theme-toggle");
+    const icon = document.getElementById("theme-icon");
+    const currentTheme = localStorage.getItem("theme");
+
+    // Function to set the correct icon
+    function updateIcon(theme) {
+        if (theme === "dark") {
+            icon.classList.replace("fa-moon", "fa-sun"); // Show sun in dark mode
+        } else {
+            icon.classList.replace("fa-sun", "fa-moon"); // Show moon in light mode
+        }
+    }
+
+    // 1. Check for saved theme on page load
+    if (currentTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        updateIcon("dark");
+    }
+
+    // 2. Handle the click event
+    btn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        let theme = "light";
+        if (document.body.classList.contains("dark-mode")) {
+            theme = "dark";
+        }
+
+        updateIcon(theme);
+        localStorage.setItem("theme", theme);
     });
 });
