@@ -28,6 +28,8 @@ html {
     --prt-rpr_bgcolor: #d1fae5;
     --released_bgcolor: #dcd4ff;
     --cld-unr_bgcolor: #fbecec;
+    /* --sidebar-expanded: 270px;
+    --sidebar-collapsed: 80px; */
 }
 
 .dark-mode {
@@ -394,7 +396,7 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 999999999;
+    z-index: 1000;
 }
 .header-left {
     display: flex;
@@ -495,22 +497,23 @@ input::placeholder {
     background-color: var(--bg-button);
 }
 .shop_sidebar {
-    width: 70px; /* collapsed */
+    width: 210px;
     padding-right: 4px;
-    height: 100vh;
+    height: calc(100vh - 70px);
     background-color: var(--bg-ui);
     position: fixed;
     top: 70px;
     left: 0;
     overflow: hidden;
     transition: width 0.3s ease;
-    z-index: 999999; /* above main content */
+    z-index: 999; /* above main content */
     padding-top: 1rem;
 }
 
-.shop_sidebar.open {
-    width: 260px; /* expanded width */
-    z-index: 999999;
+.shop_sidebar.hide {
+    width: 70px;
+    z-index: 999;
+    transition: width 0.3s ease;
 }
 .shop_menu {
     font-size: 25px;
@@ -550,20 +553,61 @@ input::placeholder {
     gap: 15px;
     color: #fff;
     text-decoration: none;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
 }
+
+.has-submenu {
+    display: flex;
+    flex-direction: column;
+}
+
+.submenu-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.submenu-arrow {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+/* submenu hidden by default */
+.submenu {
+    max-height: 0;
+    overflow: hidden;
+    display: block;
+    flex-direction: column;
+    transition: max-height 0.3s ease;
+    /* margin-left: 2rem !important; */
+}
+
+/* open state */
+.has-submenu.open .submenu {
+    max-height: 200px;
+}
+
+.has-submenu.open .submenu-arrow {
+    transform: rotate(180deg);
+}
+.submenu-arrow {
+    color: #fff;
+}
+
 .menu_icon {
     width: 30px;
     display: inline-block;
     text-align: center;
+    color: #fff;
 }
 .shop_sidebar .menu_text {
-    opacity: 0;
+    opacity: 1;
     white-space: nowrap;
     transition: opacity 0.2s ease-in;
+    color: #fff;
 }
-.shop_sidebar.open .menu_text {
-    opacity: 1;
+.shop_sidebar.hide .menu_text {
+    opacity: 0;
 }
 .shop_nav-link {
     padding: 0.75rem 1rem;
@@ -571,10 +615,32 @@ input::placeholder {
     text-decoration: none;
     color: #dbeafe;
     transition: background 0.5s;
+    background-color: none;
     font-size: 1.2rem;
     display: block;
     padding: 1rem;
 }
+.submenu-toggle {
+    background: none;
+    text-decoration: none;
+    border: none; /* remove border */
+    border-radius: 10px;
+    color: #dbeafe;
+    font-family: inherit;
+    font-size: 1.2rem;
+    cursor: pointer; /* pointer on hover */
+    display: flex;
+    width: 100%;
+    padding: 1rem;
+    padding: 0.75rem 1rem;
+    margin-left: 0.3rem;
+    gap: 15px;
+}
+
+.submenu-toggle.hide .menu_text {
+    opacity: 0;
+}
+
 .shop_nav-link:hover,
 .shop_newEntry:hover,
 .shop_nav-link.active {
@@ -594,7 +660,7 @@ input::placeholder {
     bottom: 0;
     color: #fff;
     font-family: inherit;
-    font-size: 25px;
+    font-size: 1.2rem;
 }
 
 .shop_logout-btn:hover {
@@ -609,31 +675,23 @@ input::placeholder {
 
 /* Main Panel */
 /* .main-panel */
-.layout-wrapper-main {
-    background-color: var(--dirtywhite_bg);
-    height: 100dvh;
-    width: 100dvw;
-    margin: 0;
-}
-
-.layout-wrapper-repair {
+.layout-wrapper-main,
+.layout-wrapper-repair,
+.layout-wrapper-printing {
     position: relative;
     background-color: var(--dirtywhite_bg);
-    height: 100vh;
-    width: 100vw;
-    margin: 0;
-}
-
-.layout-wrapper-printing {
-    background-color: var(--dirtywhite_bg);
     height: 100dvh;
     width: 100dvw;
     margin: 0;
+    transition: width 0.3s ease;
 }
-
+.layout-wrapper-main {
+    left: 0;
+    transition: margin-left 0.3s ease;
+}
 .receiving-main-panel {
     background-color: var(--dirtywhite_bg);
-    transition: none;
+    transition: width 0.3s ease;
     display: flex;
     flex-direction: column;
     min-height: 0;
@@ -641,9 +699,13 @@ input::placeholder {
     padding: 0.5rem;
     position: absolute;
     top: 60px;
-    left: 76px;
     right: 0;
     bottom: 0;
+    left: 215px;
+}
+body.sidebar-collapsed .receiving-main-panel {
+    left: 75px;
+    transition: width 0.3s ease;
 }
 
 .content-placeholder {
@@ -1010,16 +1072,16 @@ input::placeholder {
 .modal-overlay {
     display: flex;
     position: fixed;
+    align-items: center;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 999;
+    z-index: 1001;
     justify-content: center;
     align-items: center;
-
     opacity: 0;
     visibility: hidden;
 }
@@ -1056,7 +1118,9 @@ h1 {
 
     transform: scale(0.3);
     opacity: 0;
-    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    transition:
+        transform 0.2s ease-in-out,
+        opacity 0.2s ease-in-out;
 }
 
 /* Form Button Container */
@@ -1466,12 +1530,12 @@ h1 {
     flex-direction: column;
     background-color: var(--whitebg);
     overflow: hidden; /* Prevent page scroll */
+    margin-top: 5px;
 }
 
 .dashboard-container-main h1 {
     font-size: 24px;
     font-weight: 600;
-
     font-family: "Rubik";
     color: var(--header-text);
     flex-shrink: 0;
@@ -1492,7 +1556,7 @@ h1 {
         "inventory-graph inventory-graph inventory-graph dashboard-activities"
         "inventory-graph inventory-graph inventory-graph dashboard-activities";
     gap: 1rem;
-    padding: 0 20px 20px 20px;
+    padding: 0px 0px 20px 0px;
     overflow: hidden;
 }
 .recent-activities {
@@ -1590,7 +1654,9 @@ h1 {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
     display: flex;
     max-height: 90px;
-    transition: transform 0.3s ease, z-index 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        z-index 0.3s ease;
     cursor: pointer;
     max-width: 190px;
     max-height: 70px;
@@ -1644,7 +1710,8 @@ h1 {
     z-index: 1;
 }
 
-.card:hover .in-cards p {
+.card,
+.in-cards p {
     text-shadow: 0px 0px 5px 5px rgb(255, 0, 0);
     z-index: 1;
 }
@@ -1667,7 +1734,9 @@ h1 {
     background: var(--dirtywhite_bg);
     padding: 0.2rem;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        0 1px 3px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1769,7 +1838,9 @@ h1 {
     border: 1px solid #e5e7eb;
     background-color: var(--dirtywhite_bg);
     cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
         transform 0.15s ease;
 }
 
@@ -1787,7 +1858,9 @@ h1 {
 .quick-repair a {
     color: #6b7280;
     font-size: 2rem;
-    transition: color 0.2s ease, transform 0.15s ease;
+    transition:
+        color 0.2s ease,
+        transform 0.15s ease;
     opacity: 0.7;
 }
 

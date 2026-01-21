@@ -39,7 +39,8 @@
         const menuBtn = document.querySelector(".receiving_topbar .shop_menu");
 
         menuBtn.addEventListener("click", () => {
-            leftSidebar.classList.toggle("open");
+            leftSidebar.classList.toggle("hide");
+            document.body.classList.toggle("sidebar-collapsed");
         });
     });
 </script>

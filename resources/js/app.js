@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             dateElement.textContent = now.toLocaleDateString(
                 undefined,
-                options
+                options,
             );
         }
     }
@@ -178,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateClock, 1000);
 });
 
+<<<<<<< HEAD
 //dark mode
 const btn = document.getElementById("theme-toggle");
 const icon = document.getElementById("theme-icon");
@@ -209,4 +210,48 @@ btn.addEventListener("click", function () {
 
     updateIcon(theme);
     localStorage.setItem("theme", theme);
+=======
+// ====== Sidebar Never Refresh using AJAX ==========
+
+// Submenu toggle functionality with state persistence
+document.addEventListener("DOMContentLoaded", () => {
+    // Restore submenu states from memory
+    const openSubmenus = JSON.parse(
+        sessionStorage.getItem("openSubmenus") || "[]",
+    );
+    openSubmenus.forEach((submenuId) => {
+        const submenu = document.getElementById(submenuId);
+        if (submenu) {
+            submenu.classList.add("open");
+        }
+    });
+
+    // Auto-open submenu if current route matches any submenu item
+    const currentRoute = "{{ request()->route()->getName() }}";
+    if (
+        currentRoute.startsWith("printing") ||
+        currentRoute.startsWith("repair")
+    ) {
+        document.getElementById("tickets-submenu")?.classList.add("open");
+    }
+    if (currentRoute === "add-new-user" || currentRoute === "activity.logs") {
+        document.getElementById("settings-submenu")?.classList.add("open");
+    }
+
+    // Toggle functionality
+    document.querySelectorAll(".submenu-toggle").forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+            const parent = toggle.closest(".has-submenu");
+            parent.classList.toggle("open");
+
+            // Save state
+            const openMenus = Array.from(
+                document.querySelectorAll(".has-submenu.open"),
+            )
+                .map((menu) => menu.id)
+                .filter((id) => id);
+            sessionStorage.setItem("openSubmenus", JSON.stringify(openMenus));
+        });
+    });
+>>>>>>> 4bec3accdebdececda37a49f506e9fd00b80f928
 });

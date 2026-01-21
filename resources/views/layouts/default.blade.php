@@ -21,16 +21,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <script src="../assets/plugins/apexcharts/dist/apexcharts.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 
 <body>
+
     <div class="layout-wrapper">
         @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
         @include('layouts.sidebarRepair') <!-- Shared sidebar -->
 
-        <main class="main-panel">
+        <main id="page-content" class="main-panel">
             @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->
         </main>
     </div>

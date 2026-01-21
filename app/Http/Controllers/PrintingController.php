@@ -22,10 +22,10 @@ class PrintingController extends Controller
         $type = 'printing';
         // Fetch print tickets for the printing dashboard
         $printTickets = PrintTicket::orderBy('receiving_date', 'desc')
-        ->orderBy('id', 'desc')    
-        ->paginate(10);
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
-        return view('printing', compact('printTickets', 'type'));   
+        return view('printing', compact('printTickets', 'type'));
     }
 
     // Show addPrinting Page
@@ -46,6 +46,7 @@ class PrintingController extends Controller
         $printTickets = PrintTicket::where('printTicket_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
+            ->orWhere('name', 'like', '%' . $query . '%')
             ->orderBy('receiving_date', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(10);
@@ -56,7 +57,7 @@ class PrintingController extends Controller
     // Printing Logs data view
     public function dashboard()
     {
-       $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->paginate(10);  // Add filters as needed
+        $printTickets = PrintTicket::orderBy('receiving_date', 'desc')->paginate(10);  // Add filters as needed
         return view('printing', compact('printTickets'));
     }
 
@@ -116,14 +117,14 @@ class PrintingController extends Controller
             }
 
 
-             // If AJAX, return JSON
+            // If AJAX, return JSON
             if ($request->ajax()) {
                 return response()->json([
                     'success' => 'Print Ticket saved successfully!',
                     'ticket' => $ticket,
                 ]);
             }
-            
+
             // Redirect with success message
             return redirect(route("printing.form"))->with('success', 'Print Ticket saved successfully!');
         } catch (\Exception $e) {
@@ -136,7 +137,7 @@ class PrintingController extends Controller
                     'error' => 'Failed to save Print Ticket.',
                     'details' => config('app.debug') ? $e->getMessage() : null,
                 ], 500);
-            } 
+            }
             // Redirect with error message
             return redirect()->route('printing.form')->with('error', 'Failed to save Print Ticket. Please try again.');
         }
@@ -144,7 +145,7 @@ class PrintingController extends Controller
 
     // Genrating the unique print ticket ID
     public function generatePrintTicketId()
-    {   
+    {
         try {
             // Log the start of the process
             Log::info('Generating Ticket ID...');
@@ -164,7 +165,7 @@ class PrintingController extends Controller
         } catch (\Exception $e) {
             // Log the exception if something goes wrong
             Log::error("Error generating Print Ticket ID: " . $e->getMessage());
-            
+
             // Return an error response
             return response()->json(['error' => 'Error generating Ticket ID.'], 500);
         }
@@ -205,7 +206,7 @@ class PrintingController extends Controller
         try {
             $ticket = PrintTicket::findOrFail($id);
             $oldStatus = $ticket->formatted_status;
-            
+
             // Update the status
             $ticket->status = $request->status;
             if ($request->status === 'released' && !$ticket->release_date) {
@@ -223,15 +224,15 @@ class PrintingController extends Controller
                 );
             } catch (\Exception $e) {
                 Log::error('Failed to record activity log: ' . $e->getMessage());
-            }          
+            }
 
             return response()->json([
                 'success' => true,
                 'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
                 'new_status' => $ticket->formatted_status,
-                'release_date' => $ticket->release_date 
-                                ? \Carbon\Carbon::parse ($ticket->release_date)->format('m-d-Y H:i')
-                                : null
+                'release_date' => $ticket->release_date
+                    ? \Carbon\Carbon::parse($ticket->release_date)->format('m-d-Y H:i')
+                    : null
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -246,7 +247,7 @@ class PrintingController extends Controller
         $ticket = PrintTicket::findOrFail($id);
         return response()->json($ticket);
     }
-    
+
     public function printUpdate(Request $request, $id)
     {
         $ticket = PrintTicket::findOrFail($id);
@@ -264,7 +265,7 @@ class PrintingController extends Controller
         ]);
 
         $changes = [];
-        
+
         // Update fields except release_date (handle separately)
         foreach ($request->only(['name', 'office_department', 'itemname', 'size', 'quantity', 'deadline', 'file_link', 'status']) as $field => $value) {
             if ($ticket->$field != $value) {
@@ -272,12 +273,12 @@ class PrintingController extends Controller
                 $ticket->$field = $value;
             }
         }
-        
+
         // Handle release_date separately to preserve time component
         if ($request->has('release_date') && $request->release_date) {
             $newReleaseDate = $request->release_date;
             $oldReleaseDate = $ticket->release_date;
-            
+
             // Check if the incoming date has time component
             if (strpos($newReleaseDate, ':') !== false || strpos($newReleaseDate, 'T') !== false) {
                 // Full datetime provided (e.g., "2024-12-15 14:30:00" or "2024-12-15T14:30")
@@ -286,7 +287,7 @@ class PrintingController extends Controller
                 // Ensure no seconds in the time
                 $carbonDate = \Carbon\Carbon::parse($formattedDate);
                 $formattedDate = $carbonDate->format('Y-m-d H:i:00');
-                
+
                 if ($oldReleaseDate != $formattedDate) {
                     $changes[] = "Release Date: '{$oldReleaseDate}' → '{$formattedDate}'";
                     $ticket->release_date = $formattedDate;
@@ -297,13 +298,13 @@ class PrintingController extends Controller
                 if ($oldReleaseDate) {
                     $existingTime = \Carbon\Carbon::parse($oldReleaseDate)->format('H:i:00');
                     $newDateTime = $newReleaseDate . ' ' . $existingTime;
-                    
+
                     // Only log change if the DATE part actually changed
                     $oldDateOnly = \Carbon\Carbon::parse($oldReleaseDate)->format('Y-m-d');
                     if ($oldDateOnly != $newReleaseDate) {
                         $changes[] = "Release Date: '{$oldReleaseDate}' → '{$newDateTime}'";
                     }
-                    
+
                     $ticket->release_date = $newDateTime;
                 } else {
                     // No existing time, use current time
@@ -313,7 +314,7 @@ class PrintingController extends Controller
                 }
             }
         }
-        
+
         $ticket->save();
 
         // Record activity log
@@ -330,8 +331,4 @@ class PrintingController extends Controller
 
         return response()->json(['success' => 'Ticket updated successfully!', 'ticket' => $ticket]);
     }
-
-   
-
-
 }

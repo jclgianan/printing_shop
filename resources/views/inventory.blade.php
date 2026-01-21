@@ -99,7 +99,7 @@
                                     <td class="action-buttons">
                                         <!-- View Units Modal Trigger -->
                                         <button type="button" class="view-btn" data-bs-toggle="modal"
-                                            data-bs-target="#viewModal{{ $items->id }}">
+                                            data-bs-target="#viewModal{{ $items->inventory_id }}">
                                             <i class="fa-solid fa-eye"></i>
                                         </button>
 

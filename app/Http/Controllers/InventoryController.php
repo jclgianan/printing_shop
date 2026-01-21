@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Models\ActivityLog;
+use Illuminate\Validation\Rules\In;
 
 class InventoryController extends Controller
 {
@@ -18,9 +19,9 @@ class InventoryController extends Controller
         $search = $request->input('search');
         $category = $request->input('category');
 
-        $query = InventoryItem::query()
-            ->orderBy('inventory_id', 'desc');
-
+        $query = InventoryItem::with(['repairTickets' => function ($q) {
+            $q->orderBy('receiving_date', 'desc');
+        }])->orderBy('inventory_id', 'desc');
 
         // Search filter
         if ($search) {
@@ -72,26 +73,22 @@ class InventoryController extends Controller
         $category = $request->category;
         $prefix = $prefixMap[$category] ?? 'OTH';
 
-        // Current date (YYYYMMDD)
-        $date = now()->format('Ymd');
-
         // Find last inventory_id for SAME category & SAME date
-        $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-{$date}-%")
+        $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-%")
             ->orderBy('inventory_id', 'desc')
             ->first();
 
-        // Extract last 4-digit sequence
+        // Extract last 5-digit sequence
         if ($lastItem) {
-            $lastNumber = intval(substr($lastItem->inventory_id, -4));
+            $lastNumber = intval(substr($lastItem->inventory_id, -5));
             $nextNumber = $lastNumber + 1;
         } else {
             $nextNumber = 1;
         }
 
         $inventoryId = sprintf(
-            '%s-%s-%04d',
+            '%s-%05d',
             $prefix,
-            $date,
             $nextNumber
         );
 
@@ -127,26 +124,25 @@ class InventoryController extends Controller
 
 
         // Extract prefix & date ONLY
-        [$prefix, $date] = array_slice(explode('-', $validated['inventory_id']), 0, 2);
+        [$prefix] = array_slice(explode('-', $validated['inventory_id']), 0, 2);
 
-        DB::transaction(function () use ($validated, $prefix, $date) {
+        DB::transaction(function () use ($validated, $prefix) {
 
             // Get LAST USED number safely
-            $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-{$date}-%")
+            $lastItem = InventoryItem::where('inventory_id', 'like', "{$prefix}-%")
                 ->lockForUpdate()
                 ->orderBy('inventory_id', 'desc')
                 ->first();
 
             $startNumber = $lastItem
-                ? intval(substr($lastItem->inventory_id, -4)) + 1
+                ? intval(substr($lastItem->inventory_id, -5)) + 1
                 : 1;
 
             for ($i = 0; $i < $validated['quantity']; $i++) {
 
                 $inventoryId = sprintf(
-                    '%s-%s-%04d',
+                    '%s-%05d',
                     $prefix,
-                    $date,
                     $startNumber + $i
                 );
 
@@ -171,10 +167,9 @@ class InventoryController extends Controller
         });
         $quantity = $validated['quantity'];
         $baseInventoryId = sprintf(
-            '%s-%s-%04d',
+            '%s-%05d',
             $prefix,
-            $date,
-            intval(substr($validated['inventory_id'], -4))  // Starting number
+            intval(substr($validated['inventory_id'], -5))  // Starting number
         );
 
         try {
@@ -197,19 +192,17 @@ class InventoryController extends Controller
     /**
      * Show the form for editing a specific inventory item
      */
-    public function edit($id)
+    public function edit(InventoryItem $item)
     {
-        $item = InventoryItem::findOrFail($id);
-
         return view('inventory.edit', compact('item'));
     }
+
 
     /**
      * Update the specified inventory item
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, InventoryItem $item)
     {
-        $item = InventoryItem::findOrFail($id);
 
         $validated = $request->validate([
             'serial_number' => 'nullable|string',
@@ -228,6 +221,11 @@ class InventoryController extends Controller
             'notes' => 'nullable|string',
         ]);
 
+        // Always poor condition if status is unusable
+        if ($validated['status'] === 'unusable') {
+            $validated['condition'] = 'poor';
+        }
+
         // Clear assignment fields if status is not 'issued'
         if ($validated['status'] !== 'issued') {
             $validated['issued_to'] = null;
@@ -235,52 +233,44 @@ class InventoryController extends Controller
             $validated['date_issued'] = null;
         }
 
-        // Always poor condition if status is unusable
-        if ($request->status === 'unusable') {
-            $request->merge(['condition' => 'poor']);
-        }
-
         $item->update($validated);
 
         try {
             ActivityLog::record(
                 'Edit Inventory Item',
-                "Inventory Item {$item->individual_id} was edited"
+                "Inventory Item {$item->inventory_id} was edited"
             );
         } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
         }
 
         return redirect()->back()
-            ->with('success', "Unit {$item->individual_id} successfully updated.");
+            ->with('success', "Unit {$item->inventory_id} successfully updated.");
     }
 
     /**
      * Delete all items with a specific inventory id
      */
-    public function destroyDevice($inventoryId)
+    public function destroyDevice(InventoryItem $item)
     {
+        $inventoryId = $item->inventory_id;
 
-        InventoryItem::where('inventory_id', $inventoryId)->delete();
+        $item->delete();
 
-        try {
-            ActivityLog::record(
-                'Delete Inventory Item',
-                "Inventory Item {$inventoryId} was deleted"
-            );
-        } catch (\Exception $e) {
-            Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
-        }
+        ActivityLog::record(
+            'Delete Inventory Item',
+            "Inventory Item {$inventoryId} was deleted"
+        );
 
-        return redirect()->route('inventory')
-            ->with('success', "Device Item {$inventoryId} has been deleted successfully.");
+        return redirect()
+            ->route('inventory')
+            ->with('success', "Device Item {$inventoryId} deleted successfully.");
     }
 
-    public function issue(Request $request, $id)
-    {
-        $item = InventoryItem::findOrFail($id);
 
-        $request->validate([
+    public function issue(Request $request, InventoryItem $item)
+    {
+        $validated = $request->validate([
             'issued_to' => 'required|string',
             'office' => 'required|string',
             'date_issued' => 'required|date',
@@ -288,15 +278,15 @@ class InventoryController extends Controller
 
         $item->update([
             'status' => 'issued',
-            'issued_to' => $request->issued_to,
-            'office' => $request->office,
-            'date_issued' => $request->date_issued,
+            'issued_to' => $validated['issued_to'],
+            'office' => $validated['office'],
+            'date_issued' => $validated['date_issued'],
         ]);
 
         try {
             ActivityLog::record(
                 'Issue Inventory Item',
-                "Inventory Item {$item->individual_id} was issued to {$item->issued_to}"
+                "Inventory Item {$item->inventory_id} was issued to {$item->issued_to}"
             );
         } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
@@ -305,20 +295,17 @@ class InventoryController extends Controller
         return back()->with('success', 'Device issued successfully.');
     }
 
-    public function return(Request $request, $id)
+    public function return(Request $request, InventoryItem $item)
     {
-        $item = InventoryItem::findOrFail($id);
-
-        $request->validate([
+        $validated = $request->validate([
             'condition' => 'required|in:new,good,fair,poor',
             'date_returned' => 'required|date',
         ]);
 
         $item->update([
             'status' => 'available',
-            'condition' => $request->condition,
-            'date_returned' => $request->date_returned,
-
+            'condition' => $validated['condition'],
+            'date_returned' => $validated['date_returned'],
             // Clear assignment fields
             'issued_to' => null,
             'office' => null,
@@ -328,7 +315,7 @@ class InventoryController extends Controller
         try {
             ActivityLog::record(
                 'Return Inventory Item',
-                "Inventory Item {$item->individual_id} was returned"
+                "Inventory Item {$item->inventory_id} was returned"
             );
         } catch (\Exception $e) {
             Log::error('Failed to log Inventory Item Activity: ' . $e->getMessage());
