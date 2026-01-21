@@ -9,6 +9,8 @@
                 </div>
                 <div id="date" class="date">January 1, 2000</div>
             </div>
+            <button id="theme-toggle"><i id="theme-icon" class="fa-solid fa-moon"></i></i></button>
+
         </div>
     </div>
 

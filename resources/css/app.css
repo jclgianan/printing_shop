@@ -10,6 +10,8 @@ html {
 
 :root {
     --bg-color: #0e1525;
+    --header-text: #27304e;
+    --normal-text: #000;
     --bg-ui: #27304e;
     --bg-button: #3e4d7d;
     --light: #677fcf;
@@ -26,6 +28,13 @@ html {
     --prt-rpr_bgcolor: #d1fae5;
     --released_bgcolor: #dcd4ff;
     --cld-unr_bgcolor: #fbecec;
+}
+
+.dark-mode {
+    --dirtywhite_bg: #181a1b;
+    --whitebg: #202020;
+    --header-text: #fff;
+    --normal-text: #fff;
 }
 
 ::-webkit-scrollbar {
@@ -652,7 +661,7 @@ input::placeholder {
 .section-heading {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--bg-ui);
+    color: var(--header-text);
     margin-bottom: 0.5rem;
 }
 .section-description {
@@ -832,6 +841,7 @@ input::placeholder {
     border: none;
     font-weight: 400;
     font-family: "Roboto";
+    color: var(--normal-text);
 }
 .view-btn {
     background-color: var(--light);
@@ -1275,6 +1285,7 @@ h1 {
     border: none;
     font-weight: 400;
     font-family: "Roboto";
+    color: var(--normal-text);
 }
 
 .user-accounts-table th {
@@ -1366,7 +1377,7 @@ h1 {
 .logs-header-text {
     font-size: 30px;
     font-family: "Rubik";
-    color: var(--bg-ui);
+    color: var(--header-text);
     margin: 5px 0px 10px 5px;
 }
 
@@ -1390,6 +1401,7 @@ h1 {
     border: none;
     font-weight: 400;
     font-family: "Roboto";
+    color: var(--normal-text);
     padding: 15px;
 }
 
@@ -1461,7 +1473,7 @@ h1 {
     font-weight: 600;
 
     font-family: "Rubik";
-    color: var(--bg-ui);
+    color: var(--header-text);
     flex-shrink: 0;
     margin: 10px 0px 10px 20px;
     /* margin: 0 auto; */
@@ -1510,7 +1522,7 @@ h1 {
 .dashboard-header-text h2 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--bg-ui);
+    color: var(--header-text);
     font-family: "Rubik";
     margin: 10px 10px;
     text-align: left;
@@ -1678,6 +1690,10 @@ h1 {
     margin: 0;
 }
 
+.apexcharts-legend-text {
+    color: var(--normal-text);
+}
+
 /* Charts wrapper for side-by-side layout */
 .inventory-graph {
     display: grid;
@@ -1751,7 +1767,7 @@ h1 {
     padding: 0.6rem 0.9rem;
     border-radius: 10px;
     border: 1px solid #e5e7eb;
-    background-color: #ffffff;
+    background-color: var(--dirtywhite_bg);
     cursor: pointer;
     transition: background-color 0.2s ease, box-shadow 0.2s ease,
         transform 0.15s ease;
@@ -1762,7 +1778,7 @@ h1 {
 .quick-repair h5 {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #374151;
+    color: var(--normal-text);
     margin: 0;
 }
 
@@ -1816,7 +1832,7 @@ h1 {
     font-family: "Rubik", sans-serif;
     font-size: 1.4rem;
     font-weight: 600;
-    color: var(--bg-ui);
+    color: var(--header-text);
 }
 
 .activities-menu-btn {
@@ -2614,4 +2630,8 @@ p {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) scale(1);
+}
+
+.modal-dialog {
+    margin-top: 100px;
 }
