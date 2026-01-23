@@ -902,7 +902,7 @@ body.sidebar-collapsed .receiving-main-panel {
 .process-table td {
     border: none;
     font-weight: 400;
-    font-family: "Roboto";
+    font-family: "Inter";
     color: var(--normal-text);
 }
 .view-btn {
@@ -2708,3 +2708,313 @@ p {
 .modal-dialog {
     margin-top: 100px;
 }
+
+/* Spinner */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* Spinner End */
+
+/* Track Ticket Page */
+
+/* >>input bar<< */
+.track-ticket-container-main {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 100px 1fr;
+    height: 100vh;
+    background-color: var(--whitebg);
+}
+
+.track-ticket-container {
+    display: flex;
+    margin-top: -260px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.track-ticket-container h2 {
+    /* border: 1px red solid; */
+    opacity: 1;
+}
+
+.track-ticket-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+
+    /* border: 1px solid blue; */
+}
+.track-input-container button {
+    height: 50px;
+    border: 2px solid rgba(0, 0, 0, 0.555);
+    border-left: transparent;
+    border-radius: 0px 20px 20px 0px;
+    padding-right: 20px;
+    color: rgba(0, 0, 0, 0.555);
+
+    background-color: var(--white_bg);
+}
+.track-ticket-input {
+    text-align: left;
+    padding-left: 20px;
+    width: 600px;
+    height: 50px;
+    min-width: 100px;
+    max-width: 800px;
+    margin: 0;
+    outline: none;
+
+    border-radius: 20px 0px 0px 20px;
+    border: 2px solid rgba(0, 0, 0, 0.555);
+    border-right: transparent;
+
+    background-color: var(--white_bg);
+}
+
+@media (max-width: 480px) {
+    .track-ticket-container {
+        max-width: 100vw;
+        padding: 0;
+    }
+    .track-input-container {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .track-input-container button {
+        padding: 12px;
+    }
+    .track-input-container input {
+        padding: 12px;
+    }
+
+    .track-ticket-container {
+        padding: 0 10px;
+    }
+}
+
+.track-ticket-input::placeholder {
+    font-style: normal;
+    color: #1f1f1f9d !important;
+}
+/* >>input bar<< End */
+
+/* >>info container<< */
+.back-link {
+    margin-top: 10px;
+    height: 200px;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    align-self: start;
+    z-index: 2;
+}
+
+.back-link a:hover {
+    color: #727272;
+    transform: scale(1.1);
+}
+
+.back-link a {
+    text-decoration: none;
+    color: #b8b8b8;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+
+    transition: all 0.2s ease-in-out;
+    padding: 6px 8px;
+}
+
+.ticket-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin: 15px;
+    width: 98%;
+    max-width: 680px;
+
+    border-radius: 20px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.205);
+    padding: 20px;
+}
+.ticket-details {
+    font-family: "Roboto", sans-serif;
+    width: 500px;
+}
+
+.ticket-details h3 {
+    font-weight: bolder;
+    font-size: 19px;
+}
+.ticket-details span {
+    display: inline-block;
+    font-size: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ticket-details .label {
+    width: 200px;
+    padding-bottom: 5px;
+    padding-right: 4px;
+}
+/* >>info container<< End */
+
+/* Status stepper */
+
+.status-stepper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    width: 100%;
+    position: relative;
+}
+
+.status-stepper .status-label {
+    font-family: "Rubik", sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #aaaaaa;
+    opacity: 0.7;
+}
+
+.step.active .status-label {
+    color: #6676cf;
+    opacity: 1;
+}
+
+.step.done .status-label {
+    color: #6676cf;
+    opacity: 1;
+}
+
+.step {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+}
+
+.step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 100%;
+    height: 4px;
+    background: #c4c4c4;
+    z-index: -1;
+    transition: background 0.4s ease;
+}
+
+.step.done:not(:last-child)::after {
+    background: var(--light);
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    background: #c4c4c4;
+    border: 3px solid #aaaaaa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    transition: all 0.4s ease;
+    color: transparent;
+}
+
+.step.done .circle {
+    background: var(--light);
+    border-color: var(--light);
+    color: #fff;
+}
+
+.step.active .circle {
+    border-color: var(--light);
+    background-color: var(--light);
+    border-width: 7px;
+    box-shadow: 0 0 0 4px rgba(59, 131, 246, 0.068);
+}
+
+.step.active .circle::before {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--light);
+    animation: stepper-pulse 1s infinite;
+}
+
+@keyframes stepper-pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+.step.active .label,
+.step.done .label {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+@media (max-width: 480px) {
+    .status-stepper {
+        flex-direction: column;
+        height: 350px;
+        padding-left: 20px;
+    }
+
+    .step {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+
+    .step:not(:last-child)::after {
+        width: 3px;
+        height: 100%;
+        top: 30px;
+        left: 15px;
+    }
+}
+/* Status stepper end*/

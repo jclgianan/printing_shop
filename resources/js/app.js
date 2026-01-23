@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             dateElement.textContent = now.toLocaleDateString(
                 undefined,
-                options,
+                options
             );
         }
     }
@@ -178,46 +178,13 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateClock, 1000);
 });
 
-<<<<<<< HEAD
-//dark mode
-const btn = document.getElementById("theme-toggle");
-const icon = document.getElementById("theme-icon");
-const currentTheme = localStorage.getItem("theme");
-
-// Function to set the correct icon
-function updateIcon(theme) {
-    if (theme === "dark") {
-        icon.classList.replace("fa-moon", "fa-sun"); // Show sun in dark mode
-    } else {
-        icon.classList.replace("fa-sun", "fa-moon"); // Show moon in light mode
-    }
-}
-
-// 1. Check for saved theme on page load
-if (currentTheme === "dark") {
-    document.body.classList.add("dark-mode");
-    updateIcon("dark");
-}
-
-// 2. Handle the click event
-btn.addEventListener("click", function () {
-    document.body.classList.toggle("dark-mode");
-
-    let theme = "light";
-    if (document.body.classList.contains("dark-mode")) {
-        theme = "dark";
-    }
-
-    updateIcon(theme);
-    localStorage.setItem("theme", theme);
-=======
 // ====== Sidebar Never Refresh using AJAX ==========
 
 // Submenu toggle functionality with state persistence
 document.addEventListener("DOMContentLoaded", () => {
     // Restore submenu states from memory
     const openSubmenus = JSON.parse(
-        sessionStorage.getItem("openSubmenus") || "[]",
+        sessionStorage.getItem("openSubmenus") || "[]"
     );
     openSubmenus.forEach((submenuId) => {
         const submenu = document.getElementById(submenuId);
@@ -246,12 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Save state
             const openMenus = Array.from(
-                document.querySelectorAll(".has-submenu.open"),
+                document.querySelectorAll(".has-submenu.open")
             )
                 .map((menu) => menu.id)
                 .filter((id) => id);
             sessionStorage.setItem("openSubmenus", JSON.stringify(openMenus));
         });
     });
->>>>>>> 4bec3accdebdececda37a49f506e9fd00b80f928
 });
