@@ -51,7 +51,7 @@
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" id="name"
-                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -61,7 +61,7 @@
                     <label for="office_department">Office/Department</label>
                     <input type="text" name="office_department" id="office_department"
                         class="form-control @error('office_department') is-invalid @enderror"
-                        value="{{ old('office_department') }}" required>
+                        value="{{ old('office_department') }}">
                     @error('office_department')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -88,9 +88,13 @@
 
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="number" name="quantity" id="quantity"
-                        class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity') }}"
-                        min="1" required>
+                    <div class="button-counter-container d-flex align-items-center">
+                        <button class="minus-btn" type="button"><i class="fa-solid fa-minus fa-xs"></i></button>
+                        <input type="number" class="form-control @error('quantity') is-invalid @enderror"
+                            id="quantity" name="quantity" value="{{ old('quantity', 1) }}" min="1"
+                            max="1000" required>
+                        <button class="plus-btn" type="button"><i class="fa-solid fa-plus fa-xs"></i></button>
+                    </div>
                     @error('quantity')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -98,6 +102,8 @@
 
                 <div class="form-group">
                     <label for="deadline">Deadline</label>
+
+
                     <input type="date" name="deadline" id="deadline"
                         class="form-control @error('deadline') is-invalid @enderror" value="{{ old('deadline') }}">
                     @error('deadline')
@@ -115,7 +121,8 @@
                 </div>
 
                 <br>
-                <button type="submit" class="submit-btn">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
+                <button type="submit" class="submit-btn">Submit Ticket <i
+                        class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>
