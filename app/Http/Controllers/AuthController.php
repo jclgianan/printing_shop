@@ -40,6 +40,8 @@ class AuthController extends Controller
         $repair_released = RepairTicket::where('status', 'released')->count();
         $repair_unrepairable = RepairTicket::where('status', 'unrepairable')->count();
 
+        $inventoryItems = InventoryItem::orderBy('device_name')->get();
+
         return view('main', compact(
             'recentActivities',
             'pending',
@@ -51,7 +53,8 @@ class AuthController extends Controller
             'repair_in_progress',
             'repair_repaired',
             'repair_released',
-            'repair_unrepairable'
+            'repair_unrepairable',
+            'inventoryItems'
         ));
     }
 
