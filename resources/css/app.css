@@ -387,7 +387,7 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 1000;
+    z-index: 999999999;
 }
 .header-left {
     display: flex;
@@ -488,7 +488,7 @@ input::placeholder {
     background-color: var(--bg-button);
 }
 .shop_sidebar {
-    width: 210px;
+    width: 260px;
     padding-right: 4px;
     height: calc(100vh - 70px);
     background-color: var(--bg-ui);
@@ -497,14 +497,13 @@ input::placeholder {
     left: 0;
     overflow: hidden;
     transition: width 0.3s ease;
-    z-index: 999; /* above main content */
+    z-index: 999999; /* above main content */
     padding-top: 1rem;
 }
 
 .shop_sidebar.hide {
     width: 70px;
-    z-index: 999;
-    transition: width 0.3s ease;
+    z-index: 999999;
 }
 .shop_menu {
     font-size: 25px;
@@ -544,7 +543,7 @@ input::placeholder {
     gap: 15px;
     color: #fff;
     text-decoration: none;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
 }
 
 .has-submenu {
@@ -570,7 +569,7 @@ input::placeholder {
     display: block;
     flex-direction: column;
     transition: max-height 0.3s ease;
-    /* margin-left: 2rem !important; */
+    margin-left: 2rem !important;
 }
 
 /* open state */
@@ -618,7 +617,7 @@ input::placeholder {
     border-radius: 10px;
     color: #dbeafe;
     font-family: inherit;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     cursor: pointer; /* pointer on hover */
     display: flex;
     width: 100%;
@@ -626,10 +625,6 @@ input::placeholder {
     padding: 0.75rem 1rem;
     margin-left: 0.3rem;
     gap: 15px;
-}
-
-.submenu-toggle.hide .menu_text {
-    opacity: 0;
 }
 
 .shop_nav-link:hover,
@@ -651,7 +646,7 @@ input::placeholder {
     bottom: 0;
     color: #fff;
     font-family: inherit;
-    font-size: 1.2rem;
+    font-size: 25px;
 }
 
 .shop_logout-btn:hover {
@@ -674,11 +669,7 @@ input::placeholder {
     height: 100dvh;
     width: 100dvw;
     margin: 0;
-    transition: width 0.3s ease;
-}
-.layout-wrapper-main {
-    left: 0;
-    transition: margin-left 0.3s ease;
+    /* padding-left: 270px; */
 }
 .receiving-main-panel {
     background-color: var(--dirtywhite_bg);
@@ -692,10 +683,10 @@ input::placeholder {
     top: 60px;
     right: 0;
     bottom: 0;
-    left: 215px;
+    left: 270px;
 }
 body.sidebar-collapsed .receiving-main-panel {
-    left: 75px;
+    left: 80px;
     transition: width 0.3s ease;
 }
 
@@ -1062,16 +1053,16 @@ body.sidebar-collapsed .receiving-main-panel {
 .modal-overlay {
     display: flex;
     position: fixed;
-    align-items: center;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 1001;
+    z-index: 999;
     justify-content: center;
     align-items: center;
+
     opacity: 0;
     visibility: hidden;
 }
@@ -1108,9 +1099,7 @@ h1 {
 
     transform: scale(0.3);
     opacity: 0;
-    transition:
-        transform 0.2s ease-in-out,
-        opacity 0.2s ease-in-out;
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
 }
 
 /* Form Button Container */
@@ -1518,12 +1507,12 @@ h1 {
     flex-direction: column;
     background-color: var(--whitebg);
     overflow: hidden; /* Prevent page scroll */
-    margin-top: 5px;
 }
 
 .dashboard-container-main h1 {
     font-size: 24px;
     font-weight: 600;
+
     font-family: "Rubik";
     color: var(--bg-ui);
     flex-shrink: 0;
@@ -1544,7 +1533,7 @@ h1 {
         "inventory-graph inventory-graph inventory-graph dashboard-activities"
         "inventory-graph inventory-graph inventory-graph dashboard-activities";
     gap: 1rem;
-    padding: 0px 0px 20px 0px;
+    padding: 0 20px 20px 20px;
     overflow: hidden;
 }
 .recent-activities {
@@ -1642,9 +1631,7 @@ h1 {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
     display: flex;
     max-height: 90px;
-    transition:
-        transform 0.3s ease,
-        z-index 0.3s ease;
+    transition: transform 0.3s ease, z-index 0.3s ease;
     cursor: pointer;
     max-width: 190px;
     max-height: 70px;
@@ -1722,9 +1709,7 @@ h1 {
     background: var(--dirtywhite_bg);
     padding: 0.2rem;
     border-radius: 12px;
-    box-shadow:
-        0 4px 20px rgba(0, 0, 0, 0.08),
-        0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1822,9 +1807,7 @@ h1 {
     border: 1px solid #e5e7eb;
     background-color: #ffffff;
     cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        box-shadow 0.2s ease,
+    transition: background-color 0.2s ease, box-shadow 0.2s ease,
         transform 0.15s ease;
 }
 
@@ -1842,9 +1825,7 @@ h1 {
 .quick-repair a {
     color: #6b7280;
     font-size: 2rem;
-    transition:
-        color 0.2s ease,
-        transform 0.15s ease;
+    transition: color 0.2s ease, transform 0.15s ease;
     opacity: 0.7;
 }
 

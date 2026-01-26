@@ -24,7 +24,7 @@
                         $statusFilter = request('filter');
                     @endphp
                     <div class="category-filter">
-                        <form action="{{ route('status-filter') }}" method="GET" class="filter-form" id="filter-form">
+                        <form action="{{ route('status-filter') }}" method="GET" class="filter-form">
                             <button class="filter-group {{ $statusFilter === null ? 'active' : '' }}" type="submit"
                                 name="filter" value="">All</button>
                             <button class="filter-group {{ $statusFilter === 'pending' ? 'active' : '' }}" type="submit"

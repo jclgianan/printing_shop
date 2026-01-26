@@ -32,7 +32,7 @@
         @include('layouts.sidebarPrinting') <!-- Shared sidebar -->
         @include('layouts.sidebarRepair') <!-- Shared sidebar -->
 
-        <main id="page-content" class="main-panel">
+        <main class="main-panel">
             @yield('content') <!-- Page-specific content (e.g., receiving.blade.php) -->
         </main>
     </div>
