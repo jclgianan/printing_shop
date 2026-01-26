@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             dateElement.textContent = now.toLocaleDateString(
                 undefined,
-                options
+                options,
             );
         }
     }
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     // Restore submenu states from memory
     const openSubmenus = JSON.parse(
-        sessionStorage.getItem("openSubmenus") || "[]"
+        sessionStorage.getItem("openSubmenus") || "[]",
     );
     openSubmenus.forEach((submenuId) => {
         const submenu = document.getElementById(submenuId);
@@ -213,11 +213,71 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Save state
             const openMenus = Array.from(
-                document.querySelectorAll(".has-submenu.open")
+                document.querySelectorAll(".has-submenu.open"),
             )
                 .map((menu) => menu.id)
                 .filter((id) => id);
             sessionStorage.setItem("openSubmenus", JSON.stringify(openMenus));
         });
     });
+});
+
+//defualts form inputs
+const printForm = document.querySelector("#printForm");
+const modalContainer = document.querySelector(".modal-overlay");
+const dateInput = document.querySelector('input[type="date"]');
+
+const today = new Date().toISOString().split("T")[0];
+
+if (dateInput) {
+    dateInput.value = today;
+}
+printForm.addEventListener("submit", (event) => {
+    if (modalContainer) {
+        modalContainer.style.display = "none";
+    }
+
+    const defaults = {
+        name: "No data",
+        office_department: "No data",
+    };
+
+    for (const [name, defaultValue] of Object.entries(defaults)) {
+        const input = printForm.querySelector(`[name="${name}"]`);
+        if (input && !input.value.trim()) {
+            input.value = defaultValue;
+        }
+    }
+});
+
+//counter
+const display = document.getElementById("quantity");
+const plusBtn = document.querySelector(".plus-btn");
+const minusBtn = document.querySelector(".minus-btn");
+
+// let count = 1;
+let count = parseInt(display.value);
+
+plusBtn.addEventListener("click", () => {
+    count++;
+    display.value = count;
+
+    display.dispatchEvent(
+        new Event("input", {
+            bubbles: true,
+        }),
+    );
+});
+
+minusBtn.addEventListener("click", () => {
+    if (count > 1) {
+        count--;
+        display.value = count;
+
+        display.dispatchEvent(
+            new Event("input", {
+                bubbles: true,
+            }),
+        );
+    }
 });
