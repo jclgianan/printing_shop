@@ -91,7 +91,7 @@ class InventoryItem extends Model
     public static function getDeviceSummary()
     {
         return self::selectRaw('
-                inventory_id,
+                device_id,
                 device_name,
                 category,
                 COUNT(*) as total_units,
@@ -116,11 +116,5 @@ class InventoryItem extends Model
     public function repairTickets()
     {
         return $this->hasMany(RepairTicket::class, 'inventory_id', 'inventory_id');
-    }
-
-    // Use inventory_id for route model binding
-    public function getRouteKeyName()
-    {
-        return 'inventory_id';
     }
 }
