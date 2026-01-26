@@ -75,7 +75,7 @@
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" name="name" id="name" autocomplete="name"
-                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
+                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
                     @error('name')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -85,7 +85,7 @@
                     <label for="office_department">Office/Department</label>
                     <input type="text" name="office_department" id="office_department"
                         class="form-control @error('office_department') is-invalid @enderror"
-                        value="{{ old('office_department') }}">
+                        value="{{ old('office_department') }}" required>
                     @error('office_department')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror

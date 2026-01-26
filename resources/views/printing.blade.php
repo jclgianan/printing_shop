@@ -69,6 +69,7 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
+
                             <tbody>
                                 @foreach ($printTickets as $ticket)
                                     <tr>

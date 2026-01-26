@@ -177,7 +177,7 @@
         const previewDiv = document.getElementById('addUnitPreview');
 
         // Get exisitng number of units
-        // const existingIds = @json($allIds);
+        const existingIds = @json($allIds);
 
         let previewText = '';
         const maxPreview = 5;
