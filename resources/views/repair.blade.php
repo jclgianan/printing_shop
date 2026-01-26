@@ -76,7 +76,7 @@
                             <tbody>
                                 @foreach ($repairTickets as $ticket)
                                     <tr>
-                                        <td>{{ $ticket->inventoryItem->inventory_id ?? 'N/A' }}</td>
+                                        <td>{{ $ticket->inventory_id }}</td>
                                         <td>{{ $ticket->repairTicket_id }}</td>
                                         <td>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('m/d/y') }}</td>
                                         <td>{{ $ticket->name }}</td>
@@ -133,7 +133,7 @@
             </main>
         </div>
     </div>
-    @include('modals.addRepair', ['inventoryItems' => $inventoryItems, 'type' => $type])
+    @include('modals.addRepair')
 
     @include('modals.editRepair')
 

@@ -28,15 +28,9 @@
                 <input type="hidden" name="type">
 
                 <div class="form-group">
-                    <label for="inventory_item_id">Inventory Device</label>
-                    <select name="inventory_item_id" id="inventory_item_id" class="form-control" required>
-                        <option value="">-- Select Device --</option>
-                        @foreach ($inventoryItems as $item)
-                            <option value="{{ $item->id }}">
-                                {{ $item->inventory_id }} - {{ $item->device_name }}
-                            </option>
-                        @endforeach
-                    </select>
+                    <label for="inventory_id">Inventory ID</label>
+                    <input type="text" name="inventory_id" id="inventory_id" class="form-control"
+                        placeholder="Enter Inventory Device ID">
                 </div>
 
                 {{-- <div class="form-group" id="generateIdBox" style="display: none;">

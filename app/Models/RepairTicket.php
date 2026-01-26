@@ -12,14 +12,12 @@ class RepairTicket extends Model
 
     protected $table = 'repair_tickets';
 
-    // Primary key is string
     protected $primaryKey = 'repairTicket_id';
-    public $incrementing = false;
-    protected $keyType = 'string';
+    public $incrementing = false;   // string key
+    protected $keyType = 'string';  // key type is string
 
     protected $fillable = [
         'process_id',
-        'inventory_item_id',
         'inventory_id',
         'repairTicket_id',
         'receiving_date',
@@ -50,9 +48,10 @@ class RepairTicket extends Model
         };
     }
 
-    public function inventoryItem()
+    // Relationship to InventoryItem
+    public function inventory()
     {
-        return $this->belongsTo(InventoryItem::class, 'inventory_item_id', 'id');
+        return $this->belongsTo(InventoryItem::class, 'inventory_id', 'inventory_id');
     }
 
     // Relationship to Process (optional)
