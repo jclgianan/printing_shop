@@ -10,6 +10,8 @@ html {
 
 :root {
     --bg-color: #0e1525;
+    --header-text: #27304e;
+    --normal-text: #000;
     --bg-ui: #27304e;
     --bg-button: #3e4d7d;
     --light: #677fcf;
@@ -28,6 +30,13 @@ html {
     --cld-unr_bgcolor: #fbecec;
     /* --sidebar-expanded: 270px;
     --sidebar-collapsed: 80px; */
+}
+
+.dark-mode {
+    --dirtywhite_bg: #181a1b;
+    --whitebg: #202020;
+    --header-text: #fff;
+    --normal-text: #fff;
 }
 
 ::-webkit-scrollbar {
@@ -387,7 +396,7 @@ html {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 999999999;
+    z-index: 1000;
 }
 .header-left {
     display: flex;
@@ -488,7 +497,7 @@ input::placeholder {
     background-color: var(--bg-button);
 }
 .shop_sidebar {
-    width: 260px;
+    width: 210px;
     padding-right: 4px;
     height: calc(100vh - 70px);
     background-color: var(--bg-ui);
@@ -497,13 +506,14 @@ input::placeholder {
     left: 0;
     overflow: hidden;
     transition: width 0.3s ease;
-    z-index: 999999; /* above main content */
+    z-index: 999; /* above main content */
     padding-top: 1rem;
 }
 
 .shop_sidebar.hide {
     width: 70px;
-    z-index: 999999;
+    z-index: 999;
+    transition: width 0.3s ease;
 }
 .shop_menu {
     font-size: 25px;
@@ -543,7 +553,7 @@ input::placeholder {
     gap: 15px;
     color: #fff;
     text-decoration: none;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
 }
 
 .has-submenu {
@@ -569,7 +579,7 @@ input::placeholder {
     display: block;
     flex-direction: column;
     transition: max-height 0.3s ease;
-    margin-left: 2rem !important;
+    /* margin-left: 2rem !important; */
 }
 
 /* open state */
@@ -617,7 +627,7 @@ input::placeholder {
     border-radius: 10px;
     color: #dbeafe;
     font-family: inherit;
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     cursor: pointer; /* pointer on hover */
     display: flex;
     width: 100%;
@@ -625,6 +635,10 @@ input::placeholder {
     padding: 0.75rem 1rem;
     margin-left: 0.3rem;
     gap: 15px;
+}
+
+.submenu-toggle.hide .menu_text {
+    opacity: 0;
 }
 
 .shop_nav-link:hover,
@@ -646,7 +660,7 @@ input::placeholder {
     bottom: 0;
     color: #fff;
     font-family: inherit;
-    font-size: 25px;
+    font-size: 1.2rem;
 }
 
 .shop_logout-btn:hover {
@@ -669,7 +683,11 @@ input::placeholder {
     height: 100dvh;
     width: 100dvw;
     margin: 0;
-    /* padding-left: 270px; */
+    transition: width 0.3s ease;
+}
+.layout-wrapper-main {
+    left: 0;
+    transition: margin-left 0.3s ease;
 }
 .receiving-main-panel {
     background-color: var(--dirtywhite_bg);
@@ -683,10 +701,10 @@ input::placeholder {
     top: 60px;
     right: 0;
     bottom: 0;
-    left: 270px;
+    left: 215px;
 }
 body.sidebar-collapsed .receiving-main-panel {
-    left: 80px;
+    left: 75px;
     transition: width 0.3s ease;
 }
 
@@ -705,7 +723,7 @@ body.sidebar-collapsed .receiving-main-panel {
 .section-heading {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--bg-ui);
+    color: var(--header-text);
     margin-bottom: 0.5rem;
 }
 .section-description {
@@ -884,7 +902,8 @@ body.sidebar-collapsed .receiving-main-panel {
 .process-table td {
     border: none;
     font-weight: 400;
-    font-family: "Roboto";
+    font-family: "Inter";
+    color: var(--normal-text);
 }
 .view-btn {
     background-color: var(--light);
@@ -1053,16 +1072,16 @@ body.sidebar-collapsed .receiving-main-panel {
 .modal-overlay {
     display: flex;
     position: fixed;
+    align-items: center;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    z-index: 999;
+    z-index: 1001;
     justify-content: center;
     align-items: center;
-
     opacity: 0;
     visibility: hidden;
 }
@@ -1099,7 +1118,9 @@ h1 {
 
     transform: scale(0.3);
     opacity: 0;
-    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+    transition:
+        transform 0.2s ease-in-out,
+        opacity 0.2s ease-in-out;
 }
 
 /* Form Button Container */
@@ -1328,6 +1349,7 @@ h1 {
     border: none;
     font-weight: 400;
     font-family: "Roboto";
+    color: var(--normal-text);
 }
 
 .user-accounts-table th {
@@ -1419,7 +1441,7 @@ h1 {
 .logs-header-text {
     font-size: 30px;
     font-family: "Rubik";
-    color: var(--bg-ui);
+    color: var(--header-text);
     margin: 5px 0px 10px 5px;
 }
 
@@ -1443,6 +1465,7 @@ h1 {
     border: none;
     font-weight: 400;
     font-family: "Roboto";
+    color: var(--normal-text);
     padding: 15px;
 }
 
@@ -1507,14 +1530,14 @@ h1 {
     flex-direction: column;
     background-color: var(--whitebg);
     overflow: hidden; /* Prevent page scroll */
+    margin-top: 5px;
 }
 
 .dashboard-container-main h1 {
     font-size: 24px;
     font-weight: 600;
-
     font-family: "Rubik";
-    color: var(--bg-ui);
+    color: var(--header-text);
     flex-shrink: 0;
     margin: 10px 0px 10px 20px;
     /* margin: 0 auto; */
@@ -1533,7 +1556,7 @@ h1 {
         "inventory-graph inventory-graph inventory-graph dashboard-activities"
         "inventory-graph inventory-graph inventory-graph dashboard-activities";
     gap: 1rem;
-    padding: 0 20px 20px 20px;
+    padding: 0px 0px 20px 0px;
     overflow: hidden;
 }
 .recent-activities {
@@ -1563,7 +1586,7 @@ h1 {
 .dashboard-header-text h2 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: var(--bg-ui);
+    color: var(--header-text);
     font-family: "Rubik";
     margin: 10px 10px;
     text-align: left;
@@ -1631,7 +1654,9 @@ h1 {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
     display: flex;
     max-height: 90px;
-    transition: transform 0.3s ease, z-index 0.3s ease;
+    transition:
+        transform 0.3s ease,
+        z-index 0.3s ease;
     cursor: pointer;
     max-width: 190px;
     max-height: 70px;
@@ -1709,7 +1734,9 @@ h1 {
     background: var(--dirtywhite_bg);
     padding: 0.2rem;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow:
+        0 4px 20px rgba(0, 0, 0, 0.08),
+        0 1px 3px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1730,6 +1757,10 @@ h1 {
     align-items: center;
     gap: 0.75rem;
     margin: 0;
+}
+
+.apexcharts-legend-text {
+    color: var(--normal-text);
 }
 
 /* Charts wrapper for side-by-side layout */
@@ -1805,9 +1836,11 @@ h1 {
     padding: 0.6rem 0.9rem;
     border-radius: 10px;
     border: 1px solid #e5e7eb;
-    background-color: #ffffff;
+    background-color: var(--dirtywhite_bg);
     cursor: pointer;
-    transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transition:
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
         transform 0.15s ease;
 }
 
@@ -1816,7 +1849,7 @@ h1 {
 .quick-repair h5 {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #374151;
+    color: var(--normal-text);
     margin: 0;
 }
 
@@ -1825,7 +1858,9 @@ h1 {
 .quick-repair a {
     color: #6b7280;
     font-size: 2rem;
-    transition: color 0.2s ease, transform 0.15s ease;
+    transition:
+        color 0.2s ease,
+        transform 0.15s ease;
     opacity: 0.7;
 }
 
@@ -1870,7 +1905,7 @@ h1 {
     font-family: "Rubik", sans-serif;
     font-size: 1.4rem;
     font-weight: 600;
-    color: var(--bg-ui);
+    color: var(--header-text);
 }
 
 .activities-menu-btn {
@@ -2669,3 +2704,317 @@ p {
     visibility: visible;
     transform: translateX(-50%) scale(1);
 }
+
+.modal-dialog {
+    margin-top: 100px;
+}
+
+/* Spinner */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* Spinner End */
+
+/* Track Ticket Page */
+
+/* >>input bar<< */
+.track-ticket-container-main {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 100px 1fr;
+    height: 100vh;
+    background-color: var(--whitebg);
+}
+
+.track-ticket-container {
+    display: flex;
+    margin-top: -260px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.track-ticket-container h2 {
+    /* border: 1px red solid; */
+    opacity: 1;
+}
+
+.track-ticket-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+
+    /* border: 1px solid blue; */
+}
+.track-input-container button {
+    height: 50px;
+    border: 2px solid rgba(0, 0, 0, 0.555);
+    border-left: transparent;
+    border-radius: 0px 20px 20px 0px;
+    padding-right: 20px;
+    color: rgba(0, 0, 0, 0.555);
+
+    background-color: var(--white_bg);
+}
+.track-ticket-input {
+    text-align: left;
+    padding-left: 20px;
+    width: 600px;
+    height: 50px;
+    min-width: 100px;
+    max-width: 800px;
+    margin: 0;
+    outline: none;
+
+    border-radius: 20px 0px 0px 20px;
+    border: 2px solid rgba(0, 0, 0, 0.555);
+    border-right: transparent;
+
+    background-color: var(--white_bg);
+}
+
+@media (max-width: 480px) {
+    .track-ticket-container {
+        max-width: 100vw;
+        padding: 0;
+    }
+    .track-input-container {
+        width: 100%;
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .track-input-container button {
+        padding: 12px;
+    }
+    .track-input-container input {
+        padding: 12px;
+    }
+
+    .track-ticket-container {
+        padding: 0 10px;
+    }
+}
+
+.track-ticket-input::placeholder {
+    font-style: normal;
+    color: #1f1f1f9d !important;
+}
+/* >>input bar<< End */
+
+/* >>info container<< */
+.back-link {
+    margin-top: 10px;
+    height: 200px;
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    align-self: start;
+    z-index: 2;
+}
+
+.back-link a:hover {
+    color: #727272;
+    transform: scale(1.1);
+}
+
+.back-link a {
+    text-decoration: none;
+    color: #b8b8b8;
+    font-size: 14px;
+    font-family: "Inter", sans-serif;
+
+    transition: all 0.2s ease-in-out;
+    padding: 6px 8px;
+}
+
+.ticket-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin: 15px;
+    width: 98%;
+    max-width: 680px;
+
+    border-radius: 20px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.205);
+    padding: 20px;
+}
+.ticket-details {
+    font-family: "Roboto", sans-serif;
+    width: 500px;
+}
+
+.ticket-details h3 {
+    font-weight: bolder;
+    font-size: 19px;
+}
+.ticket-details span {
+    display: inline-block;
+    font-size: 18px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ticket-details .label {
+    width: 200px;
+    padding-bottom: 5px;
+    padding-right: 4px;
+}
+/* >>info container<< End */
+
+/* Status stepper */
+
+.status-stepper {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-top: 20px;
+    margin-bottom: 25px;
+    width: 100%;
+    position: relative;
+}
+
+.status-stepper .status-label {
+    font-family: "Rubik", sans-serif;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #aaaaaa;
+    opacity: 0.7;
+}
+
+.step.active .status-label {
+    color: #6676cf;
+    opacity: 1;
+}
+
+.step.done .status-label {
+    color: #6676cf;
+    opacity: 1;
+}
+
+.step {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+}
+
+.step:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 100%;
+    height: 4px;
+    background: #c4c4c4;
+    z-index: -1;
+    transition: background 0.4s ease;
+}
+
+.step.done:not(:last-child)::after {
+    background: var(--light);
+}
+
+.circle {
+    width: 20px;
+    height: 20px;
+    background: #c4c4c4;
+    border: 3px solid #aaaaaa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    transition: all 0.4s ease;
+    color: transparent;
+}
+
+.step.done .circle {
+    background: var(--light);
+    border-color: var(--light);
+    color: #fff;
+}
+
+.step.active .circle {
+    border-color: var(--light);
+    background-color: var(--light);
+    border-width: 7px;
+    box-shadow: 0 0 0 4px rgba(59, 131, 246, 0.068);
+}
+
+.step.active .circle::before {
+    content: "";
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--light);
+    animation: stepper-pulse 1s infinite;
+}
+
+@keyframes stepper-pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.4);
+        opacity: 0;
+    }
+}
+
+.step.active .label,
+.step.done .label {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+@media (max-width: 480px) {
+    .status-stepper {
+        flex-direction: column;
+        height: 350px;
+        padding-left: 20px;
+    }
+
+    .step {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        justify-content: flex-start;
+        gap: 15px;
+    }
+
+    .step:not(:last-child)::after {
+        width: 3px;
+        height: 100%;
+        top: 30px;
+        left: 15px;
+    }
+}
+/* Status stepper end*/

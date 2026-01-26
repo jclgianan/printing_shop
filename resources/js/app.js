@@ -160,7 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         clockElement.textContent = phTime;
 
-        // --- Date Logic ---
         if (dateElement) {
             const options = {
                 weekday: "short",
@@ -170,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             dateElement.textContent = now.toLocaleDateString(
                 undefined,
-                options
+                options,
             );
         }
     }
@@ -179,3 +178,78 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateClock, 1000);
 });
 
+// ====== Sidebar Never Refresh using AJAX ==========
+
+// Submenu toggle functionality with state persistence
+document.addEventListener("DOMContentLoaded", () => {
+    // Restore submenu states from memory
+    const openSubmenus = JSON.parse(
+        sessionStorage.getItem("openSubmenus") || "[]",
+    );
+    openSubmenus.forEach((submenuId) => {
+        const submenu = document.getElementById(submenuId);
+        if (submenu) {
+            submenu.classList.add("open");
+        }
+    });
+
+    // Auto-open submenu if current route matches any submenu item
+    const currentRoute = "{{ request()->route()->getName() }}";
+    if (
+        currentRoute.startsWith("printing") ||
+        currentRoute.startsWith("repair")
+    ) {
+        document.getElementById("tickets-submenu")?.classList.add("open");
+    }
+    if (currentRoute === "add-new-user" || currentRoute === "activity.logs") {
+        document.getElementById("settings-submenu")?.classList.add("open");
+    }
+
+    // Toggle functionality
+    document.querySelectorAll(".submenu-toggle").forEach((toggle) => {
+        toggle.addEventListener("click", () => {
+            const parent = toggle.closest(".has-submenu");
+            parent.classList.toggle("open");
+
+            // Save state
+            const openMenus = Array.from(
+                document.querySelectorAll(".has-submenu.open"),
+            )
+                .map((menu) => menu.id)
+                .filter((id) => id);
+            sessionStorage.setItem("openSubmenus", JSON.stringify(openMenus));
+        });
+    });
+    //dark mode
+    const btn = document.getElementById("theme-toggle");
+    const icon = document.getElementById("theme-icon");
+    const currentTheme = localStorage.getItem("theme");
+
+    // Function to set the correct icon
+    function updateIcon(theme) {
+        if (theme === "dark") {
+            icon.classList.replace("fa-moon", "fa-sun"); // Show sun in dark mode
+        } else {
+            icon.classList.replace("fa-sun", "fa-moon"); // Show moon in light mode
+        }
+    }
+
+    // 1. Check for saved theme on page load
+    if (currentTheme === "dark") {
+        document.body.classList.add("dark-mode");
+        updateIcon("dark");
+    }
+
+    // 2. Handle the click event
+    btn.addEventListener("click", function () {
+        document.body.classList.toggle("dark-mode");
+
+        let theme = "light";
+        if (document.body.classList.contains("dark-mode")) {
+            theme = "dark";
+        }
+
+        updateIcon(theme);
+        localStorage.setItem("theme", theme);
+    });
+});

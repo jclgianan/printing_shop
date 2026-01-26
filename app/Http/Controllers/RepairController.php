@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use App\Models\Process;
 use App\Models\ActivityLog;
 use App\Models\RepairTicket;
+use App\Models\InventoryItem;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use PHPUnit\TextUI\XmlConfiguration\Group;
@@ -25,15 +26,18 @@ class RepairController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('repair', compact('repairTickets', 'type'));
+        $inventoryItems = InventoryItem::all();
+
+        return view('repair', compact('repairTickets', 'type', 'inventoryItems'));
     }
 
     // Show addRepair Page
     public function repairForm(Request $request)
     {
         $type = $request->query('type');
+        $inventoryItems = InventoryItem::all();
 
-        return view('modals.addRepair', compact('type'));
+        return view('modals.addRepair', compact('type', 'inventoryItems'));
     }
 
     // Repair search page fucntion
@@ -44,6 +48,7 @@ class RepairController extends Controller
         $query  = $request->input('query');
 
         $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')
+            ->orWhere('inventory_id', 'like', '%' . $query . '%')
             ->orWhere('office_department', 'like', '%' . $query . '%')
             ->orWhere('itemname', 'like', '%' . $query . '%')
             ->orWhere('name', 'like', '%' . $query . '%')
@@ -51,7 +56,7 @@ class RepairController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('repair', compact('repairTickets'));
+        return view('repair', compact('repairTickets', 'type'));
     }
 
     // Repair Logs data view
@@ -64,87 +69,33 @@ class RepairController extends Controller
     // Storing the input of the repair form
     public function repairTicketStore(Request $request)
     {
-        try {
-            // Validate inputs
-            $request->validate([
-                'receiving_date' => 'required|date',
-                'name' => 'required|string|max:255',
-                'office_department' => 'required|string|max:255',
-                'itemname' => 'required|string|max:255',
-                'issue' => 'required|string|max:100',
-                'solution' => 'nullable|string',
-                'note' => 'nullable|string|max:100',
-                'inventory_id' => 'required|exists:inventory_items,inventory_id',
-            ]);
-        } catch (ValidationException $e) {
-            // Return the first validation error like the original code
-            if ($request->ajax()) {
-                return response()->json([
-                    'error' => $e->validator->errors()->first()
-                ], 422);
-            }
+        $validated = $request->validate([
+            'receiving_date'    => 'required|date',
+            'name'              => 'required|string|max:255',
+            'office_department' => 'required|string|max:255',
+            'itemname'          => 'required|string|max:255',
+            'issue'             => 'required|string|max:100',
+            'solution'          => 'nullable|string',
+            'note'              => 'nullable|string|max:100',
+            'inventory_item_id' => 'required|exists:inventory_items,id',
+        ]);
 
-            // If not AJAX, redirect back with input & errors
-            return redirect()->back()
-                ->withErrors($e->validator)
-                ->withInput();
-        }
+        do {
+            $repairTicketId = 'RPR-' . date('Ymd') . '-' . strtoupper(Str::random(4));
+        } while (RepairTicket::where('repairTicket_id', $repairTicketId)->exists());
+
+        $validated['repairTicket_id'] = $repairTicketId;
+        $validated['status'] = 'pending';
+
+        $ticket = RepairTicket::create($validated);
 
         try {
-            // Generate Repair Ticket ID
-            do {
-                $repairTicketId = 'RPR-' . date('Ymd') . '-' . strtoupper(Str::random(4));
-            } while (RepairTicket::where('repairTicket_id', $repairTicketId)->exists());
-
-            // Create the ticket
-            $ticket = RepairTicket::create([
-                'repairTicket_id' => $repairTicketId,
-                'inventory_id' => $request->inventory_id,
-                'receiving_date' => $request->receiving_date,
-                'name' => $request->name,
-                'office_department' => $request->office_department,
-                'itemname' => $request->itemname,
-                'issue' => $request->issue,
-                'solution' => $request->solution,
-                'note' => $request->note ?: null,
-                'status' => 'pending',
-            ]);
-
-            // Log activity
-            try {
-                ActivityLog::record(
-                    'Add Repair Ticket',
-                    "Repair Ticket {$ticket->repairTicket_id} was created"
-                );
-            } catch (\Exception $e) {
-                Log::error('Failed to log activity: ' . $e->getMessage());
-            }
-
-            // Return success JSON
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'ticket' => $ticket
-                ]);
-            }
-
-            return redirect()->back()->with('success', 'Repair Ticket created successfully!');
+            ActivityLog::record('Add Repair Ticket', "Repair Ticket {$ticket->repairTicket_id} created");
         } catch (\Exception $e) {
-            Log::error('Repair Ticket save failed: ' . $e->getMessage());
-
-            $message = 'Failed to save Repair Ticket.';
-            if (config('app.debug')) {
-                $message .= ' ' . $e->getMessage();
-            }
-
-            if ($request->ajax()) {
-                return response()->json([
-                    'error' => $message
-                ], 500);
-            }
-
-            return redirect()->back()->with('error', $message);
+            Log::error('Activity log failed: ' . $e->getMessage());
         }
+
+        return response()->json(['success' => true, 'ticket' => $ticket]);
     }
 
     // Genrating the unique repair ticket ID
@@ -249,24 +200,24 @@ class RepairController extends Controller
     {
         $ticket = RepairTicket::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validated = $request->validate([
+            'name'              => 'required|string|max:255',
             'office_department' => 'required|string|max:255',
-            'itemname' => 'required|string|max:255',
-            'issue' => 'nullable|string|max:50',
-            'solution' => 'nullable|string|max:50',
-            'note' => 'nullable|string|max:100',
-            'release_date' => 'nullable',
-            'status' => 'nullable|in:pending,in_progress,repaired,released,unrepairable',
-            'inventory_id' => ['nullable', 'exists:inventory_items,inventory_id'],
+            'itemname'          => 'required|string|max:255',
+            'issue'             => 'nullable|string|max:50',
+            'solution'          => 'nullable|string|max:50',
+            'note'              => 'nullable|string|max:100',
+            'release_date'      => 'nullable',
+            'status'            => 'nullable|in:pending,in_progress,repaired,released,unrepairable',
+            'inventory_item_id' => 'nullable|exists:inventory_items,id',
         ]);
 
         $changes = [];
 
-        // Update fields except release_date (handle separately)
-        foreach ($request->only(['name', 'office_department', 'itemname', 'issue', 'solution', 'note', 'status', 'inventory_id']) as $field => $value) {
+        // Update fields
+        foreach ($validated as $field => $value) {
             if ($ticket->$field != $value) {
-                $changes[] = ucfirst($field) . ": '{$ticket->$field}' → '{$value}'";
+                $changes[] = ucfirst(str_replace('_', ' ', $field)) . ": '{$ticket->$field}' → '{$value}'";
                 $ticket->$field = $value;
             }
         }
