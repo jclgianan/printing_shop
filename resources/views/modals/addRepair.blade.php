@@ -33,7 +33,7 @@
                         <option value="">-- Select Device --</option>
                         @foreach ($inventoryItems as $item)
                             <option value="{{ $item->id }}">
-                                {{ $item->inventory_id }} - {{ $item->device_name }}
+                                {{ $item->inventory_id }}
                             </option>
                         @endforeach
                     </select>

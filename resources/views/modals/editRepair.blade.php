@@ -19,12 +19,12 @@
             <form id="editRepairForm" class="process-form">
                 @csrf
                 <div class="form-group">
-                    <label for="edit_device_id">Inventory ID</label>
-                    <input type="text" name="inventory_id" id="edit_device_id" class="form-control"
-                        value="{{ $ticket->inventory_id ?? '' }}">
+                    <label for="edit_inventory_id">Inventory ID</label>
+                    <input type="text" name="inventory_id" id="edit_inventory_id" class="form-control"
+                        value="{{ $ticket->inventoryItem->inventory_id ?? '' }}">
                 </div>
 
-                <input type="hidden" name="ticket_id" id="edit_ticket_id">
+                <input type="hidden" id="edit_repairTicket_id" name="repairTicket_id">
 
                 <div class="form-group">
                     <label for="edit_name">Name</label>

@@ -6,6 +6,7 @@
 
 html {
     scroll-behavior: smooth;
+    transition: all 1s ease-in-out;
 }
 
 :root {
@@ -380,6 +381,13 @@ html {
     width: auto;
     z-index: 999990;
     height: 70px;
+}
+
+.dark-mode-button {
+    padding-left: 10px;
+    background-color: transparent;
+    border: none;
+    color: rgb(255, 255, 255);
 }
 
 .receiving_topbar {
@@ -1001,7 +1009,7 @@ body.sidebar-collapsed .receiving-main-panel {
 }
 
 .custom-pagination p {
-    color: #333;
+    color: var(--normal-text) !important;
     font-size: 15px;
     font-family: "Rubik", sans-serif;
     margin: 0;
@@ -1299,11 +1307,6 @@ h1 {
     font-size: 1.1rem;
 }
 
-.form-group input {
-    border-radius: 10px;
-    font-family: "Roboto";
-}
-
 .alert-box {
     text-align: center;
     font-weight: bold;
@@ -1559,6 +1562,29 @@ h1 {
     padding: 0px 0px 20px 0px;
     overflow: hidden;
 }
+
+@media (width: 964px) {
+    .card {
+        width: 90px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: 300px 230px 500px 500px;
+        grid-template-areas:
+            "dashboard"
+            "dashboard-actions"
+            "inventory-graph"
+            "dashboard-activities";
+
+        /* 3. Adjust height for scrolling */
+        height: auto;
+        overflow-y: scroll;
+        padding: 10px;
+    }
+}
 .recent-activities {
     height: auto;
     width: 20%;
@@ -1581,6 +1607,8 @@ h1 {
     margin-bottom: 0;
     max-height: 320px;
     min-height: 0; /* Important for grid */
+
+    border: 1px solid #e5e7eb;
 }
 
 .dashboard-header-text h2 {
@@ -1639,11 +1667,7 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    /* padding: 15px 15px; */
-    /* gap: 5px; */
-    /* min-height: 110px; */
     padding: 5px;
-    /* border-radius: 12px; */
 }
 
 .card {
@@ -1662,6 +1686,37 @@ h1 {
     max-height: 70px;
 }
 
+@media (max-width: 560px) {
+    .user-name,
+    .user-email {
+        display: none;
+    }
+}
+@media (max-width: 1400px) {
+    .card-grid {
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .card {
+        flex: 0 0 calc(15% - 1px);
+
+        border-radius: 50px;
+        width: 1%;
+        width: 50px;
+        height: 50px;
+        align-items: center;
+        justify-items: center;
+    }
+    .in-cards h4,
+    .in-cards p {
+        font-size: 14px;
+        text-align: center;
+    }
+    .in-cards i {
+        display: none;
+    }
+}
 .pending,
 .total-units {
     color: #92400e;
@@ -1716,15 +1771,12 @@ h1 {
     z-index: 1;
 }
 
-@media (max-width: 900px) {
+@media (width: 480px) {
     .dashboard-container {
-        flex-direction: column;
-        overflow-y: auto;
-    }
+        display: grid;
+        grid-template-columns: 100px;
 
-    .dashboard {
-        width: auto;
-        height: auto;
+        gap: 1rem;
     }
 }
 
@@ -1741,6 +1793,8 @@ h1 {
     flex-direction: column;
     overflow: hidden;
     border: 1px solid rgba(0, 0, 0, 0.06);
+
+    border: 1px solid #e5e7eb;
 }
 
 .inventory-graph .activities-header {
@@ -1752,7 +1806,7 @@ h1 {
 .inventory-graph .activities-header h3 {
     font-size: 1.5rem;
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--header-text);
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -2479,21 +2533,26 @@ p {
 .form-control,
 .form-select {
     padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+    border: none;
+    border-radius: 0px !important;
+    border-top-left-radius: 5px !important;
+    border-top-right-radius: 5px !important;
+    border-bottom: 2px solid #ccc;
     font-size: 1rem;
     width: 100%;
     box-sizing: border-box;
-
+    outline: none !important;
+    box-shadow: inset 0px 0px 5px 1px rgba(233, 233, 233, 0.062);
     transition: all 0.2s ease-in-out;
 }
 
-.form-control:focus {
-    outline: none;
-    border: 1px solid rgba(0, 123, 255, 0.11);
-    box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.25);
+.date-input {
+}
 
-    pointer-events: all;
+.form-control:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    border-bottom: 2px solid #363636;
 }
 
 .modal-close {
@@ -2619,7 +2678,7 @@ p {
     height: 100%;
     background-color: transparent;
     backdrop-filter: blur(2px);
-    z-index: 1000;
+    z-index: 999999;
 }
 
 .pop-up-confirm {
@@ -2658,7 +2717,7 @@ p {
     width: 100%;
     height: 100%;
     background-color: transparent;
-    z-index: 1000;
+    z-index: 999999;
 }
 
 .pop-up-success {

@@ -380,33 +380,7 @@
         //     }
         // });
 
-        //counter
-        const display = document.getElementById('quantity');
-        const plusBtn = document.querySelector('.plus-btn');
-        const minusBtn = document.querySelector('.minus-btn');
-
-        // let count = 1;
-        let count = parseInt(display.value);
-
-        plusBtn.addEventListener('click', () => {
-            count++;
-            display.value = count;
-
-            display.dispatchEvent(new Event('input', {
-                bubbles: true
-            }));
-        });
-
-        minusBtn.addEventListener('click', () => {
-            if (count > 1) {
-                count--;
-                display.value = count;
-
-                display.dispatchEvent(new Event('input', {
-                    bubbles: true
-                }));
-            }
-        });
+      
 
         // Auto-set condition to 'poor' if status is 'unusable'
         const addStatus = document.getElementById('statusSelect');

@@ -78,7 +78,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/generate-device-id', [InventoryController::class, 'generateInventoryId'])->name('generate-inventory-id');
     Route::post('/inventory/units/{deviceId}/add', [InventoryController::class, 'addUnits'])->name('inventory.add-units');
 
-
     // Forms and processes
     Route::get('/addPrinting', [PrintingController::class, 'printingForm'])->name('printing.form');
     Route::get('/addRepair', [RepairController::class, 'repairForm'])->name('repair.form');
@@ -96,8 +95,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/repairDashboard', [RepairController::class, 'repairDashboard'])->name('repairDashboard');
     Route::get('/printing/{id}/edit', [PrintingController::class, 'printEdit'])->middleware('auth')->name('print.edit');
     Route::post('/printing/{id}/update', [PrintingController::class, 'printUpdate'])->middleware('auth')->name('print.update');
-    Route::get('/repair/{id}/edit', [RepairController::class, 'repairEdit'])->middleware('auth')->name('repair.edit');
-    Route::post('/repair/{id}/update', [RepairController::class, 'repairUpdate'])->middleware('auth')->name('repair.update');
+    Route::get('/repair/{repairTicket_id}/edit', [RepairController::class, 'repairEdit'])->middleware('auth')->name('repair.edit');
+    Route::post('/repair/{repairTicket_id}/update', [RepairController::class, 'repairUpdate'])->middleware('auth')->name('repair.update');
     Route::post('/process/store', [PrintingController::class, 'store'])->name('process.store');
     Route::get('/generate-printTicket-id', [PrintingController::class, 'generatePrintTicketId'])->name('generate.printTicket.id');
     Route::get('/generate-repairTicket-id', [RepairController::class, 'generateRepairTicketId'])->name('generate.repairTicket.id');
@@ -105,7 +104,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Print ticket status management
     Route::post('/print-tickets/{id}/status', [PrintingController::class, 'updateStatus'])->name('print-tickets.update-status');
-    Route::post('/repair-tickets/{id}/status', [RepairController::class, 'updateRepairStatus'])->name('repair-tickets.update-status');
+    Route::post('/repair-tickets/{repairTicket_id}/status', [RepairController::class, 'updateRepairStatus'])->name('repair-tickets.update-status');
 });
 
 // Guest routes

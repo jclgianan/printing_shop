@@ -104,8 +104,9 @@
                                         </td>
                                         <td>
                                             <div class="action-buttons">
-                                                <button class="btn-edit" data-device_id="{{ $ticket->inventory_id }}"
-                                                    data-id="{{ $ticket->id }}"
+                                                <button class="btn-edit"
+                                                    data-inventory_id="{{ $ticket->inventoryItem->inventory_id ?? 'N/A' }}"
+                                                    data-repairTicket_id="{{ $ticket->repairTicket_id }}"
                                                     data-receiving_date="{{ $ticket->receiving_date }}"
                                                     data-name="{{ $ticket->name }}"
                                                     data-office_department="{{ $ticket->office_department }}"
@@ -206,8 +207,11 @@
         $(document).on('click', '.btn-edit', function() {
             const ticket = $(this).data();
 
-            $('#edit_device_id').val(ticket.device_id || '');
-            $('#edit_ticket_id').val(ticket.id);
+            console.log('All ticket data:', ticket); // Debug - see what data we have
+            console.log('repairticket_id:', ticket.repairticket_id); // Debug - specific field
+
+            $('#edit_inventory_id').val(ticket.inventory_id || '');
+            $('#edit_repairTicket_id').val(ticket.repairticket_id);
             $('#edit_receiving_date').val(ticket.receiving_date);
             $('#edit_name').val(ticket.name);
             $('#edit_office_department').val(ticket.office_department);
@@ -230,32 +234,32 @@
 
             // Populate action buttons dynamically
             const actionContainer = $('#editActionBtn');
-            actionContainer.empty(); // clear previous buttons
+            actionContainer.empty();
 
             if (ticket.status === 'pending') {
                 actionContainer.append(`
-                <button onclick="updateStatus(${ticket.id}, 'in_progress')" class="btn-status btn-progress">
-                    Start Progress <i class="fa-regular fa-circle-play"></i>
-                </button>
+            <button onclick="updateStatus('${ticket.repairticket_id}', 'in_progress')" class="btn-status btn-progress">
+                Start Progress <i class="fa-regular fa-circle-play"></i>
+            </button>
             `);
             }
             if (ticket.status === 'in_progress') {
                 actionContainer.append(`
-                <button onclick="updateStatus(${ticket.id}, 'repaired')" class="btn-status btn-complete">
+                <button onclick="updateStatus('${ticket.repairticket_id}', 'repaired')" class="btn-status btn-complete">
                     Mark Complete <i class="fa-regular fa-circle-check"></i>
                 </button>
             `);
             }
             if (ticket.status === 'repaired') {
                 actionContainer.append(`
-                <button onclick="updateStatus(${ticket.id}, 'released')" class="btn-status btn-released">
+                <button onclick="updateStatus('${ticket.repairticket_id}', 'released')" class="btn-status btn-released">
                     Release <i class="fa-solid fa-rocket"></i>
                 </button>
             `);
             }
             if (ticket.status !== 'unrepairable' && ticket.status !== 'repaired' && ticket.status !== 'released') {
                 actionContainer.append(`
-                <button onclick="updateStatus(${ticket.id}, 'unrepairable')" class="btn-status btn-cancel">
+                <button onclick="updateStatus('${ticket.repairticket_id}', 'unrepairable')" class="btn-status btn-cancel">
                     Unrepairable <i class="fa-solid fa-ban"></i>
                 </button>
             `);
@@ -282,7 +286,7 @@
             const form = $(this);
             const messageBox = $('#editFormMessage');
             const submitBtn = form.find('button[type="submit"]');
-            const ticketId = $('#edit_ticket_id').val();
+            const ticketId = $('#edit_repairTicket_id').val();
 
             // Get the original datetime
             const releaseDateInput = $('#edit_release_date');
