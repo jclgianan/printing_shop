@@ -90,7 +90,7 @@
                                         <td class="file-icon">
                                             @if ($ticket->file_link)
                                                 <a href="{{ $ticket->file_link }}" target="_blank">
-                                                    <i class="fa-regular fa-file"></i></a>
+                                                    <i class="fa-regular fa-file" style="color: var(--normal-text)"></i></a>
                                             @else
                                                 <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
                                             @endif

@@ -220,27 +220,25 @@ document.addEventListener("DOMContentLoaded", () => {
             sessionStorage.setItem("openSubmenus", JSON.stringify(openMenus));
         });
     });
-    //dark mode
+
+    //dark mode--------------------------------------------------------------------//
     const btn = document.getElementById("theme-toggle");
     const icon = document.getElementById("theme-icon");
     const currentTheme = localStorage.getItem("theme");
 
-    // Function to set the correct icon
     function updateIcon(theme) {
         if (theme === "dark") {
-            icon.classList.replace("fa-moon", "fa-sun"); // Show sun in dark mode
+            icon.classList.replace("fa-moon", "fa-sun");
         } else {
-            icon.classList.replace("fa-sun", "fa-moon"); // Show moon in light mode
+            icon.classList.replace("fa-sun", "fa-moon");
         }
     }
 
-    // 1. Check for saved theme on page load
     if (currentTheme === "dark") {
         document.body.classList.add("dark-mode");
         updateIcon("dark");
     }
 
-    // 2. Handle the click event
     btn.addEventListener("click", function () {
         document.body.classList.toggle("dark-mode");
 
@@ -253,3 +251,49 @@ document.addEventListener("DOMContentLoaded", () => {
         localStorage.setItem("theme", theme);
     });
 });
+//dark mode--------------------------------------------------------------------//
+
+//counter-----------------------------------------------------------------------------//
+const display = document.getElementById("quantity");
+const plusBtn = document.querySelector(".plus-btn");
+const minusBtn = document.querySelector(".minus-btn");
+
+// let count = 1;
+let count = parseInt(display.value);
+
+plusBtn.addEventListener("click", () => {
+    count++;
+    display.value = count;
+
+    display.dispatchEvent(
+        new Event("input", {
+            bubbles: true,
+        }),
+    );
+});
+
+minusBtn.addEventListener("click", () => {
+    if (count > 1) {
+        count--;
+        display.value = count;
+
+        display.dispatchEvent(
+            new Event("input", {
+                bubbles: true,
+            }),
+        );
+    }
+});
+
+//counter-----------------------------------------------------------------------------//
+
+//date default--------------------------------------------------------------//
+const dateInput = document.querySelector('input[type="date"]');
+
+const today = new Date().toISOString().split("T")[0];
+
+if (dateInput) {
+    dateInput.value = today;
+}
+
+//date default--------------------------------------------------------------//
