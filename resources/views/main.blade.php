@@ -348,7 +348,6 @@
                 </div>
                 @include('modals.addPrinting')
                 @include('modals.addRepair')
-
             </main>
         </div>
     </div>

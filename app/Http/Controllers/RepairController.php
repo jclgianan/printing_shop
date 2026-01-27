@@ -47,16 +47,20 @@ class RepairController extends Controller
         $type = 'repair';
         $query  = $request->input('query');
 
-        $repairTickets = RepairTicket::where('repairTicket_id', 'like', '%' . $query . '%')
-            ->orWhere('inventory_id', 'like', '%' . $query . '%')
-            ->orWhere('office_department', 'like', '%' . $query . '%')
-            ->orWhere('itemname', 'like', '%' . $query . '%')
-            ->orWhere('name', 'like', '%' . $query . '%')
+        $repairTickets = RepairTicket::where(function ($q) use ($query) {
+            $q->where('repairTicket_id', 'like', '%' . $query . '%')
+                ->orWhere('inventory_id', 'like', '%' . $query . '%')
+                ->orWhere('office_department', 'like', '%' . $query . '%')
+                ->orWhere('itemname', 'like', '%' . $query . '%')
+                ->orWhere('name', 'like', '%' . $query . '%');
+        })
             ->orderBy('receiving_date', 'desc')
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('repair', compact('repairTickets', 'type'));
+        $inventoryItems = InventoryItem::select('id', 'inventory_id', 'device_name')->get();
+
+        return view('repair', compact('repairTickets', 'type', 'inventoryItems'));
     }
 
     // Repair Logs data view
@@ -140,18 +144,20 @@ class RepairController extends Controller
             ->orderBy('id', 'desc')
             ->paginate(10);
 
-        return view('repair', compact('repairTickets', 'type'));
+        $inventoryItems = InventoryItem::all();
+
+        return view('repair', compact('repairTickets', 'type', 'inventoryItems'));
     }
 
     // Update the status of a print ticket
-    public function updateRepairStatus(Request $request, $id)
+    public function updateRepairStatus(Request $request, $repairTicket_id)
     {
         $request->validate([
             'status' => 'required|in:pending,in_progress,repaired,released,unrepairable'
         ]);
 
         try {
-            $ticket = RepairTicket::findOrFail($id);
+            $ticket = RepairTicket::findOrFail($repairTicket_id);
             $oldStatus = $ticket->formatted_status;
 
             // Update the status
@@ -190,15 +196,15 @@ class RepairController extends Controller
         }
     }
 
-    public function repairEdit($id)
+    public function repairEdit($repairTicket_id)
     {
-        $ticket = RepairTicket::findOrFail($id);
+        $ticket = RepairTicket::with('inventoryItem')->findOrFail($repairTicket_id);
         return response()->json($ticket);
     }
 
-    public function repairUpdate(Request $request, $id)
+    public function repairUpdate(Request $request, $repairTicket_id)
     {
-        $ticket = RepairTicket::findOrFail($id);
+        $ticket = RepairTicket::findOrFail($repairTicket_id);
 
         $validated = $request->validate([
             'name'              => 'required|string|max:255',

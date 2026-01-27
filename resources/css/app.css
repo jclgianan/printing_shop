@@ -2619,7 +2619,7 @@ p {
     height: 100%;
     background-color: transparent;
     backdrop-filter: blur(2px);
-    z-index: 1000;
+    z-index: 999999;
 }
 
 .pop-up-confirm {
@@ -2658,7 +2658,7 @@ p {
     width: 100%;
     height: 100%;
     background-color: transparent;
-    z-index: 1000;
+    z-index: 999999;
 }
 
 .pop-up-success {
