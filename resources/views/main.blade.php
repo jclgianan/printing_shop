@@ -221,16 +221,16 @@
                             </div>
 
                             <div class="quick-buttons">
-                                <div class="quick-print">
+                                <div class="quick-print open-print-modal">
                                     <h5><i class="fa-solid fa-print"></i> Add Print Ticket</h5>
-                                    <a class="open-print-modal">
+                                    <a>
                                         <i class="fa-solid fa-circle-plus"></i>
                                     </a>
                                 </div>
 
-                                <div class="quick-repair">
+                                <div class="quick-repair open-repair-modal">
                                     <h5><i class="fa-solid fa-screwdriver-wrench"></i> Add Repair Ticket</h5>
-                                    <a class="open-repair-modal">
+                                    <a>
                                         <i class="fa-solid fa-circle-plus"></i>
                                     </a>
                                 </div>
@@ -241,12 +241,12 @@
                         <div class="dashboard-activities">
                             <div class="activities-header">
                                 <h3><i class="fa-solid fa-clock-rotate-left"></i> Recent Activities</h3>
-                                <button class="activities-menu-btn">
+                                {{-- <button class="activities-menu-btn">
                                     <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                                     </svg>
-                                </button>
+                                </button> --}}
                             </div>
 
                             <ul class="activities-list" id="activities-list">

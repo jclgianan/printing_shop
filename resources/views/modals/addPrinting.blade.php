@@ -41,7 +41,7 @@
                 <div class="form-group">
                     <label for="receiving_date">Receiving Date</label>
                     <input type="date" name="receiving_date" id="receiving_date"
-                        class="form-control @error('receiving_date') is-invalid @enderror"
+                        class="form-control date-input @error('receiving_date') is-invalid @enderror"
                         value="{{ old('receiving_date') }}" required>
                     @error('receiving_date')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -88,9 +88,13 @@
 
                 <div class="form-group">
                     <label for="quantity">Quantity</label>
-                    <input type="number" name="quantity" id="quantity"
-                        class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity') }}"
-                        min="1" required>
+                    <div class="button-counter-container d-flex align-items-center">
+                        <button class="minus-btn" type="button"><i class="fa-solid fa-minus fa-xs"></i></button>
+                        <input type="number" class="form-control @error('quantity') is-invalid @enderror"
+                            id="quantity" name="quantity" value="{{ old('quantity', 1) }}" min="1"
+                            max="1000" required>
+                        <button class="plus-btn" type="button"><i class="fa-solid fa-plus fa-xs"></i></button>
+                    </div>
                     @error('quantity')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -115,7 +119,8 @@
                 </div>
 
                 <br>
-                <button type="submit" class="submit-btn">Submit Ticket <i class="fa-solid fa-paper-plane"></i></button>
+                <button type="submit" class="submit-btn">Submit Ticket <i
+                        class="fa-solid fa-paper-plane"></i></button>
             </form>
         </div>
     </div>
