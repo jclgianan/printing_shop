@@ -35,8 +35,8 @@
                                 type="submit" name="filter" value="repaired">Repaired</button>
                             <button class="filter-group {{ $statusRepairFilter === 'released' ? 'active' : '' }}"
                                 type="submit" name="filter" value="released">Released</button>
-                            <button class="filter-group {{ $statusRepairFilter === 'unrepairable' ? 'active' : '' }}"
-                                type="submit" name="filter" value="unrepairable">Unrepairable</button>
+                            <button class="filter-group {{ $statusRepairFilter === 'unresolved' ? 'active' : '' }}"
+                                type="submit" name="filter" value="unresolved">Unresolved</button>
                         </form>
                         <!-- Search Bar on the right -->
                         <form action="{{ route('repair-search') }}" method="GET" class="search-form">
@@ -66,9 +66,9 @@
                                         <th>Name of Item</th>
                                         <th>Issue</th>
                                         <th>Solution</th>
-                                        <th>Note</th>
+                                        <th>Technical Status</th>
+                                        <th>Handover Status</th>
                                         <th>Release Date</th>
-                                        <th>Status</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -90,17 +90,28 @@
                                                 <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
                                             @endif
                                         </td>
-                                        <td>{{ $ticket->note }}</td>
-                                        <td>
-                                            @if ($ticket->status === 'released')
-                                                {{ \Carbon\Carbon::parse($ticket->release_date)->format('m/d/y H:i') }}
-                                            @else
-                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
-                                            @endif
-                                        </td>
                                         <td>
                                             <span
                                                 class="status-badge status-{{ $ticket->status }}">{{ $ticket->formatted_status }}</span>
+                                        </td>
+                                        <td>
+                                            @if ($ticket->handover_status === 'released')
+                                                <span class="status-badge status-released">Released</span>
+                                            @else
+                                                <span class="status-badge status-in_office">In Office</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($ticket->release_date)
+                                                <div class="d-flex flex-column">
+                                                    <span>{{ \Carbon\Carbon::parse($ticket->release_date)->format('m/d/y') }}</span>
+                                                    <small class="text-muted" style="font-size: 0.8rem;">
+                                                        {{ \Carbon\Carbon::parse($ticket->release_date)->format('h:i A') }}
+                                                    </small>
+                                                </div>
+                                            @else
+                                                <i class="fa-solid fa-ellipsis text-muted opacity-50"></i>
+                                            @endif
                                         </td>
                                         <td>
                                             <div class="action-buttons">
@@ -113,9 +124,8 @@
                                                     data-itemname="{{ $ticket->itemname }}"
                                                     data-issue="{{ $ticket->issue }}"
                                                     data-solution="{{ $ticket->solution }}"
-                                                    data-note="{{ $ticket->note }}"
-                                                    data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d\TH:i') : '' }}"
-                                                    data-status="{{ $ticket->status }}">
+                                                    data-note="{{ $ticket->note }}" data-status="{{ $ticket->status }}"
+                                                    data-release_date="{{ $ticket->release_date ? \Carbon\Carbon::parse($ticket->release_date)->format('Y-m-d\TH:i') : '' }}">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
                                             </div>
@@ -246,21 +256,17 @@
             if (ticket.status === 'in_progress') {
                 actionContainer.append(`
                 <button onclick="updateStatus('${ticket.repairticket_id}', 'repaired')" class="btn-status btn-complete">
-                    Mark Complete <i class="fa-regular fa-circle-check"></i>
+                    Mark Repaired <i class="fa-regular fa-circle-check"></i>
+                </button>
+                <button onclick="updateStatus('${ticket.repairticket_id}', 'unresolved')" class="btn-status btn-cancel">
+                    Mark Unresolved <i class="fa-solid fa-ban"></i>
                 </button>
             `);
             }
-            if (ticket.status === 'repaired') {
+            if ((ticket.status === 'repaired' || ticket.status === 'unresolved')) {
                 actionContainer.append(`
                 <button onclick="updateStatus('${ticket.repairticket_id}', 'released')" class="btn-status btn-released">
-                    Release <i class="fa-solid fa-rocket"></i>
-                </button>
-            `);
-            }
-            if (ticket.status !== 'unrepairable' && ticket.status !== 'repaired' && ticket.status !== 'released') {
-                actionContainer.append(`
-                <button onclick="updateStatus('${ticket.repairticket_id}', 'unrepairable')" class="btn-status btn-cancel">
-                    Unrepairable <i class="fa-solid fa-ban"></i>
+                    Confirm Release <i class="fa-solid fa-handshake"></i>
                 </button>
             `);
             }

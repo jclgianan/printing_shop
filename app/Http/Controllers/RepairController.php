@@ -153,7 +153,7 @@ class RepairController extends Controller
     public function updateRepairStatus(Request $request, $repairTicket_id)
     {
         $request->validate([
-            'status' => 'required|in:pending,in_progress,repaired,released,unrepairable'
+            'status' => 'required|in:pending,in_progress,repaired,released,unresolved'
         ]);
 
         try {
@@ -161,38 +161,32 @@ class RepairController extends Controller
             $oldStatus = $ticket->formatted_status;
 
             // Update the status
-            $ticket->status = $request->status;
-            if ($request->status === 'released' && !$ticket->release_date) {
+            if ($request->status === 'released') {
+                $ticket->handover_status = 'released'; // Save the specific status
                 $ticket->release_date = now();
             }
             $ticket->save();
 
-            $user = auth()->user(); // current user
-
+            // Activity Logging
             try {
-                ActivityLog::record(
-                    'Update Repair Status',
-                    "Repair Ticket {$ticket->repairTicket_id} status changed from {$oldStatus} to {$ticket->formatted_status}"
+                $logMessage = ($request->status === 'released')
+                    ? "Repair Ticket {$ticket->repairTicket_id} was released to the owner."
+                    : "Repair Ticket {$ticket->repairTicket_id} status changed from {$oldStatus} to {$ticket->formatted_status}";
 
-                );
+                ActivityLog::record('Update Repair Status', $logMessage);
             } catch (\Exception $e) {
                 Log::error('Failed to record activity log: ' . $e->getMessage());
             }
 
-
             return response()->json([
                 'success' => true,
-                'message' => "Status updated from {$ticket->formatted_status} to {$ticket->formatted_status}",
+                'message' => "Update successful.",
                 'new_status' => $ticket->formatted_status,
-                'release_date' => $ticket->release_date
-                    ? $ticket->release_date->format('Y-m-d H:i')
-                    : null
+                'is_released' => $ticket->release_date ? true : false,
+                'release_date' => $ticket->release_date ? $ticket->release_date->format('m/d/y H:i') : null
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update status'
-            ], 500);
+            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -214,7 +208,8 @@ class RepairController extends Controller
             'solution'          => 'nullable|string|max:50',
             'note'              => 'nullable|string|max:100',
             'release_date'      => 'nullable',
-            'status'            => 'nullable|in:pending,in_progress,repaired,released,unrepairable',
+            'status'            => 'nullable|in:pending,in_progress,repaired,released,unresolved',
+            'handover_status'   => 'nullable|in:in_office,released',
             'inventory_item_id' => 'nullable|exists:inventory_items,id',
         ]);
 

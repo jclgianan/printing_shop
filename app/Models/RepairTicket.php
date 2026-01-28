@@ -30,6 +30,7 @@ class RepairTicket extends Model
         'solution',
         'note',
         'status',
+        'handover_status',
         'release_date',
     ];
 
@@ -44,15 +45,20 @@ class RepairTicket extends Model
             'pending' => 'Pending',
             'in_progress' => 'Ongoing',
             'repaired' => 'Repaired',
-            'released' => 'Released',
-            'unrepairable' => 'Unrepairable',
+            'released' => 'Repaired',
+            'unrepairable' => 'Unresolved',
+            'unresolved' => 'Unresolved',
             default => ucfirst($this->status),
         };
     }
 
     public function inventoryItem()
     {
-        return $this->belongsTo(InventoryItem::class, 'inventory_item_id', 'id');
+        return $this->belongsTo(
+            InventoryItem::class,
+            'inventory_item_id',
+            'id'
+        );
     }
 
     // Relationship to Process (optional)

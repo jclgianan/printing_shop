@@ -115,7 +115,11 @@ class InventoryItem extends Model
     // One inventory item can have many repair tickets
     public function repairTickets()
     {
-        return $this->hasMany(RepairTicket::class, 'inventory_id', 'inventory_id');
+        return $this->hasMany(
+            RepairTicket::class,
+            'inventory_item_id',
+            'id'
+        );
     }
 
     // Use inventory_id for route model binding

@@ -143,17 +143,21 @@
                         </div>
                     @endif
 
-                    @if ($items->repairTickets && $items->repairTickets->isNotEmpty())
+                    @if ($items->repairTickets->count())
                         <div class="info-box">
-                            <h6 class="mb-2">History</h6>
-                            <ul class="mb-0" style="padding-left: 1rem;">
+                            <h6 class="mb-2">Repair History</h6>
+                            <ul class="mb-0 ps-3">
                                 @foreach ($items->repairTickets as $ticket)
-                                    <li>{{ \Carbon\Carbon::parse($ticket->receiving_date)->format('M d, Y') }} -
-                                        {{ $ticket->issue }}</li>
+                                    <li>
+                                        <strong>{{ $ticket->repairTicket_id }}</strong><br>
+                                        {{ $ticket->receiving_date->format('M d, Y') }} —
+                                        {{ $ticket->issue }}
+                                    </li>
                                 @endforeach
                             </ul>
                         </div>
                     @endif
+
                 </div>
                 <div class="modal-footer">
                     @if ($items->status === 'available')
